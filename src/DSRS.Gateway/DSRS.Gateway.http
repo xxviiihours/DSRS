@@ -1,0 +1,14 @@
+@DSRS.Gateway_HostAddress = http://localhost:5223
+
+GET {{DSRS.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{DSRS.Gateway_HostAddress}}/players/
+Accept: application/json
+
+{
+  "name": "John Doe 3",
+  "balance": "99"
+}

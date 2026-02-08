@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".runsettings" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DSRS.Application/DSRS.Application.csproj" />
+    <Project Path="src/DSRS.Domain/DSRS.Domain.csproj" />
+    <Project Path="src/DSRS.Gateway/DSRS.Gateway.csproj" />
+    <Project Path="src/DSRS.Infrastructure/DSRS.Infrastructure.csproj" />
+    <Project Path="src/DSRS.SharedKernel/DSRS.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DSRS.Application.UnitTests/DSRS.Application.UnitTests.csproj" Id="36ad1542-7f61-4d00-8377-e5bdd0f09e99" />
+    <Project Path="tests/DSRS.Infrastructure.UnitTests/DSRS.Infrastructure.UnitTests.csproj" Id="d102a919-a1fb-4e80-a926-330a8cad2888" />
+  </Folder>
+</Solution>
