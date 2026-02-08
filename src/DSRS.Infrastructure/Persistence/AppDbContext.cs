@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Player> Players => Set<Player>();
     public DbSet<Item> Items => Set<Item>();
+    public DbSet<DailyPrice> DailyPrices => Set<DailyPrice>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
