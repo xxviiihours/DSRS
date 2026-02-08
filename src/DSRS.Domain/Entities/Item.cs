@@ -5,9 +5,9 @@ namespace DSRS.Domain.Entities;
 
 public class Item : EntityBase<Guid>
 {
-    public string Name { get; set; } = string.Empty;
-    public decimal BasePrice { get; set; }
-    public decimal Volatility { get; set; }
+    public string Name { get; private set; } = string.Empty;
+    public decimal BasePrice { get; private set; }
+    public decimal Volatility { get; private set; }
 
     public static Result<Item> Create(string name, decimal basePrice, decimal volatility)
     {
