@@ -1,11 +1,12 @@
 ﻿using DSRS.Domain.Entities;
 using DSRS.SharedKernel.Enums;
+using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Services;
 
 public class MarketPricingService
 {
-    public static DailyPrice Generate(
+    public static Result<DailyPrice> Generate(
              Player player,
              Item item,
              DateOnly date)
@@ -23,13 +24,13 @@ public class MarketPricingService
         var price = Math.Round(
             min + (decimal)Random.Shared.NextDouble() * (max - min));
 
-        return new DailyPrice(
-            player,
-            item,
-            date,
-            price,
-            high ? PriceState.HIGH : PriceState.LOW
-        );
+        var dailyPrice = DailyPrice.Create(player, item, date, price, high ? PriceState.HIGH : PriceState.LOW);
+        if(!dailyPrice.IsSuccess)
+        {
+            return Result<DailyPrice>.Failure(dailyPrice.Error!);
+        }
+
+        return Result<DailyPrice>.Success(dailyPrice.Data!);
     }
 
 }
