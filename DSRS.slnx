@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DSRS.Application.UnitTests/DSRS.Application.UnitTests.csproj" Id="36ad1542-7f61-4d00-8377-e5bdd0f09e99" />
+    <Project Path="tests/DSRS.Domain.UnitTests/DSRS.Domain.UnitTests.csproj" />
     <Project Path="tests/DSRS.Infrastructure.UnitTests/DSRS.Infrastructure.UnitTests.csproj" Id="d102a919-a1fb-4e80-a926-330a8cad2888" />
   </Folder>
 </Solution>
