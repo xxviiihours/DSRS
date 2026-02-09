@@ -65,7 +65,7 @@ public class PlayerRepositoryTests
         using var context = CreateContext(nameof(NameExistsAsync_ReturnsFalse_WhenNameDoesNotExist));
         var player = Player.Create("Bob", 5m).Data!;
         context.Players.Add(player);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = new PlayerRepository(context);
         var exists = await repository.NameExistsAsync("Charlie");
