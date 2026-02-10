@@ -28,7 +28,7 @@ public class CreateItemHandlerTests
         result.Error.Should().NotBeNull();
         result.Error!.Code.Should().Be("Item.Name.Empty");
 
-        repoMock.Verify(r => r.Create(It.IsAny<Item>()), Times.Never);
+        repoMock.Verify(r => r.CreateAsync(It.IsAny<Item>()), Times.Never);
         uowMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -39,7 +39,7 @@ public class CreateItemHandlerTests
         var uowMock = new Mock<IUnitOfWork>();
 
         Item? captured = null;
-        repoMock.Setup(r => r.Create(It.IsAny<Item>()))
+        repoMock.Setup(r => r.CreateAsync(It.IsAny<Item>()))
             .Returns((Item item) => { captured = item; return Task.CompletedTask; });
 
         uowMock.Setup(u => u.CommitAsync(It.IsAny<CancellationToken>()))
@@ -56,7 +56,7 @@ public class CreateItemHandlerTests
         result.Data.BasePrice.Should().Be(10m);
         result.Data.Volatility.Should().Be(0.25m);
 
-        repoMock.Verify(r => r.Create(It.IsAny<Item>()), Times.Once);
+        repoMock.Verify(r => r.CreateAsync(It.IsAny<Item>()), Times.Once);
         uowMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
 
         captured.Should().NotBeNull();
@@ -74,7 +74,7 @@ public class CreateItemHandlerTests
         var repoMock = new Mock<IItemRepository>();
         var uowMock = new Mock<IUnitOfWork>();
 
-        repoMock.Setup(r => r.Create(It.IsAny<Item>()))
+        repoMock.Setup(r => r.CreateAsync(It.IsAny<Item>()))
             .Throws(new TestDbException("boom"));
 
         var handler = new CreateItemHandler(repoMock.Object, uowMock.Object);
@@ -87,7 +87,7 @@ public class CreateItemHandlerTests
         result.Error!.Code.Should().Be("Database.Error");
         result.Error.Message.Should().Contain("boom");
 
-        repoMock.Verify(r => r.Create(It.IsAny<Item>()), Times.Once);
+        repoMock.Verify(r => r.CreateAsync(It.IsAny<Item>()), Times.Once);
         uowMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 }
