@@ -13,9 +13,9 @@ public sealed class DailyPrice : EntityBase<Guid>
     public decimal Price { get; }
     public PriceState State { get; }
 
-    public Player Player { get; }
-    public Item Item { get; }
-    private DailyPrice(Guid playerId, Guid itemId, 
+    public Player Player { get; private set; } = null!;
+    public Item Item { get; private set; } = null!;
+    internal DailyPrice(Guid playerId, Guid itemId, 
         DateOnly date, decimal price, PriceState state, 
         Player player, Item item)
     {
@@ -24,9 +24,10 @@ public sealed class DailyPrice : EntityBase<Guid>
         Date = date;
         Price = price;
         State = state;
-        Player = player;
-        Item = item;
+        Player = player ?? throw new ArgumentNullException(nameof(player));
+        Item = item ?? throw new ArgumentNullException(nameof(item));
     }
+    private DailyPrice() { }
     public static Result<DailyPrice> Create(
         Player player, Item item, DateOnly date, decimal price, PriceState state)
     {
