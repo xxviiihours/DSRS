@@ -4,5 +4,6 @@ namespace DSRS.Application.Interfaces;
 
 public interface IItemRepository 
 {
-    Task Create(Item item);
+    Task<bool> NameExists(string name);
+    Task CreateAsync(Item item);
 }
