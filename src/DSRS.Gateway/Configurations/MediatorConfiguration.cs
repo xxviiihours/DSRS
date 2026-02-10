@@ -1,5 +1,8 @@
-﻿using DSRS.Application.Players.Create;
+﻿using DSRS.Application;
+using DSRS.Application.Items.Create;
+using DSRS.Application.Players.Create;
 using DSRS.Infrastructure;
+using System.Reflection;
 
 namespace DSRS.Gateway.Configurations;
 
@@ -17,10 +20,16 @@ public static class MediatorConfiguration
             // Supply any TYPE from each assembly you want scanned (the generator finds the assembly from the type)
             options.Assemblies =
             [
-                //typeof(Player),                       // Core
-                typeof(CreatePlayerCommand),         // UseCases
-                typeof(InfrastuctureServiceExtensions), // Infrastructure
-                typeof(MediatorConfiguration)                  // Web
+                //typeof(Player),
+
+                // application/use case
+                typeof(ApplicationAssemblyMarker), 
+
+                // infrastructure
+                typeof(InfrastructureAssemblyMarker),
+
+                // gateway/web
+                typeof(MediatorConfiguration)
             ];
         });
 
