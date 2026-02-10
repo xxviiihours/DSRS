@@ -8,12 +8,12 @@ namespace DSRS.Infrastructure.Repositories;
 
 public class PlayerRepository(AppDbContext context) : IPlayerRepository
 {
-    private AppDbContext _context = context;
+    private readonly AppDbContext _context = context;
 
     public async Task CreateAsync(Player player)
     {
 
-        _context.Players.Add(player);
+        await _context.Players.AddAsync(player);
         await Task.CompletedTask;
     }
 
