@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace DSRS.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Player> Players => Set<Player>();
     public DbSet<Item> Items => Set<Item>();

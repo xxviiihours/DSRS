@@ -1,5 +1,7 @@
 ﻿using DSRS.Application.Interfaces;
 using DSRS.Infrastructure.Persistence;
+using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
+using DSRS.Infrastructure.Persistence.Migrations.SqlServer;
 using DSRS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,24 +15,26 @@ public static class InfrastuctureServiceExtensions
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         ConfigurationManager config, ILogger logger)
     {
-        string? connectionString = config.GetConnectionString("DefaultConnection") 
-            ?? config.GetConnectionString("SqliteConnection");
-
-
-        services.AddDbContext<AppDbContext>((provider, options) =>
+        bool shouldUseDefaultDatabase = config.GetValue<bool>("Database:UseDefault");
+        if (shouldUseDefaultDatabase)
         {
-
-            if (config.GetConnectionString("cleanarchitecture") != null ||
-                config.GetConnectionString("DefaultConnection") != null)
+            services.AddDbContext<AppDbContext, SqlServerDbContext>((provider, options) =>
             {
-                options.UseSqlServer(connectionString);
-            }
-            else
+                options.UseSqlServer(config.GetConnectionString("DefaultConnection"),
+                    x => x.MigrationsAssembly("DSRS.Infrastructure")
+                        .MigrationsHistoryTable("__EFMigrationsHistory", "sqlserver"));
+            });
+        }
+        else
+        {
+            services.AddDbContext<AppDbContext, SqliteDbContext>((provider, options) =>
             {
-                options.UseSqlite(connectionString);
-            }
+                options.UseSqlite(config.GetConnectionString("SqliteConnection"),
+                    x => x.MigrationsAssembly("DSRS.Infrastructure")
+                        .MigrationsHistoryTable("__EFMigrationsHistory", "sqlite"));
+            });
+        }
 
-        });
 
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();

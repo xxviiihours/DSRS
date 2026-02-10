@@ -17,6 +17,7 @@ public class DailyPriceConfiguration : IEntityTypeConfiguration<DailyPrice>
             .IsRequired();
         builder.Property(dp => dp.State)
             .HasConversion<string>()
+            .HasMaxLength(4)
             .IsRequired();
         builder.HasOne(dp => dp.Player)
             .WithMany()
