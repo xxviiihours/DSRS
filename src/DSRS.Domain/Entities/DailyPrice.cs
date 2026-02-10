@@ -4,18 +4,29 @@ using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Entities;
 
-public class DailyPrice : EntityBase<Guid>
+public sealed class DailyPrice : EntityBase<Guid>
 {
-    public Guid PlayerId { get; private set; }
-    public Guid ItemId { get; private set; }
-    public DateOnly Date { get; private set; }
+    public Guid PlayerId { get; }
+    public Guid ItemId { get; }
+    public DateOnly Date { get; }
 
-    public decimal Price { get; private set; }
-    public PriceState State { get; private set; }
+    public decimal Price { get; }
+    public PriceState State { get; }
 
-    public Player Player { get; private set; } = null!;
-    public Item Item { get; private set; } = null!;
-
+    public Player Player { get; }
+    public Item Item { get; }
+    private DailyPrice(Guid playerId, Guid itemId, 
+        DateOnly date, decimal price, PriceState state, 
+        Player player, Item item)
+    {
+        PlayerId = playerId;
+        ItemId = itemId;
+        Date = date;
+        Price = price;
+        State = state;
+        Player = player;
+        Item = item;
+    }
     public static Result<DailyPrice> Create(
         Player player, Item item, DateOnly date, decimal price, PriceState state)
     {
@@ -27,13 +38,8 @@ public class DailyPrice : EntityBase<Guid>
                 new Error("DailyPrice.Item.Null", "Item cannot be null"));
 
         // domain event could be raised here, e.g., DailyPriceGenerated
-        return Result<DailyPrice>.Success(new DailyPrice
-            {
-                Player = player,
-                Item = item,
-                Date = date,
-                Price = price,
-                State = state
-            });
+        
+        return Result<DailyPrice>.Success(
+            new DailyPrice(player.Id, item.Id, date, price, state, player, item));
     }
 }
