@@ -20,7 +20,7 @@ public class CreateItemHandler(IItemRepository itemRepository,
       if (!item.IsSuccess)
         return Result<Item>.Failure(item.Error!);
 
-      await _itemRepository.Create(item.Data!);
+      await _itemRepository.CreateAsync(item.Data!);
       await _unitOfWork.CommitAsync(cancellationToken = default);
 
       return Result<Item>.Success(item.Data!);
