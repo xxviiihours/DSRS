@@ -2,7 +2,9 @@
   <Folder Name="/Solution Items/">
     <File Path=".runsettings" />
   </Folder>
-  <Folder Name="/data/" />
+  <Folder Name="/data/" >
+    <File Path="/data/DSRS.sqlite" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/DSRS.Application/DSRS.Application.csproj" />
     <Project Path="src/DSRS.Domain/DSRS.Domain.csproj" />
