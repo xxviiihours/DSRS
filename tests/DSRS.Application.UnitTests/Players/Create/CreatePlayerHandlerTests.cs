@@ -1,6 +1,6 @@
 ﻿using DSRS.Application.Interfaces;
 using DSRS.Application.Players.Create;
-using DSRS.Domain.Entities;
+using DSRS.Domain.Players;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Moq;

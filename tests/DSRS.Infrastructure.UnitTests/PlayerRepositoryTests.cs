@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Entities;
+﻿using DSRS.Domain.Players;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;

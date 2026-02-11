@@ -1,4 +1,4 @@
-using DSRS.Domain.Entities;
+using DSRS.Domain.Items;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +25,7 @@ public class ItemRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(NameExists_ReturnsTrue_WhenNameExists));
-        var item = Item.Create("Iron Ore", 100m, 0.5m).Data!;
+        var item = Item.Create("Iron Ore", "Brown", 100m, 0.5m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -43,7 +43,7 @@ public class ItemRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(NameExists_ReturnsFalse_WhenNameDoesNotExist));
-        var item = Item.Create("Gold Bar", 500m, 0.3m).Data!;
+        var item = Item.Create("Gold Bar", "Yellow", 500m, 0.3m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -61,7 +61,7 @@ public class ItemRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(NameExists_IsCaseSensitive));
-        var item = Item.Create("Diamond", 1000m, 0.7m).Data!;
+        var item = Item.Create("Diamond", "Light blue", 1000m, 0.7m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -79,7 +79,7 @@ public class ItemRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(NameExists_ReturnsFalse_WhenNameIsNull));
-        var item = Item.Create("Copper Ore", 50m, 0.4m).Data!;
+        var item = Item.Create("Copper Ore", "Brown", 50m, 0.4m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -116,7 +116,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             var repository = new ItemRepository(context);
-            var item = Item.Create("Emerald", 750m, 0.6m).Data!;
+            var item = Item.Create("Emerald", "Light Blue", 750m, 0.6m).Data!;
 
             // Act
             await repository.CreateAsync(item);
@@ -127,7 +127,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             savedItem = await context.Set<Item>()
-                .FirstOrDefaultAsync(i => i.Name == "Emerald", 
+                .FirstOrDefaultAsync(i => i.Name == "Emerald",
                     cancellationToken: TestContext.Current.CancellationToken);
         }
 
@@ -140,6 +140,7 @@ public class ItemRepositoryTests
     {
         // Arrange
         const string itemName = "Sapphire";
+        const string itemDescription = "Pure Rock";
         const decimal basePrice = 600m;
         const decimal volatility = 0.55m;
 
@@ -149,7 +150,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             var repository = new ItemRepository(context);
-            var item = Item.Create(itemName, basePrice, volatility).Data!;
+            var item = Item.Create(itemName, itemDescription, basePrice, volatility).Data!;
 
             // Act
             await repository.CreateAsync(item);
@@ -160,7 +161,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             savedItem = await context.Set<Item>()
-                .FirstOrDefaultAsync(i => i.Name == itemName, 
+                .FirstOrDefaultAsync(i => i.Name == itemName,
                     cancellationToken: TestContext.Current.CancellationToken);
         }
 
@@ -180,7 +181,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             var repository = new ItemRepository(context);
-            var item = Item.Create("Ruby", 800m, 0.65m).Data!;
+            var item = Item.Create("Ruby", "Red", 800m, 0.65m).Data!;
 
             // Act
             await repository.CreateAsync(item);
@@ -191,7 +192,7 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             savedItem = await context.Set<Item>()
-                .FirstOrDefaultAsync(i => i.Name == "Ruby", 
+                .FirstOrDefaultAsync(i => i.Name == "Ruby",
                     cancellationToken: TestContext.Current.CancellationToken);
         }
 
@@ -209,9 +210,9 @@ public class ItemRepositoryTests
         await using (var context = new AppDbContext(options))
         {
             var repository = new ItemRepository(context);
-            var item1 = Item.Create("Coal", 25m, 0.3m).Data!;
-            var item2 = Item.Create("Tin", 75m, 0.4m).Data!;
-            var item3 = Item.Create("Lead", 40m, 0.35m).Data!;
+            var item1 = Item.Create("Coal", "Black", 25m, 0.3m).Data!;
+            var item2 = Item.Create("Tin", "Grey", 75m, 0.4m).Data!;
+            var item3 = Item.Create("Lead", "White", 40m, 0.35m).Data!;
 
             // Act
             await repository.CreateAsync(item1);
