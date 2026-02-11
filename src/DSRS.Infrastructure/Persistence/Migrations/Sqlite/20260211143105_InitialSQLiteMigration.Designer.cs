@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    [Migration("20260210220827_InitialSQLiteMigration")]
+    [Migration("20260211143105_InitialSQLiteMigration")]
     partial class InitialSQLiteMigration
     {
         /// <inheritdoc />

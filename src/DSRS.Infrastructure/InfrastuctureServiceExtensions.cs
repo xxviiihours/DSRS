@@ -3,6 +3,8 @@ using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 using DSRS.Infrastructure.Persistence.Migrations.SqlServer;
 using DSRS.Infrastructure.Repositories;
+using DSRS.Infrastructure.Services;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +37,8 @@ public static class InfrastuctureServiceExtensions
             });
         }
 
+
+        services.AddSingleton<IDateTime, DateTimeService>();
 
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
