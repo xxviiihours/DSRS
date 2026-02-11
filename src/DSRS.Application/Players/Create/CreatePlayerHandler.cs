@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Interfaces;
-using DSRS.Domain.Entities;
+using DSRS.Domain.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System.Data.Common;

@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Entities;
+﻿using DSRS.Domain.Items;
 
 namespace DSRS.Application.Interfaces;
 

@@ -1,8 +1,7 @@
 ﻿using DSRS.Application.Interfaces;
-using DSRS.Domain.Entities;
+using DSRS.Domain.Items;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace DSRS.Infrastructure.Repositories;
 

@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Entities;
+﻿using DSRS.Domain.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 

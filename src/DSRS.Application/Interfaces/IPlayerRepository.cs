@@ -1,5 +1,4 @@
-﻿using DSRS.Domain.Entities;
-using DSRS.SharedKernel.Primitives;
+﻿using DSRS.Domain.Players;
 
 namespace DSRS.Application.Interfaces;
 

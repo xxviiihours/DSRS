@@ -14,7 +14,8 @@ public class CreateItemRequest
     public const string Route = "/items";
 
     [Required]
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public decimal BasePrice { get; set; } = 0;
     public decimal Volatility { get; set; } = 0;
 }
@@ -77,7 +78,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
     public override async Task<IResult> ExecuteAsync(CreateItemRequest request, CancellationToken ct)
     {
         var result = await _mediator.Send(
-            new CreateItemCommand(request.Name!, request.BasePrice, request.Volatility), ct);
+            new CreateItemCommand(request.Name!, request.Description, request.BasePrice, request.Volatility), ct);
 
         return result.ToCreatedResult($"{CreateItemRequest.Route}/{result.Data?.Id}");
     }

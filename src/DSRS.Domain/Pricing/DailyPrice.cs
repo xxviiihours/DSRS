@@ -1,26 +1,26 @@
-﻿using DSRS.SharedKernel.Abstractions;
+﻿using DSRS.Domain.Items;
+using DSRS.Domain.Players;
+using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
-namespace DSRS.Domain.Entities;
+namespace DSRS.Domain.Pricing;
 
 public sealed class DailyPrice : EntityBase<Guid>
 {
-    public Guid PlayerId { get; }
     public Guid ItemId { get; }
+    public Guid PlayerId { get; }
     public DateOnly Date { get; }
-
     public decimal Price { get; }
     public PriceState State { get; }
-
-    public Player Player { get; private set; } = null!;
     public Item Item { get; private set; } = null!;
-    internal DailyPrice(Guid playerId, Guid itemId, 
-        DateOnly date, decimal price, PriceState state, 
-        Player player, Item item)
+    public Player Player { get; private set; } = null!;
+
+    internal DailyPrice(Player player, Item item,
+        DateOnly date, decimal price, PriceState state)
     {
-        PlayerId = playerId;
-        ItemId = itemId;
+        ItemId = item.Id;
+        PlayerId = player.Id;
         Date = date;
         Price = price;
         State = state;
@@ -39,8 +39,8 @@ public sealed class DailyPrice : EntityBase<Guid>
                 new Error("DailyPrice.Item.Null", "Item cannot be null"));
 
         // domain event could be raised here, e.g., DailyPriceGenerated
-        
+
         return Result<DailyPrice>.Success(
-            new DailyPrice(player.Id, item.Id, date, price, state, player, item));
+            new DailyPrice(player, item, date, price, state));
     }
 }

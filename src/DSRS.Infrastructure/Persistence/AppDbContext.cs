@@ -1,4 +1,6 @@
-﻿using DSRS.Domain.Entities;
+﻿using DSRS.Domain.Items;
+using DSRS.Domain.Players;
+using DSRS.Domain.Pricing;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

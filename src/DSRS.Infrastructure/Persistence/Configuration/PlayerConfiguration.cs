@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Entities;
+﻿using DSRS.Domain.Players;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
