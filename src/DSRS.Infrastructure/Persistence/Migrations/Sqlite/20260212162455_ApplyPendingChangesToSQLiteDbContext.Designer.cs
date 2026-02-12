@@ -3,6 +3,7 @@ using System;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    partial class SqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260212162455_ApplyPendingChangesToSQLiteDbContext")]
+    partial class ApplyPendingChangesToSQLiteDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
@@ -75,7 +78,7 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
                     b.Property<Guid>("ItemId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("PlayerId")
+                    b.Property<Guid>("PlayerId")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
@@ -88,9 +91,9 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("ItemId");
 
-                    b.HasIndex("ItemId", "Date")
+                    b.HasIndex("PlayerId", "ItemId", "Date")
                         .IsUnique();
 
                     b.ToTable("DailyPrices");
@@ -104,11 +107,15 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DSRS.Domain.Players.Player", null)
+                    b.HasOne("DSRS.Domain.Players.Player", "Player")
                         .WithMany("DailyPrices")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Item");
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("DSRS.Domain.Players.Player", b =>

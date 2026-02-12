@@ -21,10 +21,10 @@ public class DailyPriceConfiguration : IEntityTypeConfiguration<DailyPrice>
         builder.Property(dp => dp.Date)
                .IsRequired();
 
-        builder.HasOne(dp => dp.Player)
-            .WithMany(p => p.DailyPrices)
-            .HasForeignKey(dp => dp.PlayerId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // builder.HasOne(dp => dp.Player)
+        //     .WithMany(p => p.DailyPrices)
+        //     .HasForeignKey(dp => dp.PlayerId)
+        //     .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(dp => dp.Item)
             .WithMany()
@@ -33,7 +33,7 @@ public class DailyPriceConfiguration : IEntityTypeConfiguration<DailyPrice>
 
         builder.HasIndex(dp => new
         {
-            dp.PlayerId,
+            // dp.PlayerId,
             dp.ItemId,
             dp.Date
         }).IsUnique();
