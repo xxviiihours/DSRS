@@ -11,7 +11,6 @@ public sealed class Player : EntityBase<Guid>
     public string Name { get; } = string.Empty;
     public decimal Balance { get; }
 
-
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
 
@@ -43,7 +42,7 @@ public sealed class Player : EntityBase<Guid>
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Exists", "Daily price already exists"));
 
-        var dailyPrice = DailyPrice.Create(this, item, date, price, state);
+        var dailyPrice = DailyPrice.Create(item, date, price, state);
 
         if (!dailyPrice.IsSuccess)
             return Result<DailyPrice>.Failure(dailyPrice.Error!);
