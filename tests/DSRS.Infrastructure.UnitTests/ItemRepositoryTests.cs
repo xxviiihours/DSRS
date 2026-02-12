@@ -229,4 +229,90 @@ public class ItemRepositoryTests
 
         Assert.Equal(3, savedItemCount);
     }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsEmptyList_WhenDatabaseIsEmpty()
+    {
+        // Arrange
+        using var context = CreateContext(nameof(GetAllAsync_ReturnsEmptyList_WhenDatabaseIsEmpty));
+        var repository = new ItemRepository(context);
+
+        // Act
+        var items = await repository.GetAllAsync();
+
+        // Assert
+        Assert.NotNull(items);
+        Assert.Empty(items);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsAllItems_WhenItemsExist()
+    {
+        // Arrange
+        using var context = CreateContext(nameof(GetAllAsync_ReturnsAllItems_WhenItemsExist));
+        var item1 = Item.Create("Iron Ore", "Brown", 100m, 0.5m).Data!;
+        var item2 = Item.Create("Gold Bar", "Yellow", 500m, 0.3m).Data!;
+        var item3 = Item.Create("Diamond", "Light Blue", 1000m, 0.7m).Data!;
+
+        context.Items.AddRange(item1, item2, item3);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new ItemRepository(context);
+
+        // Act
+        var items = await repository.GetAllAsync();
+
+        // Assert
+        Assert.NotNull(items);
+        Assert.Equal(3, items.Count);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsItemsWithCorrectProperties()
+    {
+        // Arrange
+        const string itemName = "Sapphire";
+        const string itemDescription = "Blue Stone";
+        const decimal basePrice = 600m;
+        const decimal volatility = 0.55m;
+
+        using var context = CreateContext(nameof(GetAllAsync_ReturnsItemsWithCorrectProperties));
+        var item = Item.Create(itemName, itemDescription, basePrice, volatility).Data!;
+
+        context.Items.Add(item);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new ItemRepository(context);
+
+        // Act
+        var items = await repository.GetAllAsync();
+
+        // Assert
+        Assert.NotNull(items);
+        Assert.Single(items);
+        Assert.Equal(itemName, items[0].Name);
+        Assert.Equal(itemDescription, items[0].Description);
+        Assert.Equal(basePrice, items[0].BasePrice);
+        Assert.Equal(volatility, items[0].Volatility);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsListType()
+    {
+        // Arrange
+        using var context = CreateContext(nameof(GetAllAsync_ReturnsListType));
+        var item = Item.Create("Emerald", "Green", 750m, 0.6m).Data!;
+
+        context.Items.Add(item);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new ItemRepository(context);
+
+        // Act
+        var items = await repository.GetAllAsync();
+
+        // Assert
+        Assert.NotNull(items);
+        Assert.IsType<List<Item>>(items);
+    }
 }
