@@ -17,6 +17,21 @@ public class PlayerRepository(AppDbContext context) : IPlayerRepository
         await Task.CompletedTask;
     }
 
+    public async Task<Player> GetById(Guid Id)
+    {
+        var result = await _context.Players.FindAsync(Id);
+        return result!;
+    }
+
+    public async Task<Player> GetMarketPriceByPlayerId(Guid id)
+    {
+        var result = await _context.Players
+            .Include(p => p.DailyPrices)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        
+        return result!;
+    }
+
     public async Task<bool> NameExistsAsync(string name)
     {
         return await _context.Players
