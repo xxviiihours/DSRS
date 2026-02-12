@@ -19,4 +19,8 @@ public class ItemRepository(AppDbContext context) : IItemRepository
         await Task.CompletedTask;
     }
 
+    public async Task<List<Item>> GetAllAsync()
+    {
+        return [.. await _context.Items.ToListAsync()];
+    }
 }
