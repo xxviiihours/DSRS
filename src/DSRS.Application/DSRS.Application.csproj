@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Items\Get\" />
     <Folder Include="Players\Delete\" />
     <Folder Include="Players\Get\" />
     <Folder Include="Players\List\" />
