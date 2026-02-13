@@ -1,8 +1,5 @@
 ﻿using DSRS.Application;
-using DSRS.Application.Items.Create;
-using DSRS.Application.Players.Create;
 using DSRS.Infrastructure;
-using System.Reflection;
 
 namespace DSRS.Gateway.Configurations;
 

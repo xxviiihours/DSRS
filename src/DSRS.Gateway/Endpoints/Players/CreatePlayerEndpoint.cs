@@ -1,4 +1,4 @@
-﻿using DSRS.Application.Players.Create;
+﻿using DSRS.Application.Features.Players.Create;
 using DSRS.Gateway.Extensions;
 using FastEndpoints;
 using FluentValidation;

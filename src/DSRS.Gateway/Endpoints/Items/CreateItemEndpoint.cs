@@ -1,11 +1,9 @@
-﻿using DSRS.Application.Items.Create;
+﻿using DSRS.Application.Features.Items.Create;
 using DSRS.Gateway.Extensions;
-using DSRS.SharedKernel.Primitives;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 
 namespace DSRS.Gateway.Endpoints.Items;
 

@@ -1,7 +1,8 @@
 ﻿using DSRS.Application.Interfaces;
 using DSRS.Domain.Players;
+using DSRS.Infrastructure.Extensions;
 using DSRS.Infrastructure.Persistence;
-using DSRS.SharedKernel.Primitives;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Infrastructure.Repositories;
@@ -23,13 +24,14 @@ public class PlayerRepository(AppDbContext context) : IPlayerRepository
         return result!;
     }
 
-    public async Task<Player> GetMarketPriceByPlayerId(Guid id)
+    public async Task<Player> GetByIdWithDailyPrices(Guid id)
     {
-        var result = await _context.Players
+        var player = await _context.Players
             .Include(p => p.DailyPrices)
+                .ThenInclude(p => p.Item)
             .FirstOrDefaultAsync(p => p.Id == id);
-        
-        return result!;
+
+        return player!;
     }
 
     public async Task<bool> NameExistsAsync(string name)
