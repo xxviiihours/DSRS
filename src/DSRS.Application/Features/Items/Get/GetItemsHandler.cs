@@ -4,7 +4,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Items.Get;
+namespace DSRS.Application.Features.Items.Get;
 
 public class GetItemsHandler(IItemRepository itemRepository) : ICommandHandler<GetItemsCommand, Result<List<Item>>>
 {

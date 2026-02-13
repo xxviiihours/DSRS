@@ -6,7 +6,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System.Data.Common;
 
-namespace DSRS.Application.Items.Create;
+namespace DSRS.Application.Features.Items.Create;
 
 public class CreateItemHandler(IItemRepository itemRepository,
     IUnitOfWork unitOfWork, IDateTime dateTimeService) : ICommandHandler<CreateItemCommand, Result<Item>>

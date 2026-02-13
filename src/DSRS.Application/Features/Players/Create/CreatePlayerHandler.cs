@@ -4,7 +4,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System.Data.Common;
 
-namespace DSRS.Application.Players.Create;
+namespace DSRS.Application.Features.Players.Create;
 
 public class CreatePlayerHandler(IPlayerRepository playerRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<CreatePlayerCommand, Result<Player>>

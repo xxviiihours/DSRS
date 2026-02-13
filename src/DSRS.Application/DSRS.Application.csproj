@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Items\Get\" />
-    <Folder Include="Players\Delete\" />
-    <Folder Include="Players\Get\" />
-    <Folder Include="Players\List\" />
-    <Folder Include="Players\Update\" />
+    <Folder Include="Features\DailyPrices\" />
+    <Folder Include="Features\DailyPrices\Get\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Features\Players\Delete\" />
+    <Folder Include="Features\Players\List\" />
+    <Folder Include="Features\Players\Update\" />
   </ItemGroup>
 
   <ItemGroup>
