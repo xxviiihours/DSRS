@@ -8,23 +8,23 @@ namespace DSRS.Domain.Pricing;
 
 public sealed class DailyPrice : EntityBase<Guid>
 {
-    public Guid ItemId { get; }
-    // public Guid PlayerId { get; }
     public DateOnly Date { get; }
     public decimal Price { get; }
     public PriceState State { get; }
+    public Guid ItemId { get; }
     public Item Item { get; private set; } = null!;
+    public Guid PlayerId { get; }
     // public Player Player { get; private set; } = null!;
 
-    internal DailyPrice(
+    internal DailyPrice(Guid playerId,
         // Player player, 
         Item item,
         DateOnly date, 
         decimal price, 
         PriceState state)
     {
+        PlayerId = playerId;
         ItemId = item.Id;
-        // PlayerId = player.Id;
         Date = date;
         Price = price;
         State = state;
@@ -33,15 +33,15 @@ public sealed class DailyPrice : EntityBase<Guid>
     }
     private DailyPrice() { }
     public static Result<DailyPrice> Create(
-        // Player player, 
+        Player player, 
         Item item, 
         DateOnly date, 
         decimal price, 
         PriceState state)
     {
-        // if (player == null)
-        //     return Result<DailyPrice>.Failure(
-        //         new Error("DailyPrice.Player.Null", "Player cannot be null"));
+        if (player == null)
+            return Result<DailyPrice>.Failure(
+                new Error("DailyPrice.Player.Null", "Player cannot be null"));
         if (item == null)
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Item.Null", "Item cannot be null"));
@@ -50,7 +50,7 @@ public sealed class DailyPrice : EntityBase<Guid>
 
         return Result<DailyPrice>.Success(
             new DailyPrice(
-                // player, 
+                player.Id, 
                 item, 
                 date, 
                 price, 

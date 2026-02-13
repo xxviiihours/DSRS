@@ -42,13 +42,19 @@ public sealed class Player : EntityBase<Guid>
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Exists", "Daily price already exists"));
 
-        var dailyPrice = DailyPrice.Create(item, date, price, state);
+        var dailyPrice = DailyPrice.Create(this, item, date, price, state);
 
         if (!dailyPrice.IsSuccess)
             return Result<DailyPrice>.Failure(dailyPrice.Error!);
 
+
         _dailyPrices.Add(dailyPrice.Data!);
         return Result<DailyPrice>.Success(dailyPrice.Data!);
+    }
+
+    public void ClearDailyPrices()
+    {
+        _dailyPrices.Clear();
     }
 
 }
