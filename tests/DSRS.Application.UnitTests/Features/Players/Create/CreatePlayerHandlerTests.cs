@@ -1,12 +1,12 @@
-﻿using DSRS.Application.Interfaces;
-using DSRS.Application.Players.Create;
+﻿using DSRS.Application.Features.Players.Create;
+using DSRS.Application.Interfaces;
 using DSRS.Domain.Players;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Moq;
 using System.Data.Common;
 
-namespace DSRS.Application.UnitTests.Players.Create;
+namespace DSRS.Application.UnitTests.Features.Players.Create;
 
 public class CreatePlayerHandlerTests
 {

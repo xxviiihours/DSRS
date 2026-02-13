@@ -1,8 +1,8 @@
-using DSRS.Application.Items.Create;
+using DSRS.Application.Features.Items.Create;
 using FluentAssertions;
 using Xunit;
 
-namespace DSRS.Application.UnitTests.Items.Create;
+namespace DSRS.Application.UnitTests.Features.Items.Create;
 
 public class CreateItemCommandTests
 {

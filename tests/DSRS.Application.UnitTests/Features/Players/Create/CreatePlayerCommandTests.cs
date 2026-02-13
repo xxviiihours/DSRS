@@ -1,7 +1,7 @@
-﻿using DSRS.Application.Players.Create;
+﻿using DSRS.Application.Features.Players.Create;
 using FluentAssertions;
 
-namespace DSRS.Application.UnitTests.Players.Create;
+namespace DSRS.Application.UnitTests.Features.Players.Create;
 
 public class CreatePlayerCommandTests
 {

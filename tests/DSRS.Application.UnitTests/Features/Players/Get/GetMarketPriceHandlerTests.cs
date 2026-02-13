@@ -1,5 +1,5 @@
+using DSRS.Application.Features.Players.Get;
 using DSRS.Application.Interfaces;
-using DSRS.Application.Players.Get;
 using DSRS.Domain.Items;
 using DSRS.Domain.Players;
 using DSRS.Domain.Pricing;
@@ -9,13 +9,14 @@ using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Moq;
 
-namespace DSRS.Application.UnitTests.Players.Get;
+namespace DSRS.Application.UnitTests.Features.Players.Get;
 
 public class GetMarketPriceHandlerTests
 {
     private readonly Mock<IPlayerRepository> _mockPlayerRepository;
     private readonly Mock<IItemRepository> _mockItemRepository;
     private readonly Mock<IDateTime> _mockDateTimeService;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly GetMarketPriceHandler _handler;
 
     public GetMarketPriceHandlerTests()
@@ -23,10 +24,12 @@ public class GetMarketPriceHandlerTests
         _mockPlayerRepository = new Mock<IPlayerRepository>();
         _mockItemRepository = new Mock<IItemRepository>();
         _mockDateTimeService = new Mock<IDateTime>();
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
         _handler = new GetMarketPriceHandler(
             _mockPlayerRepository.Object,
             _mockItemRepository.Object,
-            _mockDateTimeService.Object);
+            _mockDateTimeService.Object,
+            _mockUnitOfWork.Object);
     }
 
     [Fact]
@@ -43,8 +46,12 @@ public class GetMarketPriceHandlerTests
         var command = new GetMarketPriceCommand(playerId);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
+
+        _mockDateTimeService
+            .Setup(s => s.DateToday)
+            .Returns(today);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -68,7 +75,7 @@ public class GetMarketPriceHandlerTests
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -99,7 +106,7 @@ public class GetMarketPriceHandlerTests
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -115,7 +122,7 @@ public class GetMarketPriceHandlerTests
 
         // Assert
         _mockPlayerRepository.Verify(
-            r => r.GetMarketPriceByPlayerId(playerId),
+            r => r.GetByIdWithDailyPrices(playerId),
             Times.Once);
     }
 
@@ -129,7 +136,7 @@ public class GetMarketPriceHandlerTests
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(It.IsAny<Guid>()))
+            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<Guid>()))
             .Callback<Guid>(id => capturedPlayerId = id)
             .ReturnsAsync(player);
 
@@ -158,7 +165,7 @@ public class GetMarketPriceHandlerTests
         var command = new GetMarketPriceCommand(playerId);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(It.IsAny<Guid>()))
+            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<Guid>()))
             .ThrowsAsync(new InvalidOperationException("Repository error"));
 
         // Act & Assert
@@ -180,7 +187,7 @@ public class GetMarketPriceHandlerTests
         var items = new List<Item> { item1, item2 };
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -213,7 +220,7 @@ public class GetMarketPriceHandlerTests
         var items = new List<Item>();
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -247,7 +254,7 @@ public class GetMarketPriceHandlerTests
         var items = new List<Item> { item };
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -278,7 +285,7 @@ public class GetMarketPriceHandlerTests
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -309,7 +316,7 @@ public class GetMarketPriceHandlerTests
         var command = new GetMarketPriceCommand(playerId);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -337,7 +344,7 @@ public class GetMarketPriceHandlerTests
         var item = Item.Create("Expensive Item", "A costly item", 500m, 0.15m).Data!;
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -373,8 +380,12 @@ public class GetMarketPriceHandlerTests
         var command = new GetMarketPriceCommand(playerId);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
+
+        _mockDateTimeService
+            .Setup(s => s.DateToday)
+            .Returns(today);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -399,7 +410,7 @@ public class GetMarketPriceHandlerTests
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetMarketPriceByPlayerId(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(playerId))
             .ReturnsAsync(player);
 
         _mockItemRepository

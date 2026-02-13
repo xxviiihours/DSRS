@@ -1,10 +1,9 @@
+using DSRS.Application.Features.Items.Get;
 using DSRS.Application.Interfaces;
-using DSRS.Application.Items.Get;
 using DSRS.Domain.Items;
-using DSRS.SharedKernel.Primitives;
 using Moq;
 
-namespace DSRS.Application.UnitTests.Items.Get;
+namespace DSRS.Application.UnitTests.Features.Items.Get;
 
 public class GetItemsHandlerTests
 {
@@ -19,7 +18,7 @@ public class GetItemsHandlerTests
 		var mockRepository = new Mock<IItemRepository>();
 		mockRepository
 			.Setup(r => r.GetAllAsync())
-			.ReturnsAsync(new List<Item> { item1, item2, item3 });
+			.ReturnsAsync([item1, item2, item3]);
 
 		var handler = new GetItemsHandler(mockRepository.Object);
 		var command = new GetItemsCommand();

@@ -1,4 +1,3 @@
-using DSRS.Application.Items.Create;
 using DSRS.Application.Interfaces;
 using DSRS.Domain.Items;
 using FluentAssertions;
@@ -6,8 +5,9 @@ using Moq;
 using System.Data.Common;
 using Xunit;
 using DSRS.SharedKernel.Interfaces;
+using DSRS.Application.Features.Items.Create;
 
-namespace DSRS.Application.UnitTests.Items.Create;
+namespace DSRS.Application.UnitTests.Features.Items.Create;
 
 public class CreateItemHandlerTests
 {
