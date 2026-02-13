@@ -43,6 +43,7 @@ public static class InfrastuctureServiceExtensions
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+        services.AddScoped<IDailyPriceRepository, DailyPriceRepository>();
 
         logger.LogInformation("{Project} services registered", "Infrastructure");
 
