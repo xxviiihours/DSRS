@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Infrastructure.Repositories;
 
-public class PlayerRepository(AppDbContext context) : IPlayerRepository
+public class PlayerRepository(AppDbContext context,
+     IDateTime dateTimeService) : IPlayerRepository
 {
     private readonly AppDbContext _context = context;
+    private readonly IDateTime _dateTimeService = dateTimeService;
 
     public async Task CreateAsync(Player player)
     {
@@ -26,10 +28,16 @@ public class PlayerRepository(AppDbContext context) : IPlayerRepository
 
     public async Task<Player> GetByIdWithDailyPrices(Guid id)
     {
+        // var player = await _context.Players
+        //     .Include(p => p.DailyPrices)
+        //         .ThenInclude(p => p.Item)
+        //     .FirstOrDefaultAsync(p => p.Id == id);
         var player = await _context.Players
-            .Include(p => p.DailyPrices)
+            .Include(p => p.DailyPrices
+                    .Where(p => p.Date == _dateTimeService.DateToday))
                 .ThenInclude(p => p.Item)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .Where(p => p.Id == id)
+            .SingleOrDefaultAsync();
 
         return player!;
     }
