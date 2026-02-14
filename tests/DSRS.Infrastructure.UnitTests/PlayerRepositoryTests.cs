@@ -1,7 +1,9 @@
 ﻿using DSRS.Domain.Players;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 // NOTE: Adjust the using directives above to match your actual namespaces.
 
 namespace DSRS.Infrastructure.UnitTests;
@@ -13,12 +15,14 @@ public class PlayerRepositoryTests
         => new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
+
+    private static readonly Mock<IDateTime> _mockDateTime = new();
     private static AppDbContext CreateContext(string dbName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
-        return new AppDbContext(options);
+        return new AppDbContext(options, _mockDateTime.Object);
     }
 
     [Fact]
@@ -27,9 +31,9 @@ public class PlayerRepositoryTests
         var options = CreateInMemoryOptions(nameof(AddEntity_Should_PersistEntity));
 
         // Arrange
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
-            var repo = new PlayerRepository(context); // adjust class name
+            var repo = new PlayerRepository(context, _mockDateTime.Object); // adjust class name
             var entity = Player.Create("Test", 1000).Data!; // adjust entity
             // Act
             await repo.CreateAsync(entity);
@@ -37,7 +41,7 @@ public class PlayerRepositoryTests
         }
 
         // Assert persisted
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var saved = await context.Set<Player>().FirstOrDefaultAsync(e => e.Name == "Test", cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(saved);
@@ -53,7 +57,7 @@ public class PlayerRepositoryTests
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new PlayerRepository(context);
+        var repository = new PlayerRepository(context, _mockDateTime.Object);
         var exists = await repository.NameExistsAsync("Alice");
 
         Assert.True(exists);
@@ -67,7 +71,7 @@ public class PlayerRepositoryTests
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new PlayerRepository(context);
+        var repository = new PlayerRepository(context, _mockDateTime.Object);
         var exists = await repository.NameExistsAsync("Charlie");
 
         Assert.False(exists);
@@ -81,7 +85,7 @@ public class PlayerRepositoryTests
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new PlayerRepository(context);
+        var repository = new PlayerRepository(context, _mockDateTime.Object);
         var exists = await repository.NameExistsAsync("alice");
 
         Assert.False(exists);
@@ -95,7 +99,7 @@ public class PlayerRepositoryTests
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new PlayerRepository(context);
+        var repository = new PlayerRepository(context, _mockDateTime.Object);
         var exists = await repository.NameExistsAsync(null!);
 
         Assert.False(exists);

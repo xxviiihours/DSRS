@@ -1,7 +1,9 @@
 using DSRS.Domain.Items;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace DSRS.Infrastructure.UnitTests;
 
@@ -11,13 +13,15 @@ public class ItemRepositoryTests
         => new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
+    
+    private static readonly Mock<IDateTime> _mockDateTime = new();
 
     private static AppDbContext CreateContext(string dbName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
-        return new AppDbContext(options);
+        return new AppDbContext(options, _mockDateTime.Object);
     }
 
     [Fact]
@@ -113,7 +117,7 @@ public class ItemRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAsync_Should_PersistEntity));
         Item? savedItem;
 
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var repository = new ItemRepository(context);
             var item = Item.Create("Emerald", "Light Blue", 750m, 0.6m).Data!;
@@ -124,7 +128,7 @@ public class ItemRepositoryTests
         }
 
         // Assert
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             savedItem = await context.Set<Item>()
                 .FirstOrDefaultAsync(i => i.Name == "Emerald",
@@ -147,7 +151,7 @@ public class ItemRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAsync_Should_PreserveAllItemProperties));
         Item? savedItem;
 
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var repository = new ItemRepository(context);
             var item = Item.Create(itemName, itemDescription, basePrice, volatility).Data!;
@@ -158,7 +162,7 @@ public class ItemRepositoryTests
         }
 
         // Assert
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             savedItem = await context.Set<Item>()
                 .FirstOrDefaultAsync(i => i.Name == itemName,
@@ -178,7 +182,7 @@ public class ItemRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAsync_Should_AssignIdToEntity));
         Item? savedItem;
 
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var repository = new ItemRepository(context);
             var item = Item.Create("Ruby", "Red", 800m, 0.65m).Data!;
@@ -189,7 +193,7 @@ public class ItemRepositoryTests
         }
 
         // Assert
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             savedItem = await context.Set<Item>()
                 .FirstOrDefaultAsync(i => i.Name == "Ruby",
@@ -207,7 +211,7 @@ public class ItemRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAsync_Should_AllowMultipleItems));
         int savedItemCount;
 
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var repository = new ItemRepository(context);
             var item1 = Item.Create("Coal", "Black", 25m, 0.3m).Data!;
@@ -222,7 +226,7 @@ public class ItemRepositoryTests
         }
 
         // Assert
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             savedItemCount = await context.Set<Item>().CountAsync(cancellationToken: TestContext.Current.CancellationToken);
         }

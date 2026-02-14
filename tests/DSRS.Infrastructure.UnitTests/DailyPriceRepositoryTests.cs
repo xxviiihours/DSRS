@@ -4,7 +4,9 @@ using DSRS.Domain.Pricing;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
 using DSRS.SharedKernel.Enums;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace DSRS.Infrastructure.UnitTests;
 
@@ -14,13 +16,13 @@ public class DailyPriceRepositoryTests
         => new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
-
+    private static readonly Mock<IDateTime> _mockDateTime = new();
     private static AppDbContext CreateContext(string dbName)
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(dbName)
             .Options;
-        return new AppDbContext(options);
+        return new AppDbContext(options, _mockDateTime.Object);
     }
 
     [Fact]
@@ -42,7 +44,7 @@ public class DailyPriceRepositoryTests
         // Assert
         var savedPrice = await context.Set<DailyPrice>()
             .FirstOrDefaultAsync(dp => dp.ItemId == item.Id, cancellationToken: TestContext.Current.CancellationToken);
-        
+
         Assert.NotNull(savedPrice);
         Assert.Equal(item.Id, savedPrice!.ItemId);
         Assert.Equal(105m, savedPrice.Price);
@@ -55,7 +57,7 @@ public class DailyPriceRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAsync_Should_PersistDailyPrice_WhenSaveChangesIsCalled));
 
         // Arrange & Act
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var player = Player.Create("Test Player", 1000m).Data!;
             var item = Item.Create("Gold Bar", "Precious metal", 500m, 0.3m).Data!;
@@ -69,7 +71,7 @@ public class DailyPriceRepositoryTests
         }
 
         // Assert persisted
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var savedPrice = await context.Set<DailyPrice>()
                 .FirstOrDefaultAsync(dp => dp.Price == 520m, cancellationToken: TestContext.Current.CancellationToken);
@@ -98,7 +100,7 @@ public class DailyPriceRepositoryTests
         // Assert
         var savedPrice = await context.Set<DailyPrice>()
             .FirstOrDefaultAsync(dp => dp.ItemId == item.Id, cancellationToken: TestContext.Current.CancellationToken);
-        
+
         Assert.NotNull(savedPrice);
         Assert.Equal(date, savedPrice!.Date);
         Assert.Equal(78m, savedPrice.Price);
@@ -143,7 +145,7 @@ public class DailyPriceRepositoryTests
         var options = CreateInMemoryOptions(nameof(CreateAllAsync_Should_PersistMultipleDailyPrices_WhenSaveChangesIsCalled));
 
         // Arrange & Act
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var player = Player.Create("Test Player", 1000m).Data!;
             var item1 = Item.Create("Diamond", "Precious stone", 1000m, 0.8m).Data!;
@@ -163,7 +165,7 @@ public class DailyPriceRepositoryTests
         }
 
         // Assert persisted
-        await using (var context = new AppDbContext(options))
+        await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var savedPrices = await context.Set<DailyPrice>()
                 .Where(dp => dp.Price == 1050m || dp.Price == 820m)
@@ -217,14 +219,14 @@ public class DailyPriceRepositoryTests
         var savedPrices = await context.Set<DailyPrice>()
             .Where(dp => dp.ItemId == item1.Id || dp.ItemId == item2.Id)
             .ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
-        
+
         Assert.Equal(2, savedPrices.Count);
-        
+
         var price1 = savedPrices.First(dp => dp.ItemId == item1.Id);
         Assert.Equal(date.AddDays(-1), price1.Date);
         Assert.Equal(1210m, price1.Price);
         Assert.Equal(PriceState.HIGH, price1.State);
-        
+
         var price2 = savedPrices.First(dp => dp.ItemId == item2.Id);
         Assert.Equal(date, price2.Date);
         Assert.Equal(890m, price2.Price);
