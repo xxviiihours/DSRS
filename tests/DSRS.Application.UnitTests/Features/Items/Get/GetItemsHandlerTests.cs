@@ -1,5 +1,5 @@
+using DSRS.Application.Contracts;
 using DSRS.Application.Features.Items.Get;
-using DSRS.Application.Interfaces;
 using DSRS.Domain.Items;
 using Moq;
 

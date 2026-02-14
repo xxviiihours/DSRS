@@ -1,4 +1,4 @@
-﻿using DSRS.Application.Interfaces;
+﻿using DSRS.Application.Contracts;
 using System.Data.Common;
 
 namespace DSRS.Infrastructure.Persistence;

@@ -1,7 +1,7 @@
 using DSRS.Application.Features.DailyPrices;
 using DSRS.Domain.Pricing;
 
-namespace DSRS.Application.Interfaces;
+namespace DSRS.Application.Contracts;
 
 public interface IDailyPriceRepository
 {

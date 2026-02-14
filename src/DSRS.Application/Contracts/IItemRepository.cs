@@ -1,6 +1,6 @@
 ﻿using DSRS.Domain.Items;
 
-namespace DSRS.Application.Interfaces;
+namespace DSRS.Application.Contracts;
 
 public interface IItemRepository 
 {

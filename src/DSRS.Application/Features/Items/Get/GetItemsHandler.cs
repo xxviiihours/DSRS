@@ -1,4 +1,4 @@
-using DSRS.Application.Interfaces;
+using DSRS.Application.Contracts;
 using DSRS.Domain.Items;
 using DSRS.SharedKernel.Primitives;
 using Mediator;

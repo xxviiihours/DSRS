@@ -1,4 +1,4 @@
-using DSRS.Application.Interfaces;
+using DSRS.Application.Contracts;
 using DSRS.Domain.Players;
 using DSRS.Domain.Pricing;
 using DSRS.SharedKernel.Interfaces;

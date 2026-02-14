@@ -1,4 +1,4 @@
-﻿using DSRS.Application.Interfaces;
+﻿using DSRS.Application.Contracts;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 using DSRS.Infrastructure.Persistence.Migrations.SqlServer;

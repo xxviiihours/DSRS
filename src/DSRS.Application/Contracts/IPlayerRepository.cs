@@ -1,7 +1,7 @@
 ﻿using DSRS.Application.Features.Players;
 using DSRS.Domain.Players;
 
-namespace DSRS.Application.Interfaces;
+namespace DSRS.Application.Contracts;
 
 public interface IPlayerRepository
 {

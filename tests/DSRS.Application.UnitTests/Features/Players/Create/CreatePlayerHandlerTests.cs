@@ -1,5 +1,5 @@
-﻿using DSRS.Application.Features.Players.Create;
-using DSRS.Application.Interfaces;
+﻿using DSRS.Application.Contracts;
+using DSRS.Application.Features.Players.Create;
 using DSRS.Domain.Players;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
