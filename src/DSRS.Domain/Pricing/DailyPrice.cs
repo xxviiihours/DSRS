@@ -14,13 +14,12 @@ public sealed class DailyPrice : EntityBase<Guid>
     public Guid ItemId { get; }
     public Item Item { get; private set; } = null!;
     public Guid PlayerId { get; }
-    // public Player Player { get; private set; } = null!;
 
-    internal DailyPrice(Guid playerId,
-        // Player player, 
+    internal DailyPrice(
+        Guid playerId,
         Item item,
-        DateOnly date, 
-        decimal price, 
+        DateOnly date,
+        decimal price,
         PriceState state)
     {
         PlayerId = playerId;
@@ -28,15 +27,14 @@ public sealed class DailyPrice : EntityBase<Guid>
         Date = date;
         Price = price;
         State = state;
-        // Player = player ?? throw new ArgumentNullException(nameof(player));
         Item = item ?? throw new ArgumentNullException(nameof(item));
     }
     private DailyPrice() { }
     public static Result<DailyPrice> Create(
-        Player player, 
-        Item item, 
-        DateOnly date, 
-        decimal price, 
+        Player player,
+        Item item,
+        DateOnly date,
+        decimal price,
         PriceState state)
     {
         if (player == null)
@@ -50,10 +48,10 @@ public sealed class DailyPrice : EntityBase<Guid>
 
         return Result<DailyPrice>.Success(
             new DailyPrice(
-                player.Id, 
-                item, 
-                date, 
-                price, 
+                player.Id,
+                item,
+                date,
+                price,
                 state));
     }
 }
