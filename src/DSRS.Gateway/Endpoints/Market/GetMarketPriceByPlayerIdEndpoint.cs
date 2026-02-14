@@ -6,22 +6,21 @@ using Mediator;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DSRS.Gateway.Endpoints.Players;
+namespace DSRS.Gateway.Endpoints.Market;
 
 public class GetMarketPriceByPlayerIdRequest
 {
     public const string Route = "/market/{playerId}";
-    public static string BuildRoute(string playerId) => Route.Replace("{playerId}", playerId);
 
     [Required]
-    public string Id { get; set; } = string.Empty;
+    public string PlayerId { get; set; } = string.Empty;
 }
 
 public class GetMarketPriceByPlayerIdValidator : Validator<GetMarketPriceByPlayerIdRequest>
 {
     public GetMarketPriceByPlayerIdValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.PlayerId)
           .NotEmpty()
           .WithMessage("Player ID is required.");
     }
@@ -42,7 +41,6 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) : Endpoint<Get
         {
             s.Summary = "Generates daily prices based on player ID";
             s.Description = "Retrieves daily prices for each items in the market";
-            s.ExampleRequest = new GetMarketPriceByPlayerIdRequest { Id = "ac761785-ed42-11ce-dacb-00bdd0057645" };
             s.ResponseExamples[200] = new GetMarketPriceByPlayerIdResponse(1, "John Doe");
 
             // Document possible responses
@@ -51,12 +49,12 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) : Endpoint<Get
         });
 
         // Add tags for API grouping
-        Tags("Players");
+        Tags("Market");
 
         // Add additional metadata
         Description(builder => builder
           .Accepts<GetMarketPriceByPlayerIdRequest>("application/json")
-          .Produces<GetMarketPriceByPlayerIdResponse>(201, "application/json")
+          .Produces<GetMarketPriceByPlayerIdResponse>(200, "application/json")
           .ProducesProblem(400)
           .ProducesProblem(500));
     }
@@ -64,8 +62,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) : Endpoint<Get
     public override async Task<IResult> ExecuteAsync(GetMarketPriceByPlayerIdRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(
-            new GetMarketPriceCommand(Guid.Parse(request.Id!)), cancellationToken);
-
+            new GetMarketPriceCommand(Guid.Parse(request.PlayerId)), cancellationToken);
 
         return result.ToOkResult();
     }
