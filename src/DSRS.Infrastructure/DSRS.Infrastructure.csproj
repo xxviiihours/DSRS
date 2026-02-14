@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Common\" />
     <Folder Include="Extensions\" />
     <Folder Include="Persistence\Migrations\Sqlite\" />
     <Folder Include="Persistence\Migrations\SqlServer\" />
