@@ -1,3 +1,4 @@
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 
-public class SqliteDbContext : AppDbContext
+public class SqliteDbContext(DbContextOptions<SqliteDbContext> options,
+    IDateTime dateTimeService) : AppDbContext(options, dateTimeService)
 {
-    public SqliteDbContext(DbContextOptions<SqliteDbContext> options) : base(options)
-    {
-    }
 }
