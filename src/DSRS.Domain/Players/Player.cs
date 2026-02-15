@@ -108,7 +108,7 @@ public sealed class Player : EntityBase<Guid>
         var totalCost = price * quantity;
 
         if (Balance < totalCost)
-            return Result<Inventory>.Failure(new Error("Player.Balance.Empty", "Insufficient balance."));
+            return Result<Inventory>.Failure(new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
         Balance -= totalCost;
 
