@@ -1,4 +1,6 @@
 using DSRS.Application.Features.DailyPrices;
+using DSRS.Application.Features.Market;
+using DSRS.Domain.Inventories;
 using DSRS.SharedKernel.Mappings;
 using System;
 
@@ -12,4 +14,5 @@ public record PlayerDto
 
     [MapFilter("Date", "Today")]
     public IReadOnlyList<DailyPriceDto> DailyPrices { get; set; } = [];
+    public IReadOnlyList<InventoryDto> InventoryItems {get; set; } = [];
 };

@@ -58,15 +58,29 @@ public class Inventory : EntityBase<Guid>, IAuditableEntity
                 priceTotal,
                 type));
     }
-    public Result AddQuantity(int amount)
+    public Result Increase(int amount)
     {
         if (amount <= 0)
-            return Result.Failure(new Error("inventory.Quantity.Invalid", "Invalid amount value."));
+            return Result.Failure(
+                new Error("inventory.Amount.Invalid", "Invalid amount value."));
 
         Quantity += amount;
 
         return Result.Success();
     }
+
+    public Result Decrease(int amount)
+    {
+        if (amount <= 0)
+            return Result.Failure(
+                new Error("inventory.Amount.Invalid", "Invalid amount value."));
+
+        Quantity -= amount;
+
+        return Result.Success();
+    }
+
+    public bool HasEnough(int amount) => Quantity >= amount;
 
     public void SetCreated(DateTime now)
     {

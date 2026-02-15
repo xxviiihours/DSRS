@@ -19,19 +19,22 @@ public class BuyItemHandler(IDistributionRepository distributionRepository,
 
         var player = await _playerRepository.GetByIdWithDailyPrices(command.PlayerId);
 
-        if(player == null)
+        if (player == null)
             return Result<Inventory>.Failure(
                 new Error("Inventory.Player.NotFound", "Player not found."));
 
-        var inventory = player.BuyItem(command.ItemId, command.Quantity);
+        var result = player.BuyItem(command.ItemId, command.Quantity);
 
-        if (!inventory.IsSuccess)
-            return Result<Inventory>.Failure(inventory.Error!);
+        if (!result.IsSuccess)
+            return Result<Inventory>.Failure(result.Error!);
 
+        if (result.Data!.IsNew)
+            await _distributionRepository.CreateAsync(result.Data.Inventory!);
+        else
+            await _distributionRepository.UpdateAsync(result.Data.Inventory!);
 
-        await _distributionRepository.CreateAsync(inventory.Data!);
         await _unitOfWOrk.CommitAsync(cancellationToken);
 
-        return Result<Inventory>.Success(inventory.Data!);
+        return Result<Inventory>.Success(result.Data.Inventory!);
     }
 }

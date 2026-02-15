@@ -22,5 +22,10 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
             .HasConversion<string>()
             .HasMaxLength(5)
             .IsRequired();
+
+        builder.HasOne(dp => dp.Item)
+            .WithMany()
+            .HasForeignKey(dp => dp.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
