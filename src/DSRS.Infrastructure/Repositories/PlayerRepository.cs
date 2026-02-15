@@ -28,15 +28,25 @@ public class PlayerRepository(AppDbContext context,
 
     public async Task<Player> GetByIdWithDailyPrices(Guid id)
     {
-        // var player = await _context.Players
-        //     .Include(p => p.DailyPrices)
-        //         .ThenInclude(p => p.Item)
-        //     .FirstOrDefaultAsync(p => p.Id == id);
         var player = await _context.Players
+            .Where(p => p.Id == id)
+            .Include(p => p.InventoryItems)
+                .ThenInclude(p => p.Item)
             .Include(p => p.DailyPrices
                     .Where(p => p.Date == _dateTimeService.DateToday))
                 .ThenInclude(p => p.Item)
+            .SingleOrDefaultAsync();
+
+        return player!;
+    }
+
+    public async Task<Player> GetByIdWithInventories(Guid id)
+    {
+        var player = await _context.Players
             .Where(p => p.Id == id)
+            .Include(p => p.DailyPrices
+                .Where(p => p.Date == _dateTimeService.DateToday))
+            .Include(p => p.InventoryItems)
             .SingleOrDefaultAsync();
 
         return player!;
