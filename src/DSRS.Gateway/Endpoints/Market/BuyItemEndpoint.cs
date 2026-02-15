@@ -1,14 +1,14 @@
 using DSRS.Application.Features.Market.Buy;
-using DSRS.Gateway.Extensions;
+using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Market;
 
-public sealed class BuyItemEndpoint(IMediator mediator) :
-    Endpoint<BuyItemRequest, IRequest>
+public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemRequest, IResult>
 {
     private readonly IMediator _mediator = mediator;
 
@@ -36,12 +36,16 @@ public sealed class BuyItemEndpoint(IMediator mediator) :
           .ProducesProblem(500));
     }
 
-    public override async Task<IResult> HandleAsync(BuyItemRequest req, CancellationToken ct)
+    public override async Task<IResult> ExecuteAsync(BuyItemRequest req, CancellationToken ct)
     {
         var result = await _mediator.Send(
             new BuyItemCommand(Guid.Parse(req.PlayerId), Guid.Parse(req.ItemId), req.Quantity), ct);
 
-        return result.ToCreatedResult("");
+        return result.ToHttpResult(
+             mapResponse => new BuyItemResponse(mapResponse.Id.ToString()),
+             locationBuilder => $"{BuyItemRequest.Route}",
+             successStatusCode: StatusCodes.Status201Created);
+
     }
 }
 
@@ -58,9 +62,9 @@ public record BuyItemRequest()
     public int Quantity { get; set; } = 0;
 }
 
-public class BuyItemResponse
+public class BuyItemResponse(string id)
 {
-    public string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = id;
 }
 
 public class BuyItemValidator : Validator<BuyItemRequest>

@@ -1,38 +1,11 @@
 ﻿using DSRS.Application.Features.Players.Create;
-using DSRS.Gateway.Extensions;
+using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
 using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Players;
-
-public class CreatePlayerRequest
-{
-    public const string Route = "/players";
-
-    [Required]
-    public string Name { get; set; } = String.Empty;
-    public decimal Balance { get; set; } = 0;
-}
-
-public class CreatePlayerValidator : Validator<CreatePlayerRequest>
-{
-    public CreatePlayerValidator()
-    {
-        RuleFor(x => x.Name)
-          .NotEmpty()
-          .WithMessage("Name is required.")
-          .MinimumLength(2)
-          .MaximumLength(100);
-    }
-}
-
-public class CreatePlayerResponse(int id, string name)
-{
-    public int Id { get; set; } = id;
-    public string Name { get; set; } = name;
-}
 
 public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerRequest, IResult>
 {
@@ -65,7 +38,39 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
     public override async Task<IResult> ExecuteAsync(CreatePlayerRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new CreatePlayerCommand(request.Name!, request.Balance), cancellationToken);
-        
-        return result.ToCreatedResult($"{CreatePlayerRequest.Route}/{result.Data?.Id}");
+
+        return result.ToHttpResult(
+            mapResponse => new CreatePlayerResponse(result.Data!.Id.ToString(), result.Data!.Name),
+            locationBuilder => $"market/{result.Data!.Id}",
+            successStatusCode: StatusCodes.Status201Created
+        );
     }
+
+
+}
+public class CreatePlayerRequest
+{
+    public const string Route = "/players";
+
+    [Required]
+    public string Name { get; set; } = String.Empty;
+    public decimal Balance { get; set; } = 0;
+}
+
+public class CreatePlayerValidator : Validator<CreatePlayerRequest>
+{
+    public CreatePlayerValidator()
+    {
+        RuleFor(x => x.Name)
+          .NotEmpty()
+          .WithMessage("Name is required.")
+          .MinimumLength(2)
+          .MaximumLength(100);
+    }
+}
+
+public class CreatePlayerResponse(string id, string name)
+{
+    public string Id { get; set; } = id;
+    public string Name { get; set; } = name;
 }
