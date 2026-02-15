@@ -33,6 +33,7 @@ public sealed class Player : EntityBase<Guid>
         return Result<Player>.Success(new Player(name, balance));
     }
 
+    #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
          decimal price, PriceState state)
     {
@@ -53,66 +54,104 @@ public sealed class Player : EntityBase<Guid>
         return Result<DailyPrice>.Success(dailyPrice.Data!);
     }
 
-    public void ClearDailyPrices()
-    {
-        _dailyPrices.Clear();
-    }
-    public Result<Inventory> AddToInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
-    {
-        if (quantity <= 0)
-            throw new InvalidOperationException("Quantity must be greater than zero.");
+    private bool HasDailyPrice(Guid itemId, DateOnly date)
+        => _dailyPrices.Any(p => p.ItemId == itemId && p.Date == date);
 
-        var existingItem = _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
-        if (existingItem is null)
-        {
-            var newItem = Inventory.Create(Id, itemId, quantity, priceTotal, type);
+    private DailyPrice? GetDailyPrice(Guid itemId)
+        => _dailyPrices.SingleOrDefault(p => p.ItemId == itemId);
+        
+    public void ClearDailyPrices() 
+        => _dailyPrices.Clear();
+    #endregion
 
-            if (!newItem.IsSuccess)
-                return Result<Inventory>.Failure(newItem.Error!);
-
-            _inventoryItems.Add(newItem.Data!);
-            return Result<Inventory>.Success(newItem.Data!);
-        }
-        else
-        {
-            existingItem.AddQuantity(quantity);
-        }
-
-        return Result<Inventory>.Success(existingItem!);
-    }
-
-    // public void RemoveFromInventory(Guid itemId, int quantity)
-    // {
-    //     var existingItem = _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
-    //     if (existingItem is null)
-    //         throw new InvalidOperationException("Item not found in inventory.");
-
-    //     existingItem.RemoveQuantity(quantity);
-    // }
+    #region Buy
+    private bool CanAfford(decimal amount) => Balance >= amount;
+    private void DecreaseBalance(decimal amount) => Balance -= amount;
 
     public Result<Inventory> BuyItem(Guid itemId, int quantity)
     {
-        if (quantity < 1)
+        if (quantity <= 0)
             return Result<Inventory>.Failure(
-                new Error("Inventory.Quantity.Empty", "Quantity must be greater than zero."));
+                new Error("Inventory.Quantity.Invalid", "Quantity must be greater than zero."));
 
-        var price = _dailyPrices
-            .Where(p => p.Item.Id == itemId)
-            .Select(p => p.Price)
-            .SingleOrDefault();
-
-        if (price == 0)
+        var dailyPrice = GetDailyPrice(itemId);
+        if (dailyPrice is null)
             return Result<Inventory>.Failure(
-                new Error("Player.DailyPrice.Empty", "Unable to initialize daily price."));
+                new Error("Player.DailyPrice.Missing", "Daily price not found."));
 
-        var totalCost = price * quantity;
+        var totalCost = dailyPrice.Price * quantity;
 
-        if (Balance < totalCost)
-            return Result<Inventory>.Failure(new Error("Player.Balance.Insufficient", "Insufficient balance."));
+        if (!CanAfford(totalCost))
+            return Result<Inventory>.Failure(
+                new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
-        Balance -= totalCost;
+        DecreaseBalance(totalCost);
 
         return AddToInventory(itemId, quantity, totalCost, DistributionType.BUY);
     }
+    #endregion
 
+    #region Selling    
+    private void IncreaseBalance(decimal amount) => Balance += amount;
+
+    public Result<Inventory> SellItem(Guid itemId, int quantity)
+    {
+        if (quantity <= 0)
+            return Result<Inventory>.Failure(
+                new Error("Inventory.Quantity.Invalid", "Quantity must be greater than zero."));
+
+        var dailyPrice = GetDailyPrice(itemId);
+        if (dailyPrice is null)
+            return Result<Inventory>.Failure(
+                new Error("Player.DailyPrice.Missing", "Daily price not found."));
+
+        var revenue = dailyPrice.Price * quantity;
+        IncreaseBalance(revenue);
+
+        return RemoveFromInventory(itemId, quantity, revenue, DistributionType.SELL);
+    }
+    #endregion
+
+    #region Inventory
+    private Inventory? GetInventory(Guid itemId)
+        => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
+    public Result<Inventory> AddToInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
+    {
+        var existingItem = GetInventory(itemId);
+
+        if (existingItem is null)
+        {
+            var createResult = Inventory.Create(Id, itemId, quantity, priceTotal, DistributionType.BUY);
+
+            if (!createResult.IsSuccess)
+                return Result<Inventory>.Failure(createResult.Error!);
+
+            _inventoryItems.Add(createResult.Data!);
+
+            return Result<Inventory>.Success(createResult.Data!);
+        }
+
+        existingItem.Increase(quantity);
+        return Result<Inventory>.Success(existingItem);
+    }
+
+    public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
+    {
+        var inventory = GetInventory(itemId);
+
+        if (inventory is null)
+            return Result<Inventory>.Failure(
+                new Error("Inventory.NotFound", "Item not found in inventory."));
+
+        if (!inventory.HasEnough(quantity))
+            return Result<Inventory>.Failure(
+                new Error("Inventory.Quantity.Insufficient", "Not enough quantity."));
+
+        inventory.Decrease(quantity);
+        if (inventory.Quantity == 0)
+            _inventoryItems.Remove(inventory);
+
+        return Result<Inventory>.Success(inventory);
+    }
+    #endregion
 }
