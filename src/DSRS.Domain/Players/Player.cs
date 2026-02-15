@@ -68,26 +68,27 @@ public sealed class Player : EntityBase<Guid>
     private bool CanAfford(decimal amount) => Balance >= amount;
     private void DecreaseBalance(decimal amount) => Balance -= amount;
 
-    public Result<Inventory> BuyItem(Guid itemId, int quantity)
+    public Result<InventoryResult> BuyItem(Guid itemId, int quantity)
     {
         if (quantity <= 0)
-            return Result<Inventory>.Failure(
+            return Result<InventoryResult>.Failure(
                 new Error("Inventory.Quantity.Invalid", "Quantity must be greater than zero."));
 
         var dailyPrice = GetDailyPrice(itemId);
         if (dailyPrice is null)
-            return Result<Inventory>.Failure(
+            return Result<InventoryResult>.Failure(
                 new Error("Player.DailyPrice.Missing", "Daily price not found."));
 
         var totalCost = dailyPrice.Price * quantity;
 
         if (!CanAfford(totalCost))
-            return Result<Inventory>.Failure(
+            return Result<InventoryResult>.Failure(
                 new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
         DecreaseBalance(totalCost);
-
-        return AddToInventory(itemId, quantity, totalCost, DistributionType.BUY);
+        
+        var inventory = AddToInventory(itemId, quantity, totalCost, DistributionType.BUY);
+        return Result<InventoryResult>.Success(inventory);
     }
     #endregion
 
@@ -115,7 +116,9 @@ public sealed class Player : EntityBase<Guid>
     #region Inventory
     private Inventory? GetInventory(Guid itemId)
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
-    public Result<Inventory> AddToInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
+    
+    public record InventoryResult(Inventory Inventory, bool IsNew);
+    public InventoryResult AddToInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
     {
         var existingItem = GetInventory(itemId);
 
@@ -123,16 +126,13 @@ public sealed class Player : EntityBase<Guid>
         {
             var createResult = Inventory.Create(Id, itemId, quantity, priceTotal, DistributionType.BUY);
 
-            if (!createResult.IsSuccess)
-                return Result<Inventory>.Failure(createResult.Error!);
-
             _inventoryItems.Add(createResult.Data!);
 
-            return Result<Inventory>.Success(createResult.Data!);
+            return new InventoryResult(createResult.Data!, true);
         }
 
         existingItem.Increase(quantity);
-        return Result<Inventory>.Success(existingItem);
+        return new InventoryResult(existingItem, false);
     }
 
     public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
