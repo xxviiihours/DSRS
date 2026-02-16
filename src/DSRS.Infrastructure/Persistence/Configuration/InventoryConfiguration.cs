@@ -13,14 +13,8 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
 
         builder.Property(dp => dp.ItemId)
             .IsRequired();
-
-        builder.Property(dp => dp.PriceTotal)
-            .HasColumnType("decimal(18,2)")
-            .IsRequired();
-
-        builder.Property(dp => dp.DistributionType)
-            .HasConversion<string>()
-            .HasMaxLength(5)
+        
+        builder.Property(dp => dp.Quantity)
             .IsRequired();
 
         builder.HasOne(dp => dp.Item)
