@@ -1,9 +1,8 @@
 using DSRS.Domain.Inventories;
-using System;
 
 namespace DSRS.Application.Contracts;
 
-public interface IDistributionRepository
+public interface IInventoryRepository
 {
     Task CreateAsync(Inventory inventory);
 

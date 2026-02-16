@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace DSRS.Infrastructure.Repositories;
 
-public class DistributionRepository(AppDbContext context,
-    ILogger<DistributionRepository> logger) : IDistributionRepository
+public class InventoryRepository(AppDbContext context,
+    ILogger<InventoryRepository> logger) : IInventoryRepository
 {
     private readonly AppDbContext _context = context;
-    private readonly ILogger<DistributionRepository> _logger = logger;
+    private readonly ILogger<InventoryRepository> _logger = logger;
 
     public async Task CreateAsync(Inventory inventory)
     {
