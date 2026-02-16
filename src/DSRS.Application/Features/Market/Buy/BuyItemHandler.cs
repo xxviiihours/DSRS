@@ -7,10 +7,10 @@ using System;
 
 namespace DSRS.Application.Features.Market.Buy;
 
-public class BuyItemHandler(IDistributionRepository distributionRepository,
+public class BuyItemHandler(IInventoryRepository distributionRepository,
     IUnitOfWork unitOfWOrk, IPlayerRepository playerRepository) : ICommandHandler<BuyItemCommand, Result<Inventory>>
 {
-    private readonly IDistributionRepository _distributionRepository = distributionRepository;
+    private readonly IInventoryRepository _distributionRepository = distributionRepository;
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IUnitOfWork _unitOfWOrk = unitOfWOrk;
 
