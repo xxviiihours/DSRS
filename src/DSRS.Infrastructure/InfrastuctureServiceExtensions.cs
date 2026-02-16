@@ -44,7 +44,7 @@ public static class InfrastuctureServiceExtensions
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();
         services.AddScoped<IDailyPriceRepository, DailyPriceRepository>();
-        services.AddScoped<IDistributionRepository, DistributionRepository>();
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
 
         logger.LogInformation("{Project} services registered", "Infrastructure");
 
