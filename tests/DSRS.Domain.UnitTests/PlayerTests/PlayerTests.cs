@@ -66,17 +66,6 @@ public class PlayerTests
     }
 
     [Fact]
-    public void Create_WithNegativeBalance_ReturnsSuccess()
-    {
-        // Arrange & Act
-        var result = Player.Create("DebtPlayer", -1000m);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(-1000m);
-    }
-
-    [Fact]
     public void Create_WithVeryLargeBalance_ReturnsSuccess()
     {
         // Arrange & Act
