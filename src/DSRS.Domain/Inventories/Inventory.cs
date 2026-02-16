@@ -13,9 +13,6 @@ public class Inventory : EntityBase<Guid>, IAuditableEntity
     public Guid ItemId { get; }
     public Item Item { get; } = null!;
     public int Quantity { get; private set; }
-    public decimal PriceTotal { get; }
-    public DistributionType DistributionType { get; }
-
     public DateTime CreatedAt { get; private set; }
     public DateTime LastModified { get; private set; }
 
@@ -23,23 +20,17 @@ public class Inventory : EntityBase<Guid>, IAuditableEntity
     internal Inventory(
         Guid playerId,
         Guid itemId,
-        int quantity,
-        decimal priceTotal,
-        DistributionType type)
+        int quantity)
     {
         PlayerId = playerId;
         ItemId = itemId;
         Quantity = quantity;
-        PriceTotal = priceTotal;
-        DistributionType = type;
     }
 
     public static Result<Inventory> Create(
         Guid playerId,
         Guid itemId,
-        int quantity,
-        decimal priceTotal,
-        DistributionType type)
+        int quantity)
     {
         if (playerId == Guid.Empty)
             return Result<Inventory>.Failure(
@@ -54,9 +45,7 @@ public class Inventory : EntityBase<Guid>, IAuditableEntity
             new Inventory(
                 playerId,
                 itemId,
-                quantity,
-                priceTotal,
-                type));
+                quantity));
     }
     public Result Increase(int amount)
     {

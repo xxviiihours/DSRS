@@ -1,4 +1,5 @@
-﻿using DSRS.Domain.Inventories;
+﻿using DSRS.Domain.Distributions;
+using DSRS.Domain.Inventories;
 using DSRS.Domain.Items;
 using DSRS.Domain.Pricing;
 using DSRS.SharedKernel.Abstractions;
@@ -27,6 +28,9 @@ public sealed class Player : EntityBase<Guid>
             return Result<Player>.Failure(
                 new Error("Player.Name.Empty", "Player name cannot be empty"));
 
+        if(balance < 0)
+            return Result<Player>.Failure(
+                new Error("Player.Balance.Negative", "Balance cannot be negative"));
 
         // maybe add domain event here
 
@@ -87,8 +91,11 @@ public sealed class Player : EntityBase<Guid>
 
         DecreaseBalance(totalCost);
         
-        var inventory = AddToInventory(itemId, quantity, totalCost, DistributionType.BUY);
-        return Result<InventoryResult>.Success(inventory);
+        var result = AddToInventory(itemId, quantity);
+
+        DistributionRecord.Create(result.Inventory.Id, totalCost, DistributionType.BUY);
+
+        return Result<InventoryResult>.Success(result);
     }
     #endregion
 
@@ -109,7 +116,11 @@ public sealed class Player : EntityBase<Guid>
         var revenue = dailyPrice.Price * quantity;
         IncreaseBalance(revenue);
 
-        return RemoveFromInventory(itemId, quantity, revenue, DistributionType.SELL);
+        var result = RemoveFromInventory(itemId, quantity);
+
+        DistributionRecord.Create(result.Data!.Id, revenue, DistributionType.SELL);
+
+        return result;
     }
     #endregion
 
@@ -118,13 +129,13 @@ public sealed class Player : EntityBase<Guid>
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
     
     public record InventoryResult(Inventory Inventory, bool IsNew);
-    public InventoryResult AddToInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
+    public InventoryResult AddToInventory(Guid itemId, int quantity)
     {
         var existingItem = GetInventory(itemId);
 
         if (existingItem is null)
         {
-            var createResult = Inventory.Create(Id, itemId, quantity, priceTotal, DistributionType.BUY);
+            var createResult = Inventory.Create(Id, itemId, quantity);
 
             _inventoryItems.Add(createResult.Data!);
 
@@ -135,7 +146,7 @@ public sealed class Player : EntityBase<Guid>
         return new InventoryResult(existingItem, false);
     }
 
-    public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity, decimal priceTotal, DistributionType type)
+    public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity)
     {
         var inventory = GetInventory(itemId);
 
