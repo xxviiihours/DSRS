@@ -49,12 +49,14 @@ public static class ResultHttpExtensions
                     detail: error.Message,
                     statusCode: StatusCodes.Status404NotFound),
 
-            var c when c.EndsWith("Invalid") || c.EndsWith("Empty") || c.EndsWith("Insufficient") =>
-                TypedResults.ValidationProblem(
-                    new Dictionary<string, string[]>
-                    {
-                        { error.Code, new[] { error.Message } }
-                    }),
+            var c when c.EndsWith("Invalid") ||
+                c.EndsWith("Empty") ||
+                c.EndsWith("Insufficient") =>
+                    TypedResults.ValidationProblem(
+                        new Dictionary<string, string[]>
+                        {
+                            { error.Code, new[] { error.Message } }
+                        }),
 
             var c when c.EndsWith("Exists") =>
                 TypedResults.Problem(
@@ -62,8 +64,7 @@ public static class ResultHttpExtensions
                     detail: error.Message,
                     statusCode: StatusCodes.Status409Conflict),
 
-            _ =>
-                TypedResults.Problem(
+            _ => TypedResults.Problem(
                     title: "Request failed",
                     detail: error.Message,
                     statusCode: StatusCodes.Status400BadRequest)

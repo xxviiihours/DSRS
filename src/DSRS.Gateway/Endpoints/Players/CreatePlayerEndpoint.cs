@@ -53,7 +53,7 @@ public class CreatePlayerRequest
     public const string Route = "/players";
 
     [Required]
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
     public decimal Balance { get; set; } = 0;
 }
 

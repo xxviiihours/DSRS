@@ -35,15 +35,14 @@ public sealed class SellItemEndpoint(IMediator mediator) : Endpoint<SellItemRequ
           .ProducesProblem(500));
     }
 
-    public override async Task<IResult> HandleAsync(SellItemRequest req, CancellationToken ct)
+    public override async Task<IResult> ExecuteAsync(SellItemRequest req, CancellationToken ct)
     {
         var result = await _mediator.Send(
             new SellItemCommand(Guid.Parse(req.PlayerId), Guid.Parse(req.ItemId), req.Quantity), ct);
 
         return result.ToHttpResult(
              mapResponse => new SellItemResponse(mapResponse.Id.ToString()),
-             locationBuilder => $"{SellItemRequest.Route}",
-             successStatusCode: StatusCodes.Status204NoContent);
+             locationBuilder => $"{SellItemRequest.Route}");
 
     }
 }

@@ -3,8 +3,6 @@ using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Market;
