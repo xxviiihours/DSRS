@@ -17,6 +17,9 @@ public sealed class Player : EntityBase<Guid>
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
     public IReadOnlyCollection<Inventory> InventoryItems => _inventoryItems.AsReadOnly();
+    private readonly List<DistributionRecord> _distributionHistory = [];
+    public IReadOnlyCollection<DistributionRecord> DistributionHistory => _distributionHistory.AsReadOnly();
+
     private Player(string name, decimal balance)
     {
         Name = name;
@@ -28,7 +31,7 @@ public sealed class Player : EntityBase<Guid>
             return Result<Player>.Failure(
                 new Error("Player.Name.Empty", "Player name cannot be empty"));
 
-        if(balance < 0)
+        if (balance < 0)
             return Result<Player>.Failure(
                 new Error("Player.Balance.Negative", "Balance cannot be negative"));
 
@@ -63,8 +66,8 @@ public sealed class Player : EntityBase<Guid>
 
     private DailyPrice? GetDailyPrice(Guid itemId)
         => _dailyPrices.SingleOrDefault(p => p.ItemId == itemId);
-        
-    public void ClearDailyPrices() 
+
+    public void ClearDailyPrices()
         => _dailyPrices.Clear();
     #endregion
 
@@ -90,10 +93,15 @@ public sealed class Player : EntityBase<Guid>
                 new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
         DecreaseBalance(totalCost);
-        
+
         var result = AddToInventory(itemId, quantity);
 
-        DistributionRecord.Create(result.Inventory.Id, totalCost, DistributionType.BUY);
+        var record = DistributionRecord.Create(
+            result.Inventory.ItemId,
+            result.Inventory.PlayerId,
+            totalCost, DistributionType.BUY);
+
+        _distributionHistory.Add(record.Data!);
 
         return Result<InventoryResult>.Success(result);
     }
@@ -118,7 +126,12 @@ public sealed class Player : EntityBase<Guid>
 
         var result = RemoveFromInventory(itemId, quantity);
 
-        DistributionRecord.Create(result.Data!.Id, revenue, DistributionType.SELL);
+        var record = DistributionRecord.Create(
+            result.Data!.ItemId,
+            result.Data!.PlayerId,
+            revenue, DistributionType.SELL);
+
+        _distributionHistory.Add(record.Data!);
 
         return result;
     }
@@ -127,7 +140,7 @@ public sealed class Player : EntityBase<Guid>
     #region Inventory
     private Inventory? GetInventory(Guid itemId)
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
-    
+
     public record InventoryResult(Inventory Inventory, bool IsNew);
     public InventoryResult AddToInventory(Guid itemId, int quantity)
     {

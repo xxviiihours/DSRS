@@ -9,9 +9,11 @@ namespace DSRS.Domain.Distributions;
 
 public class DistributionRecord : EntityBase<Guid>, IAuditableEntity
 {
-    private DistributionRecord(Guid inventoryId, decimal priceTotal, DistributionType type)
+    private DistributionRecord() { }
+    internal DistributionRecord(Guid dailyPriceId, Guid playerId, decimal priceTotal, DistributionType type)
     {
-        InventoryId = inventoryId;
+        DailyPriceId = dailyPriceId;
+        PlayerId = playerId;
         PriceTotal = priceTotal;
         Type = type;
     }
@@ -20,23 +22,28 @@ public class DistributionRecord : EntityBase<Guid>, IAuditableEntity
 
     public DateTime LastModified { get; private set; }
 
-    public Guid InventoryId { get; }
+    public Guid DailyPriceId { get; }
+    public Guid PlayerId { get; set; }
 
     public decimal PriceTotal { get; }
 
     public DistributionType Type { get; }
 
-    public static Result<DistributionRecord> Create(Guid inventoryId, decimal priceTotal, DistributionType type)
+    public static Result<DistributionRecord> Create(Guid dailyPriceId, Guid playerId, decimal priceTotal, DistributionType type)
     {
-        if (inventoryId == Guid.Empty)
+        if (dailyPriceId == Guid.Empty)
             return Result<DistributionRecord>.Failure(
-                new Error("DistributionRecord.InventoryId.Null", "InventoryId cannot be empty."));
+                new Error("DistributionRecord.DailyPriceId.Null", "DailyPriceId cannot be empty."));
+
+        if (playerId == Guid.Empty)
+            return Result<DistributionRecord>.Failure(
+                new Error("DistributionRecord.PlayerId.Null", "PlayerId cannot be empty."));
 
         if (priceTotal <= 0)
             return Result<DistributionRecord>.Failure(
                 new Error("DistributionRecord.PriceTotal.Invalid", "PriceTotal must be greater than zero."));
 
-        return Result<DistributionRecord>.Success(new DistributionRecord(inventoryId, priceTotal, type));
+        return Result<DistributionRecord>.Success(new DistributionRecord(dailyPriceId, playerId, priceTotal, type));
     }
 
     public void SetCreated(DateTime now)
