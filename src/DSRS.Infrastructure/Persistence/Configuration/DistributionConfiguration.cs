@@ -13,7 +13,9 @@ internal class DistributionConfiguration : IEntityTypeConfiguration<Distribution
     {
         builder.ToTable("DistributionHistory");
         builder.HasKey(dr => dr.Id);
-        builder.Property(dr => dr.InventoryId)
+        builder.Property(dr => dr.DailyPriceId)
+            .IsRequired();
+        builder.Property(dr => dr.PlayerId)
             .IsRequired();
         builder.Property(dr => dr.PriceTotal)
             .HasColumnType("decimal(18,2)")
