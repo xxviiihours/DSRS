@@ -15,6 +15,7 @@ internal class DistributionConfiguration : IEntityTypeConfiguration<Distribution
         builder.HasKey(dr => dr.Id);
         builder.Property(dr => dr.DailyPriceId)
             .IsRequired();
+
         builder.Property(dr => dr.PlayerId)
             .IsRequired();
         builder.Property(dr => dr.PriceTotal)
