@@ -13,6 +13,7 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
     public async Task<List<PlayerLeaderboardDto>> GetTop20Players(Guid playerId)
     {
         var top20 = await _context.Players
+        .AsNoTracking()
         .OrderByDescending(p => p.Balance)
         .Take(20)
         .Select(p => new PlayerLeaderboardDto
@@ -39,6 +40,7 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
 
         // 3️⃣ Calculate rank ONLY for current user
         var rank = await _context.Players
+            .AsNoTracking()
             .CountAsync(p => p.Balance > currentUser.Balance) + 1;
 
         var userDto = new PlayerLeaderboardDto

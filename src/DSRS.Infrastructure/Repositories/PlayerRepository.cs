@@ -55,6 +55,7 @@ public class PlayerRepository(AppDbContext context,
     public async Task<bool> NameExistsAsync(string name)
     {
         return await _context.Players
+            .AsNoTracking()
             .AnyAsync(p => p.Name == name);
     }
 }

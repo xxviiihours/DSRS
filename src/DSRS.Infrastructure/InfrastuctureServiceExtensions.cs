@@ -2,6 +2,7 @@
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 using DSRS.Infrastructure.Persistence.Migrations.SqlServer;
+using DSRS.Infrastructure.Queries;
 using DSRS.Infrastructure.Repositories;
 using DSRS.Infrastructure.Services;
 using DSRS.SharedKernel.Interfaces;
@@ -45,6 +46,9 @@ public static class InfrastuctureServiceExtensions
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();
         services.AddScoped<IDailyPriceRepository, DailyPriceRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
+
+        // Query
+        services.AddScoped<ILeaderboardsQuery, LeaderboardsQuery>();
 
         logger.LogInformation("{Project} services registered", "Infrastructure");
 
