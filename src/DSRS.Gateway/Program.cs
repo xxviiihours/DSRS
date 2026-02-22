@@ -28,7 +28,22 @@ builder.Services.AddFastEndpoints()
                     };
                 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowedClients",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:5173") // React app URL
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowedClients");
 
 await app.UseAppMiddlewareAndSeedDatabase();
 
