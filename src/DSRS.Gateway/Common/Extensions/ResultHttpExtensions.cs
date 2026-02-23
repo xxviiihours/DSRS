@@ -22,10 +22,14 @@ public static class ResultHttpExtensions
                 StatusCodes.Status204NoContent =>
                     TypedResults.NoContent(),
 
-                _ =>
+                StatusCodes.Status302Found =>
                     TypedResults.Ok(
                         mapResponse(result.Data!)
-                    )
+                    ),
+                _ =>
+                TypedResults.Ok(
+                    mapResponse(result.Data!)
+                )
             };
         }
 
