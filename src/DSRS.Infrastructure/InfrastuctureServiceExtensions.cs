@@ -50,6 +50,7 @@ public static class InfrastuctureServiceExtensions
         // Query
         services.AddScoped<ILeaderboardsQuery, LeaderboardsQuery>();
         services.AddScoped<IPlayerQuery, PlayerQuery>();
+        services.AddScoped<IDashboardQuery, DashboardQuery>();
 
         logger.LogInformation("{Project} services registered", "Infrastructure");
 
