@@ -9,6 +9,8 @@
   <ItemGroup>
     <Folder Include="Features\DailyPrices\" />
     <Folder Include="Features\DailyPrices\Get\" />
+    <Folder Include="Features\Dashboard\" />
+    <Folder Include="Features\Dashboard\Queries\" />
     <Folder Include="Features\Leaderboards\" />
     <Folder Include="Features\Leaderboards\Queries\" />
     <Folder Include="Features\Market\Buy\" />

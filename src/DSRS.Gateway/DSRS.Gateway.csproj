@@ -27,4 +27,8 @@
     <ProjectReference Include="..\DSRS.Infrastructure\DSRS.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\Dashboard\" />
+  </ItemGroup>
+
 </Project>
