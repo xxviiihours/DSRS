@@ -1,4 +1,4 @@
-using DSRS.Application.Features.Players.Get;
+using DSRS.Application.Features.Market.Get;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
