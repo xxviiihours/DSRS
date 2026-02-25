@@ -17,9 +17,9 @@ public sealed class SellItemEndpoint(IMediator mediator) : Endpoint<SellItemRequ
         AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Use to purchase a new item";
+            s.Summary = "Use to sell an item in the inventory";
             // Document possible responses
-            s.Responses[201] = "Item bought successfully";
+            s.Responses[200] = "Item sold successfully";
             s.Responses[400] = "Invalid input data - validation errors";
             s.Responses[500] = "Internal server error";
         });
