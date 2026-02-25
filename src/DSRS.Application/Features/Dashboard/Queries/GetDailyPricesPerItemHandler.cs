@@ -12,7 +12,7 @@ public class GetDailyPricesPerItemHandler(IDashboardQuery dashboardQuery) :
 
     public async ValueTask<Result<List<DashboardDto>>> Handle(GetDailyPricesPerItemCommand command, CancellationToken cancellationToken)
     {
-        var result = await _dashboardQuery.GetDailyPricesPerItem(command.ItemId, command.PlayerID);
+        var result = await _dashboardQuery.GetDailyPricesPerItem(command.ItemId, command.PlayerId);
         if (result == null)
             return Result<List<DashboardDto>>.Failure(
                 new Error("Dashboard.Empty", "No daily prices found for this item."));

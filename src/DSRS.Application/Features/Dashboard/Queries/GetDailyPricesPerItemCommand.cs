@@ -4,4 +4,4 @@ using System;
 
 namespace DSRS.Application.Features.Dashboard.Queries;
 
-public record GetDailyPricesPerItemCommand(Guid ItemId, Guid PlayerID) : ICommand<Result<List<DashboardDto>>> { }
+public record GetDailyPricesPerItemCommand(Guid ItemId, Guid PlayerId) : ICommand<Result<List<DashboardDto>>> { }
