@@ -1,4 +1,5 @@
 ﻿using DSRS.Application.Contracts;
+using DSRS.Application.Features.Market;
 using DSRS.Application.Features.Players;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,13 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                 Id = p.Id,
                 Name = p.Name,
                 Balance = p.Balance,
+                InventoryItems = p.InventoryItems
+                    .Select(i => new InventoryDto
+                    {
+                        Id = i.Id,
+                        ItemId = i.ItemId,
+                        Quantity = i.Quantity
+                    }).ToList()
             })
             .SingleOrDefaultAsync();
 

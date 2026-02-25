@@ -7,6 +7,7 @@ namespace DSRS.Application.Features.Market;
 public class InventoryDto
 {
     public Guid Id { get; set; }
+    public Guid ItemId { get; set; }
     public ItemDto Item { get; set; } = null!;
     public int Quantity { get; set; }
 }
