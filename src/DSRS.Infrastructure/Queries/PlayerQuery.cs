@@ -10,9 +10,28 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
 {
     private readonly AppDbContext _context = context;
 
-    public Task<PlayerDto> GetPlayerByIdAsync(Guid playerId)
+    public async Task<PlayerDto> GetPlayerByIdAsync(Guid playerId)
     {
-        throw new NotImplementedException();
+        var player = await _context.Players
+            .AsNoTracking()
+            .Where(p => p.Id == playerId)
+            .Select(p => new PlayerDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Balance = p.Balance,
+                InventoryItems = p.InventoryItems
+                    .Select(i => new InventoryDto
+                    {
+                        Id = i.Id,
+                        ItemId = i.ItemId,
+                        Quantity = i.Quantity
+                    }).ToList()
+            })
+            .SingleOrDefaultAsync();
+
+
+        return player!;
     }
 
     public async Task<PlayerDto> GetPlayerByName(string name)
