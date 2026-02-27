@@ -1,4 +1,5 @@
-﻿using DSRS.Application.Features.Players.Create;
+﻿using DSRS.Application.Features.Market;
+using DSRS.Application.Features.Players.Create;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
@@ -40,7 +41,10 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
         var result = await _mediator.Send(new CreatePlayerCommand(request.Name!, request.Balance), cancellationToken);
 
         return result.ToHttpResult(
-            mapResponse => new CreatePlayerResponse(result.Data!.Id.ToString(), result.Data!.Name),
+            mapResponse => new CreatePlayerResponse(
+                result.Data!.Id.ToString(),
+                result.Data!.Name,
+                result.Data!.Balance),
             locationBuilder => $"market/{result.Data!.Id}",
             successStatusCode: StatusCodes.Status201Created
         );
@@ -69,8 +73,10 @@ public class CreatePlayerValidator : Validator<CreatePlayerRequest>
     }
 }
 
-public class CreatePlayerResponse(string id, string name)
+public class CreatePlayerResponse(string id, string name, decimal balance)
 {
     public string Id { get; set; } = id;
     public string Name { get; set; } = name;
+    public decimal Balance { get; set; } = balance;
+    public List<InventoryDto> InventoryItems { get; set; } = [];
 }
