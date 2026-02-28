@@ -126,6 +126,9 @@ public sealed class Player : EntityBase<Guid>
 
         var result = RemoveFromInventory(itemId, quantity);
 
+        if (!result.IsSuccess)
+            return Result<Inventory>.Failure(result.Error!);
+
         var record = DistributionRecord.Create(
             result.Data!.ItemId,
             result.Data!.PlayerId,
@@ -166,6 +169,10 @@ public sealed class Player : EntityBase<Guid>
         if (inventory is null)
             return Result<Inventory>.Failure(
                 new Error("Inventory.NotFound", "Item not found in inventory."));
+
+        if (inventory.IsQuantityExceeded(quantity))
+            return Result<Inventory>.Failure(
+                new Error("Inventory.Quantity.Exceeded", "The amount provided exceeded the total quantity of item"));
 
         if (!inventory.HasEnough(quantity))
             return Result<Inventory>.Failure(

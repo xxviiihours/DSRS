@@ -71,6 +71,8 @@ public class Inventory : EntityBase<Guid>, IAuditableEntity
 
     public bool HasEnough(int amount) => Quantity >= amount;
 
+    public bool IsQuantityExceeded(int amount) => amount > Quantity;
+
     public void SetCreated(DateTime now)
     {
         CreatedAt = now;
