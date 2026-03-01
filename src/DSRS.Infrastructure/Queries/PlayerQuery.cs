@@ -1,6 +1,8 @@
 ﻿using DSRS.Application.Contracts;
+using DSRS.Application.Features.Items;
 using DSRS.Application.Features.Market;
 using DSRS.Application.Features.Players;
+using DSRS.Domain.Items;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +27,13 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                     {
                         Id = i.Id,
                         ItemId = i.ItemId,
-                        Quantity = i.Quantity
+                        Quantity = i.Quantity,
+                        Item = new ItemDto
+                        {
+                            Name = i.Item.Name,
+                            Description = i.Item.Description,
+                            BasePrice = i.Item.BasePrice,
+                        }
                     }).ToList()
             })
             .SingleOrDefaultAsync();
@@ -49,7 +57,13 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                     {
                         Id = i.Id,
                         ItemId = i.ItemId,
-                        Quantity = i.Quantity
+                        Quantity = i.Quantity,
+                        Item = new ItemDto
+                        {
+                            Name = i.Item.Name,
+                            Description = i.Item.Description,
+                            BasePrice = i.Item.BasePrice,
+                        }
                     }).ToList()
             })
             .SingleOrDefaultAsync();
