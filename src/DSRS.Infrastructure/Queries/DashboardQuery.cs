@@ -19,6 +19,7 @@ public class DashboardQuery(AppDbContext context) : IDashboardQuery
             {
                 BasePrice = p.Item.BasePrice,
                 PreviousPrice = p.Price,
+                Percentage = p.Percentage,
                 State = p.State,
                 Date = p.Date
             }).ToListAsync();
