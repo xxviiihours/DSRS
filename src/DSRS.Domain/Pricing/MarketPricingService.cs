@@ -20,7 +20,9 @@ public class MarketPricingService
         var price = Math.Round(
             min + (decimal)Random.Shared.NextDouble() * (max - min));
 
-        return new GeneratedPrice(price, high ? PriceState.HIGH : PriceState.LOW);
+        var percentage = Math.Round((price - item.BasePrice) / item.BasePrice * 100, 2);
+
+        return new GeneratedPrice(price, percentage, high ? PriceState.HIGH : PriceState.LOW);
 
     }
 
