@@ -8,6 +8,7 @@ public class DashboardDto
 {
     public decimal BasePrice { get; set; }
     public decimal PreviousPrice { get; set; }
+    public decimal Percentage { get; set; }
     public PriceState State { get; set; }
     public DateOnly Date { get; set; }
 }

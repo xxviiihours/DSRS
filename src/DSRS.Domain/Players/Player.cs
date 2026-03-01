@@ -42,7 +42,7 @@ public sealed class Player : EntityBase<Guid>
 
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
-         decimal price, PriceState state)
+         decimal price, decimal percentage, PriceState state)
     {
         if (price <= 0)
             return Result<DailyPrice>.Failure(new Error("DailyPrice.Price.Invalid", "Price must be greater than zero"));
@@ -51,7 +51,7 @@ public sealed class Player : EntityBase<Guid>
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Exists", "Daily price already exists"));
 
-        var dailyPrice = DailyPrice.Create(this, item, date, price, state);
+        var dailyPrice = DailyPrice.Create(this, item, date, price, percentage, state);
 
         if (!dailyPrice.IsSuccess)
             return Result<DailyPrice>.Failure(dailyPrice.Error!);

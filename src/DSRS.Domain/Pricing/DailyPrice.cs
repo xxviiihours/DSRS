@@ -10,6 +10,7 @@ public sealed class DailyPrice : EntityBase<Guid>
 {
     public DateOnly Date { get; }
     public decimal Price { get; }
+    public decimal Percentage { get; set; }
     public PriceState State { get; }
     public Guid ItemId { get; }
     public Item Item { get; private set; } = null!;
@@ -20,12 +21,14 @@ public sealed class DailyPrice : EntityBase<Guid>
         Item item,
         DateOnly date,
         decimal price,
+        decimal percentage,
         PriceState state)
     {
         PlayerId = playerId;
         ItemId = item.Id;
         Date = date;
         Price = price;
+        Percentage = percentage;
         State = state;
         Item = item ?? throw new ArgumentNullException(nameof(item));
     }
@@ -35,6 +38,7 @@ public sealed class DailyPrice : EntityBase<Guid>
         Item item,
         DateOnly date,
         decimal price,
+        decimal percentage,
         PriceState state)
     {
         if (player == null)
@@ -52,6 +56,7 @@ public sealed class DailyPrice : EntityBase<Guid>
                 item,
                 date,
                 price,
+                percentage,
                 state));
     }
 }
