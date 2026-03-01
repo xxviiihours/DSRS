@@ -13,7 +13,7 @@ public class GetMarketPriceHandler(IPlayerRepository playerRepository, IItemRepo
     IDateTime dateTimeService, IUnitOfWork unitOfWork) : ICommandHandler<GetMarketPriceCommand, Result<PlayerDto>>
 {
     private readonly IPlayerRepository _playerRepository = playerRepository;
-    private readonly IItemRepository _itemRepository = itemRepository; 
+    private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IDateTime _dateTimeService = dateTimeService;
     public async ValueTask<Result<PlayerDto>> Handle(GetMarketPriceCommand command, CancellationToken cancellationToken)
@@ -31,9 +31,9 @@ public class GetMarketPriceHandler(IPlayerRepository playerRepository, IItemRepo
                 var generatedPrice = MarketPricingService.Generate(item);
 
                 playerResult.AddDailyPrice(item, _dateTimeService.DateToday,
-                    generatedPrice.Price, generatedPrice.State);
+                    generatedPrice.Price, generatedPrice.Percentage, generatedPrice.State);
             }
-            
+
             await _unitOfWork.CommitAsync(cancellationToken);
         }
 
