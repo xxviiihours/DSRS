@@ -20,11 +20,10 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
         {
             Id = p.Id,
             Name = p.Name,
-            TotalBalance = p.Balance
+            TotalBalance = p.Balance,
         })
         .ToListAsync();
 
-        // 2️⃣ Get current user
         var currentUser = await _context.Players
             .Where(p => p.Id == playerId)
             .Select(p => new
@@ -38,7 +37,6 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
         if (currentUser == null)
             return top20;
 
-        // 3️⃣ Calculate rank ONLY for current user
         var rank = await _context.Players
             .AsNoTracking()
             .CountAsync(p => p.Balance > currentUser.Balance) + 1;
@@ -46,12 +44,11 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
         var userDto = new PlayerLeaderboardDto
         {
             Id = currentUser.Id,
-            Name = currentUser.Name,
+            Name = currentUser.Name + "(you)",
             TotalBalance = currentUser.Balance,
             Rank = rank
         };
 
-        // 4️⃣ Add user if not already in top 20
         if (!top20.Any(p => p.Id == playerId))
         {
             top20.Add(userDto);

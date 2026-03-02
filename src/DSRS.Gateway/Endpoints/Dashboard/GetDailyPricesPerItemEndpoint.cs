@@ -18,7 +18,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
         AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "retrieves daily prices based on item ID and player ID";
+            s.Summary = "Retrieves daily prices based on item ID and player ID";
             s.Description = "Retrieves previous daily prices for a specific item";
             // Document possible responses
             s.Responses[200] = "Daily Prices found and returned successfully";
