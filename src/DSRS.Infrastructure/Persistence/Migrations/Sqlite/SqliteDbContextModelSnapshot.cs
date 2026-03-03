@@ -77,7 +77,7 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("Inventories", (string)null);
                 });
 
             modelBuilder.Entity("DSRS.Domain.Items.Item", b =>
@@ -159,7 +159,7 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
                     b.HasIndex("PlayerId", "ItemId", "Date")
                         .IsUnique();
 
-                    b.ToTable("DailyPrices");
+                    b.ToTable("DailyPrices", (string)null);
                 });
 
             modelBuilder.Entity("DSRS.Domain.Distributions.DistributionRecord", b =>

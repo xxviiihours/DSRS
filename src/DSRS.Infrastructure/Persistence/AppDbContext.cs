@@ -1,4 +1,5 @@
-﻿using DSRS.Domain.Common;
+﻿using DSRS.Application.Features.Leaderboards;
+using DSRS.Domain.Common;
 using DSRS.Domain.Inventories;
 using DSRS.Domain.Items;
 using DSRS.Domain.Players;
@@ -16,10 +17,14 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     public DbSet<DailyPrice> DailyPrices => Set<DailyPrice>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
 
+    // view
+    public DbSet<PlayerLeaderboardDto> PlayerLeaderboards { get; set; }
+
     private readonly IDateTime _dateTimeService = dateTimeService;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<PlayerLeaderboardDto>().HasNoKey().ToView("view-1");
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
