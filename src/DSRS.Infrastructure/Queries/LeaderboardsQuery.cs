@@ -22,6 +22,8 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
             LIMIT 20
         ";
 
+
+
         var top20 = await _context.PlayerLeaderboards
             .FromSqlRaw(top20Sql)
             .AsNoTracking()
