@@ -22,10 +22,17 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
             LIMIT 20
         ";
 
+
+
         var top20 = await _context.PlayerLeaderboards
             .FromSqlRaw(top20Sql)
             .AsNoTracking()
             .ToListAsync();
+
+
+        var existing = top20.FirstOrDefault(p => p.Id == playerId);
+        if (existing != null)
+            return top20;
 
         var currentUserSql = @"
             SELECT *
@@ -39,15 +46,15 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
             WHERE Id = {0}
         ";
 
-        var currentUser = await _context.PlayerLeaderboards
+        var currentPlayer = await _context.PlayerLeaderboards
             .FromSqlRaw(currentUserSql, playerId)
             .AsNoTracking()
             .FirstOrDefaultAsync();
 
-        if (currentUser == null)
+        if (currentPlayer == null)
             return top20;
 
-        top20.Add(currentUser);
+        top20.Add(currentPlayer);
 
         return [.. top20.OrderBy(p => p.Rank)];
     }
