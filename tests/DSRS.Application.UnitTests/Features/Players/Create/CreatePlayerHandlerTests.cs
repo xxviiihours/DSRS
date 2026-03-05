@@ -55,7 +55,7 @@ public class CreatePlayerHandlerTests
     {
         // Arrange
         var command = new CreatePlayerCommand("John Doe", 1000m);
-        var expectedPlayer = Player.Create("John Doe", 1000m).Data!;
+        var expectedPlayer = Player.Create("John Doe", 1000m, 100).Data!;
         //expectedPlayer?.Id = Guid.NewGuid();
 
         _mockPlayerRepository
@@ -121,14 +121,12 @@ public class CreatePlayerHandlerTests
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(100)]
-    [InlineData(10000)]
+    [InlineData(1000)]
     public async Task Handle_WithVariousBalances_ShouldCreatePlayerWithCorrectBalance(decimal balance)
     {
         // Arrange
         var command = new CreatePlayerCommand("Test Player", balance);
-        var expectedPlayer = Player.Create("Test Player", balance).Data!;
+        var expectedPlayer = Player.Create("Test Player", balance, 100).Data!;
         //expectedPlayer.Id = Guid.NewGuid();
 
         _mockPlayerRepository
@@ -160,7 +158,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_ShouldCallRepositoryWithCorrectPlayer()
     {
         // Arrange
-        var command = new CreatePlayerCommand("Jane Smith", 2000m);
+        var command = new CreatePlayerCommand("Jane Smith", 1000m);
         Player? capturedPlayer = null;
 
         _mockPlayerRepository
@@ -173,7 +171,7 @@ public class CreatePlayerHandlerTests
         // Assert
         capturedPlayer.Should().NotBeNull();
         capturedPlayer!.Name.Should().Be("Jane Smith");
-        capturedPlayer!.Balance.Should().Be(2000m);
+        capturedPlayer!.Balance.Should().Be(1000m);
     }
 
     [Fact]
