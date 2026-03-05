@@ -12,7 +12,7 @@ public sealed class Player : EntityBase<Guid>
 {
     public string Name { get; } = string.Empty;
     public decimal Balance { get; private set; }
-
+    public int MaxLimit { get; private set; }
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
@@ -20,12 +20,13 @@ public sealed class Player : EntityBase<Guid>
     private readonly List<DistributionRecord> _distributionHistory = [];
     public IReadOnlyCollection<DistributionRecord> DistributionHistory => _distributionHistory.AsReadOnly();
 
-    private Player(string name, decimal balance)
+    private Player(string name, decimal balance, int maxLimit)
     {
         Name = name;
         Balance = balance;
+        MaxLimit = maxLimit;
     }
-    public static Result<Player> Create(string name, decimal balance)
+    public static Result<Player> Create(string name, decimal balance, int maxLimit)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result<Player>.Failure(
@@ -35,10 +36,15 @@ public sealed class Player : EntityBase<Guid>
             return Result<Player>.Failure(
                 new Error("Player.Balance.Negative", "Balance cannot be negative"));
 
+        if (maxLimit <= 0)
+            return Result<Player>.Failure(
+                new Error("Player.MaxLimit.Empty", "Max Limit must be greater than zero."));
+
         // maybe add domain event here
 
-        return Result<Player>.Success(new Player(name, balance));
+        return Result<Player>.Success(new Player(name, balance, maxLimit));
     }
+
 
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
@@ -74,6 +80,7 @@ public sealed class Player : EntityBase<Guid>
     #region Buy
     private bool CanAfford(decimal amount) => Balance >= amount;
     private void DecreaseBalance(decimal amount) => Balance -= amount;
+    public void DecreaseLimit(int amount) => MaxLimit -= amount;
 
     public Result<InventoryResult> BuyItem(Guid itemId, int quantity)
     {
@@ -95,6 +102,8 @@ public sealed class Player : EntityBase<Guid>
         DecreaseBalance(totalCost);
 
         var result = AddToInventory(itemId, quantity);
+
+        DecreaseLimit(quantity);
 
         var record = DistributionRecord.Create(
             result.Inventory.ItemId,

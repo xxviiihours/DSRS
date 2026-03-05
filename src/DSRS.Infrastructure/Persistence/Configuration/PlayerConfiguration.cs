@@ -20,6 +20,9 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
                      .HasColumnType("decimal(18,2)")
                      .IsRequired();
 
+              builder.Property(p => p.MaxLimit)
+                     .IsRequired();
+
               builder.HasMany(p => p.InventoryItems)
                      .WithOne()
                      .HasForeignKey(i => i.PlayerId)
