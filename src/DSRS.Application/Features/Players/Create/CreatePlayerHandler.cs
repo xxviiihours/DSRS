@@ -16,13 +16,13 @@ public class CreatePlayerHandler(IPlayerRepository playerRepository,
     {
         try
         {
-            if(await _playerRepository.NameExistsAsync(command.Name))
+            if (await _playerRepository.NameExistsAsync(command.Name))
             {
                 return Result<Player>.Failure(new Error("Player.Name.Exists",
                     $"A player with the name '{command.Name}' already exists."));
             }
 
-            var player = Player.Create(command.Name, command.Balance);
+            var player = Player.Create(command.Name, 1000, 100);
 
             if (!player.IsSuccess)
                 return Result<Player>.Failure(player.Error!);
