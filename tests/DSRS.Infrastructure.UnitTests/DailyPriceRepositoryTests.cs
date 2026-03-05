@@ -30,12 +30,12 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAsync_Should_AddDailyPriceToContext));
-        var player = Player.Create("Test Player", 1000m).Data!;
+        var player = Player.Create("Test Player", 1000m, 100).Data!;
         var item = Item.Create("Iron Ore", "Mining resource", 100m, 0.5m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 105m, PriceState.HIGH).Data!;
+        var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 105m, 12m, PriceState.HIGH).Data!;
         var repository = new DailyPriceRepository(context);
 
         // Act
@@ -59,12 +59,12 @@ public class DailyPriceRepositoryTests
         // Arrange & Act
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
-            var player = Player.Create("Test Player", 1000m).Data!;
+            var player = Player.Create("Test Player", 1000m, 100).Data!;
             var item = Item.Create("Gold Bar", "Precious metal", 500m, 0.3m).Data!;
             context.Items.Add(item);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-            var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 520m, PriceState.HIGH).Data!;
+            var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 520m, 20m, PriceState.HIGH).Data!;
             var repository = new DailyPriceRepository(context);
             await repository.CreateAsync(dailyPrice);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -85,13 +85,13 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAsync_Should_MaintainDailyPriceProperties));
-        var player = Player.Create("Test Player", 1000m).Data!;
+        var player = Player.Create("Test Player", 1000m, 100).Data!;
         var item = Item.Create("Copper Ore", "Metal ore", 75m, 0.4m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var date = new DateOnly(2026, 2, 13);
-        var dailyPrice = DailyPrice.Create(player, item, date, 78m, PriceState.LOW).Data!;
+        var dailyPrice = DailyPrice.Create(player, item, date, 78m, 20m, PriceState.LOW).Data!;
         var repository = new DailyPriceRepository(context);
 
         // Act
@@ -112,7 +112,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAllAsync_Should_AddMultipleDailyPricesToContext));
-        var player = Player.Create("Test Player", 1000m).Data!;
+        var player = Player.Create("Test Player", 1000m, 100).Data!;
         var item1 = Item.Create("Silver Ore", "Precious metal ore", 150m, 0.6m).Data!;
         var item2 = Item.Create("Tin Ore", "Metal ore", 50m, 0.2m).Data!;
         context.Items.AddRange(item1, item2);
@@ -121,8 +121,8 @@ public class DailyPriceRepositoryTests
         var date = DateOnly.FromDateTime(DateTime.Now);
         var dailyPrices = new List<DailyPrice>
         {
-            DailyPrice.Create(player, item1, date, 155m, PriceState.HIGH).Data!,
-            DailyPrice.Create(player, item2, date, 48m, PriceState.LOW).Data!
+            DailyPrice.Create(player, item1, date, 155m, 10m, PriceState.HIGH).Data!,
+            DailyPrice.Create(player, item2, date, 48m,25m, PriceState.LOW).Data!
         };
         var repository = new DailyPriceRepository(context);
 
@@ -147,7 +147,7 @@ public class DailyPriceRepositoryTests
         // Arrange & Act
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
-            var player = Player.Create("Test Player", 1000m).Data!;
+            var player = Player.Create("Test Player", 1000m, 100).Data!;
             var item1 = Item.Create("Diamond", "Precious stone", 1000m, 0.8m).Data!;
             var item2 = Item.Create("Emerald", "Precious stone", 800m, 0.7m).Data!;
             context.Items.AddRange(item1, item2);
@@ -156,8 +156,8 @@ public class DailyPriceRepositoryTests
             var date = DateOnly.FromDateTime(DateTime.Now);
             var dailyPrices = new List<DailyPrice>
             {
-                DailyPrice.Create(player, item1, date, 1050m, PriceState.HIGH).Data!,
-                DailyPrice.Create(player, item2, date, 820m, PriceState.HIGH).Data!
+                DailyPrice.Create(player, item1, date, 1050m,20m, PriceState.HIGH).Data!,
+                DailyPrice.Create(player, item2, date, 820m,30m, PriceState.HIGH).Data!
             };
             var repository = new DailyPriceRepository(context);
             await repository.CreateAllAsync(dailyPrices);
@@ -197,7 +197,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAllAsync_Should_MaintainAllDailyPriceProperties));
-        var player = Player.Create("Test Player", 1000m).Data!;
+        var player = Player.Create("Test Player", 1000m, 100).Data!;
         var item1 = Item.Create("Platinum", "Precious metal", 1200m, 0.5m).Data!;
         var item2 = Item.Create("Palladium", "Precious metal", 900m, 0.4m).Data!;
         context.Items.AddRange(item1, item2);
@@ -206,8 +206,8 @@ public class DailyPriceRepositoryTests
         var date = new DateOnly(2026, 2, 13);
         var dailyPrices = new List<DailyPrice>
         {
-            DailyPrice.Create(player, item1, date.AddDays(-1), 1210m, PriceState.HIGH).Data!,
-            DailyPrice.Create(player, item2, date, 890m, PriceState.LOW).Data!
+            DailyPrice.Create(player, item1, date.AddDays(-1), 1210m,10m, PriceState.HIGH).Data!,
+            DailyPrice.Create(player, item2, date, 890m,-10m, PriceState.LOW).Data!
         };
         var repository = new DailyPriceRepository(context);
 

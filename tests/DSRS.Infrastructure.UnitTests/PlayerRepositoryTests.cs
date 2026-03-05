@@ -34,7 +34,7 @@ public class PlayerRepositoryTests
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var repo = new PlayerRepository(context, _mockDateTime.Object); // adjust class name
-            var entity = Player.Create("Test", 1000).Data!; // adjust entity
+            var entity = Player.Create("Test", 1000, 10).Data!; // adjust entity
             // Act
             await repo.CreateAsync(entity);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -53,7 +53,7 @@ public class PlayerRepositoryTests
     public async Task NameExistsAsync_ReturnsTrue_WhenNameExists()
     {
         using var context = CreateContext(nameof(NameExistsAsync_ReturnsTrue_WhenNameExists));
-        var player = Player.Create("Alice", 10m).Data!;
+        var player = Player.Create("Alice", 10m, 100).Data!;
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -67,7 +67,7 @@ public class PlayerRepositoryTests
     public async Task NameExistsAsync_ReturnsFalse_WhenNameDoesNotExist()
     {
         using var context = CreateContext(nameof(NameExistsAsync_ReturnsFalse_WhenNameDoesNotExist));
-        var player = Player.Create("Bob", 5m).Data!;
+        var player = Player.Create("Bob", 5m, 100).Data!;
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -81,7 +81,7 @@ public class PlayerRepositoryTests
     public async Task NameExistsAsync_IsCaseSensitive()
     {
         using var context = CreateContext(nameof(NameExistsAsync_IsCaseSensitive));
-        var player = Player.Create("Alice", 10m).Data!;
+        var player = Player.Create("Alice", 10m, 100).Data!;
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
@@ -95,7 +95,7 @@ public class PlayerRepositoryTests
     public async Task NameExistsAsync_ReturnsFalse_WhenNameIsNull()
     {
         using var context = CreateContext(nameof(NameExistsAsync_ReturnsFalse_WhenNameIsNull));
-        var player = Player.Create("Dave", 1m).Data!;
+        var player = Player.Create("Dave", 1m, 100).Data!;
         context.Players.Add(player);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
