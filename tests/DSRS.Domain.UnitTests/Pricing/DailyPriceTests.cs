@@ -603,7 +603,7 @@ public class DailyPriceTests
         // Assert
         result1.Data!.Price.Should().Be(price1);
         result2.Data!.Price.Should().Be(price2);
-        result1.Data!.Should().NotBe(result2.Data!);
+        result2.Data!.Should().NotBe(result1.Data!);
     }
 
     #endregion

@@ -2,7 +2,7 @@ using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Infrastructure.Persistence;
-using DSRS.Infrastructure.Repositories;
+using DSRS.Infrastructure.Persistence.Repositories;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;

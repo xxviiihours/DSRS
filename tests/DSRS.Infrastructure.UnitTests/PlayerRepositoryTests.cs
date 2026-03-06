@@ -1,6 +1,6 @@
 ﻿using DSRS.Domain.Aggregates.Players;
 using DSRS.Infrastructure.Persistence;
-using DSRS.Infrastructure.Repositories;
+using DSRS.Infrastructure.Persistence.Repositories;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Moq;
