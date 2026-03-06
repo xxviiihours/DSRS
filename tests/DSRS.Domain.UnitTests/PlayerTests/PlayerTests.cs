@@ -154,18 +154,18 @@ public class PlayerTests
         // Arrange
         var name = "CompletePlayer";
         var balance = 5000.75m;
-        var maxLImit = 100;
+        var purchaseLimit = 100;
 
         // Act
         var result = Player.Create(name);
         result.Data!.IncreaseBalance(balance);
-        result.Data!.IncreaseStorage(maxLImit);
+        result.Data!.RegenerateLimit(purchaseLimit);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data!.Name.Should().Be(name);
         result.Data.Balance.Should().Be(balance + 1000);
-        result.Data!.MaxLimit.Should().Be(maxLImit);
+        result.Data!.PurchaseLimit.Should().Be(purchaseLimit);
     }
 
     [Fact]
