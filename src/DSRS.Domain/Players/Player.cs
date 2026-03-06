@@ -13,6 +13,8 @@ public sealed class Player : EntityBase<Guid>
     public string Name { get; } = string.Empty;
     public decimal Balance { get; private set; }
     public int MaxLimit { get; private set; }
+    public DateOnly LastStorageGeneration { get; private set; }
+    private const int MaxStorageCap = 100;
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
@@ -20,31 +22,26 @@ public sealed class Player : EntityBase<Guid>
     private readonly List<DistributionRecord> _distributionHistory = [];
     public IReadOnlyCollection<DistributionRecord> DistributionHistory => _distributionHistory.AsReadOnly();
 
-    private Player(string name, decimal balance, int maxLimit)
+    private Player(string name)
     {
         Name = name;
-        Balance = balance;
-        MaxLimit = maxLimit;
+        Balance = 1000;
+        MaxLimit = 0;
+        LastStorageGeneration = DateOnly.FromDateTime(DateTime.Now);
     }
-    public static Result<Player> Create(string name, decimal balance, int maxLimit)
+    public static Result<Player> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result<Player>.Failure(
                 new Error("Player.Name.Empty", "Player name cannot be empty"));
 
-        if (balance < 0)
-            return Result<Player>.Failure(
-                new Error("Player.Balance.Negative", "Balance cannot be negative"));
-
-        if (maxLimit <= 0)
-            return Result<Player>.Failure(
-                new Error("Player.MaxLimit.Empty", "Max Limit must be greater than zero."));
-
         // maybe add domain event here
 
-        return Result<Player>.Success(new Player(name, balance, maxLimit));
+        return Result<Player>.Success(new Player(name));
     }
-
+    public void IncreaseStorage(int amount) => MaxLimit = Math.Min(MaxLimit + amount, MaxStorageCap);
+    public void DecreaseStorage(int amount) => MaxLimit -= amount;
+    public void SetLastGeneration(DateOnly date) => LastStorageGeneration = date;
 
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
@@ -78,9 +75,8 @@ public sealed class Player : EntityBase<Guid>
     #endregion
 
     #region Buy
-    private bool CanAfford(decimal amount) => Balance >= amount;
-    private void DecreaseBalance(decimal amount) => Balance -= amount;
-    public void DecreaseLimit(int amount) => MaxLimit -= amount;
+    public bool CanAfford(decimal amount) => Balance >= amount;
+    public void DecreaseBalance(decimal amount) => Balance -= amount;
 
     public Result<InventoryResult> BuyItem(Guid itemId, int quantity)
     {
@@ -103,7 +99,7 @@ public sealed class Player : EntityBase<Guid>
 
         var result = AddToInventory(itemId, quantity);
 
-        DecreaseLimit(quantity);
+        DecreaseStorage(quantity);
 
         var record = DistributionRecord.Create(
             result.Inventory.ItemId,
@@ -117,7 +113,7 @@ public sealed class Player : EntityBase<Guid>
     #endregion
 
     #region Selling    
-    private void IncreaseBalance(decimal amount) => Balance += amount;
+    public void IncreaseBalance(decimal amount) => Balance += amount;
 
     public Result<Inventory> SellItem(Guid itemId, int quantity)
     {
