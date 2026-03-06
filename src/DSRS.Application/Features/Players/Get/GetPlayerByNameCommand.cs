@@ -1,9 +1,7 @@
-﻿using DSRS.SharedKernel.Primitives;
+﻿using DSRS.Domain.Players;
+using DSRS.SharedKernel.Primitives;
 using Mediator;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DSRS.Application.Features.Players.Get;
 
-public record GetPlayerByNameCommand(string Name) : ICommand<Result<PlayerDto>> { }
+public record GetPlayerByNameCommand(string Name) : ICommand<Result<Player>> { }
