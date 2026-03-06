@@ -1,6 +1,7 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Application.Features.Players.Create;
 using DSRS.Domain.Players;
+using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Moq;
@@ -12,13 +13,15 @@ public class CreatePlayerHandlerTests
 {
     private readonly Mock<IPlayerRepository> _mockPlayerRepository;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IDateTime> _mockDatetimeService;
     private readonly CreatePlayerHandler _handler;
 
     public CreatePlayerHandlerTests()
     {
         _mockPlayerRepository = new Mock<IPlayerRepository>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object);
+        _mockDatetimeService = new Mock<IDateTime>();
+        _handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object, _mockDatetimeService.Object);
     }
 
     private sealed class TestDbException : DbException
@@ -34,8 +37,8 @@ public class CreatePlayerHandlerTests
         _mockPlayerRepository.Setup(r => r.NameExistsAsync(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
-        var handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object);
-        var command = new CreatePlayerCommand("existing-player", 10m);
+        var handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object, _mockDatetimeService!.Object);
+        var command = new CreatePlayerCommand("existing-player");
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -54,8 +57,8 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WithValidPlayerData_ShouldCreatePlayerSuccessfully()
     {
         // Arrange
-        var command = new CreatePlayerCommand("John Doe", 1000m);
-        var expectedPlayer = Player.Create("John Doe", 1000m, 100).Data!;
+        var command = new CreatePlayerCommand("John Doe");
+        var expectedPlayer = Player.Create("John Doe").Data!;
         //expectedPlayer?.Id = Guid.NewGuid();
 
         _mockPlayerRepository
@@ -77,7 +80,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WithEmptyPlayerName_ShouldReturnFailureResult()
     {
         // Arrange
-        var command = new CreatePlayerCommand("", 1000m);
+        var command = new CreatePlayerCommand("");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -95,7 +98,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WithWhitespacePlayerName_ShouldReturnFailureResult()
     {
         // Arrange
-        var command = new CreatePlayerCommand("   ", 500m);
+        var command = new CreatePlayerCommand("   ");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -110,7 +113,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WithNullPlayerName_ShouldReturnFailureResult()
     {
         // Arrange
-        var command = new CreatePlayerCommand(null!, 750m);
+        var command = new CreatePlayerCommand(null!);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -125,8 +128,8 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WithVariousBalances_ShouldCreatePlayerWithCorrectBalance(decimal balance)
     {
         // Arrange
-        var command = new CreatePlayerCommand("Test Player", balance);
-        var expectedPlayer = Player.Create("Test Player", balance, 100).Data!;
+        var command = new CreatePlayerCommand("Test Player");
+        var expectedPlayer = Player.Create("Test Player").Data!;
         //expectedPlayer.Id = Guid.NewGuid();
 
         _mockPlayerRepository
@@ -144,7 +147,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_WhenRepositoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var command = new CreatePlayerCommand("John Doe", 1000m);
+        var command = new CreatePlayerCommand("John Doe");
         _mockPlayerRepository
             .Setup(x => x.CreateAsync(It.IsAny<Player>()))
             .ThrowsAsync(new InvalidOperationException("Database error"));
@@ -158,7 +161,7 @@ public class CreatePlayerHandlerTests
     public async Task Handle_ShouldCallRepositoryWithCorrectPlayer()
     {
         // Arrange
-        var command = new CreatePlayerCommand("Jane Smith", 1000m);
+        var command = new CreatePlayerCommand("Jane Smith");
         Player? capturedPlayer = null;
 
         _mockPlayerRepository
@@ -186,8 +189,8 @@ public class CreatePlayerHandlerTests
         _mockPlayerRepository.Setup(r => r.CreateAsync(It.IsAny<Player>()))
                 .ThrowsAsync(new TestDbException("simulated db failure"));
 
-        var handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object);
-        var command = new CreatePlayerCommand("player", 1m);
+        var handler = new CreatePlayerHandler(_mockPlayerRepository.Object, _mockUnitOfWork.Object, _mockDatetimeService.Object);
+        var command = new CreatePlayerCommand("player");
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
