@@ -1,9 +1,9 @@
 ﻿using DSRS.Application.Features.Leaderboards;
+using DSRS.Domain.Aggregates.Inventories;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Domain.Common;
-using DSRS.Domain.Inventories;
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
-using DSRS.Domain.Pricing;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;

@@ -1,7 +1,7 @@
-﻿using DSRS.Domain.Items;
+﻿using DSRS.Domain.Aggregates.Items;
 using DSRS.SharedKernel.Enums;
 
-namespace DSRS.Domain.Pricing;
+namespace DSRS.Domain.Aggregates.Pricing;
 
 public class MarketPricingService
 {

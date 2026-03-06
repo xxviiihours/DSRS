@@ -1,4 +1,4 @@
-namespace DSRS.Domain.Distributions;
+namespace DSRS.Domain.Aggregates.Distributions;
 
 public enum DistributionType
 {

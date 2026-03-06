@@ -1,5 +1,5 @@
-﻿using DSRS.Domain.Players;
-using DSRS.Domain.Pricing;
+﻿using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

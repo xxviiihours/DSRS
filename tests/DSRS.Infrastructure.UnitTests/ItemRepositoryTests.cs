@@ -1,4 +1,4 @@
-using DSRS.Domain.Items;
+using DSRS.Domain.Aggregates.Items;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
 using DSRS.SharedKernel.Interfaces;

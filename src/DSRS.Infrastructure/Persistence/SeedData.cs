@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Items;
+﻿using DSRS.Domain.Aggregates.Items;
 using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Infrastructure.Persistence;

@@ -1,5 +1,5 @@
 using DSRS.Application.Features.DailyPrices;
-using DSRS.Domain.Pricing;
+using DSRS.Domain.Aggregates.Pricing;
 
 namespace DSRS.Application.Contracts;
 

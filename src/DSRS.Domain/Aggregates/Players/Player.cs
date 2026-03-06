@@ -1,12 +1,12 @@
-﻿using DSRS.Domain.Distributions;
-using DSRS.Domain.Inventories;
-using DSRS.Domain.Items;
-using DSRS.Domain.Pricing;
+﻿using DSRS.Domain.Aggregates.Distributions;
+using DSRS.Domain.Aggregates.Inventories;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
-namespace DSRS.Domain.Players;
+namespace DSRS.Domain.Aggregates.Players;
 
 public sealed class Player : EntityBase<Guid>
 {

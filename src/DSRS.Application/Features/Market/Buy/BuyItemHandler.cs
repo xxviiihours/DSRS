@@ -1,6 +1,5 @@
 using DSRS.Application.Contracts;
-using DSRS.Domain.Inventories;
-using DSRS.Domain.Players;
+using DSRS.Domain.Aggregates.Inventories;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;

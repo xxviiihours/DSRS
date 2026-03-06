@@ -1,4 +1,4 @@
-﻿using DSRS.Domain.Distributions;
+﻿using DSRS.Domain.Aggregates.Distributions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

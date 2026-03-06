@@ -1,6 +1,6 @@
 using DSRS.Application.Contracts;
 using DSRS.Application.Features.Items.Get;
-using DSRS.Domain.Items;
+using DSRS.Domain.Aggregates.Items;
 using Moq;
 
 namespace DSRS.Application.UnitTests.Features.Items.Get;

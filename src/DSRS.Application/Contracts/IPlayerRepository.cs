@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Features.Players;
-using DSRS.Domain.Players;
+using DSRS.Domain.Aggregates.Players;
 
 namespace DSRS.Application.Contracts;
 

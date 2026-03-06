@@ -1,7 +1,7 @@
 using DSRS.SharedKernel.Enums;
 using System;
 
-namespace DSRS.Domain.Pricing;
+namespace DSRS.Domain.Aggregates.Pricing;
 
 public sealed record GeneratedPrice(decimal Price, decimal Percentage, PriceState State)
 {

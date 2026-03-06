@@ -2,7 +2,6 @@
 using DSRS.Application.Features.Items;
 using DSRS.Application.Features.Market;
 using DSRS.Application.Features.Players;
-using DSRS.Domain.Items;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

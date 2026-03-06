@@ -12,7 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Inventories\" />
+    <Folder Include="Events\" />
+    <Folder Include="Aggregates\Inventories\" />
   </ItemGroup>
 
 </Project>

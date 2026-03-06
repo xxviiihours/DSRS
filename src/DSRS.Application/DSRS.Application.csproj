@@ -18,7 +18,6 @@
     <Folder Include="Features\Players\Delete\" />
     <Folder Include="Features\Players\List\" />
     <Folder Include="Features\Players\Update\" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

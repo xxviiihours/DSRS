@@ -1,6 +1,5 @@
 using DSRS.Application.Features.DailyPrices;
 using DSRS.Application.Features.Market;
-using DSRS.Domain.Inventories;
 using DSRS.SharedKernel.Mappings;
 using System;
 

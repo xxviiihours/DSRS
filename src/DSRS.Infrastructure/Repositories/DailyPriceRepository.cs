@@ -1,6 +1,6 @@
 using DSRS.Application.Contracts;
 using DSRS.Application.Features.DailyPrices;
-using DSRS.Domain.Pricing;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

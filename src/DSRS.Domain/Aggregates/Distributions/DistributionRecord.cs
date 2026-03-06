@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Domain.Distributions;
+namespace DSRS.Domain.Aggregates.Distributions;
 
 public class DistributionRecord : EntityBase<Guid>, IAuditableEntity
 {

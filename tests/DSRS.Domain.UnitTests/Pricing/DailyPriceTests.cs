@@ -1,6 +1,6 @@
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
-using DSRS.Domain.Pricing;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;

@@ -1,5 +1,5 @@
 using DSRS.Application.Contracts;
-using DSRS.Domain.Inventories;
+using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 

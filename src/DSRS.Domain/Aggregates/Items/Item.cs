@@ -1,9 +1,8 @@
-﻿using DSRS.Domain.Pricing;
-using DSRS.SharedKernel.Abstractions;
+﻿using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
-namespace DSRS.Domain.Items;
+namespace DSRS.Domain.Aggregates.Items;
 
 public sealed class Item : EntityBase<Guid>
 {

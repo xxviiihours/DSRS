@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Contracts;
-using DSRS.Domain.Players;
+using DSRS.Domain.Aggregates.Players;
 using DSRS.Infrastructure.Persistence;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;

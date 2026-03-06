@@ -1,5 +1,6 @@
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
@@ -530,7 +531,7 @@ public class PlayerTests
 
         // Assert
         var collection = player.DailyPrices;
-        collection.Should().BeAssignableTo<IReadOnlyCollection<DSRS.Domain.Pricing.DailyPrice>>();
+        collection.Should().BeAssignableTo<IReadOnlyCollection<DailyPrice>>();
     }
 
     #endregion
@@ -671,7 +672,7 @@ public class PlayerTests
         var result = player.AddDailyPrice(item, new DateOnly(2024, 1, 15), 100m, 20m, PriceState.HIGH);
 
         // Assert
-        result.Should().BeOfType<Result<DSRS.Domain.Pricing.DailyPrice>>();
+        result.Should().BeOfType<Result<DailyPrice>>();
     }
 
     [Fact]
@@ -685,7 +686,7 @@ public class PlayerTests
         var result = player.AddDailyPrice(null!, new DateOnly(2024, 1, 15), 100m, 20m, PriceState.HIGH);
 
         // Assert
-        result.Should().BeOfType<Result<DSRS.Domain.Pricing.DailyPrice>>();
+        result.Should().BeOfType<Result<DailyPrice>>();
     }
 
     [Fact]
@@ -802,7 +803,7 @@ public class PlayerTests
         var player = playerResult.Data!;
 
         // Assert
-        player.DailyPrices.Should().BeAssignableTo<IReadOnlyCollection<DSRS.Domain.Pricing.DailyPrice>>();
+        player.DailyPrices.Should().BeAssignableTo<IReadOnlyCollection<DailyPrice>>();
     }
 
     [Fact]

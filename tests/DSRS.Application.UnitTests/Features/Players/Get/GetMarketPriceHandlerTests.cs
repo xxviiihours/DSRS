@@ -1,11 +1,9 @@
 using DSRS.Application.Contracts;
 using DSRS.Application.Features.Market.Get;
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
-using DSRS.Domain.Pricing;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Interfaces;
-using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Moq;
 

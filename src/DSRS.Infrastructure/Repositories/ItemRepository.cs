@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Contracts;
-using DSRS.Domain.Items;
+using DSRS.Domain.Aggregates.Items;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

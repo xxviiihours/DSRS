@@ -1,4 +1,4 @@
-using DSRS.Domain.Inventories;
+using DSRS.Domain.Aggregates.Inventories;
 
 namespace DSRS.Application.Contracts;
 

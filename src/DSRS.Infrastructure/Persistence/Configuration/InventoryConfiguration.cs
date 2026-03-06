@@ -1,4 +1,4 @@
-using DSRS.Domain.Inventories;
+using DSRS.Domain.Aggregates.Inventories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

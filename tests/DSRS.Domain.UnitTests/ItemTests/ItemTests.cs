@@ -1,4 +1,4 @@
-using DSRS.Domain.Items;
+using DSRS.Domain.Aggregates.Items;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
 using Xunit;

@@ -1,10 +1,9 @@
+using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Common;
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Primitives;
 
-namespace DSRS.Domain.Inventories;
+namespace DSRS.Domain.Aggregates.Inventories;
 
 public class Inventory : EntityBase<Guid>, IAuditableEntity
 {

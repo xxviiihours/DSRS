@@ -1,6 +1,6 @@
-using DSRS.Domain.Items;
-using DSRS.Domain.Players;
-using DSRS.Domain.Pricing;
+using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Repositories;
 using DSRS.SharedKernel.Enums;

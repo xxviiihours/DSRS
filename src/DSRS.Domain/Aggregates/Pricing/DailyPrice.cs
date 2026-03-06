@@ -1,10 +1,10 @@
-﻿using DSRS.Domain.Items;
-using DSRS.Domain.Players;
+﻿using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
-namespace DSRS.Domain.Pricing;
+namespace DSRS.Domain.Aggregates.Pricing;
 
 public sealed class DailyPrice : EntityBase<Guid>
 {

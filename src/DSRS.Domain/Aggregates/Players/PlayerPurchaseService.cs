@@ -1,6 +1,6 @@
 using System;
 
-namespace DSRS.Domain.Players;
+namespace DSRS.Domain.Aggregates.Players;
 
 public sealed class PlayerPurchaseService
 {
