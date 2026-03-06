@@ -38,7 +38,7 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
 
     public override async Task<IResult> ExecuteAsync(CreatePlayerRequest request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new CreatePlayerCommand(request.Name!, request.Balance), cancellationToken);
+        var result = await _mediator.Send(new CreatePlayerCommand(request.Name!), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => new CreatePlayerResponse(
@@ -58,7 +58,6 @@ public class CreatePlayerRequest
 
     [Required]
     public string Name { get; set; } = string.Empty;
-    public decimal Balance { get; set; } = 0;
 }
 
 public class CreatePlayerValidator : Validator<CreatePlayerRequest>
