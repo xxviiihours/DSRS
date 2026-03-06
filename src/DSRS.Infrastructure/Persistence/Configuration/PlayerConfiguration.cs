@@ -21,6 +21,10 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
                      .IsRequired();
 
               builder.Property(p => p.MaxLimit)
+                     .HasDefaultValue(100)
+                     .IsRequired();
+
+              builder.Property(p => p.LastStorageGeneration)
                      .IsRequired();
 
               builder.HasMany(p => p.InventoryItems)
