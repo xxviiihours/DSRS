@@ -5,7 +5,7 @@ using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Inventories;
 
-public class Inventory : EntityBase<Guid>, IAuditableEntity
+public class Inventory : AggregateRoot<Guid>, IAuditableEntity
 {
 
     public Guid PlayerId { get; }

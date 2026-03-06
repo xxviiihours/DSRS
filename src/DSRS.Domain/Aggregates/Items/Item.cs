@@ -4,7 +4,7 @@ using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Items;
 
-public sealed class Item : EntityBase<Guid>
+public sealed class Item : AggregateRoot<Guid>
 {
     public string Name { get; } = string.Empty;
     public string Description { get; }

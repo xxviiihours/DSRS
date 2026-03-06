@@ -2,13 +2,14 @@
 using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.Events;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Players;
 
-public sealed class Player : EntityBase<Guid>
+public sealed class Player : AggregateRoot<Guid>
 {
     public string Name { get; } = string.Empty;
     public decimal Balance { get; private set; }
@@ -107,20 +108,13 @@ public sealed class Player : EntityBase<Guid>
         if (!result.IsSuccess)
             return Result<InventoryResult>.Failure(result.Error!);
 
-        var record = DistributionRecord.Create(
-            result.Data!.Inventory.ItemId,
-            result.Data!.Inventory.PlayerId,
-            totalCost, DistributionType.BUY);
-
-        if (!record.IsSuccess)
-            return Result<InventoryResult>.Failure(record.Error!);
-
+        RaiseDomainEvent(
+            new ItemPurchasedEvent(dailyPrice.Id, result.Data!.Inventory.PlayerId, quantity, totalCost));
 
         ConsumeLimit(quantity);
         DecreaseBalance(totalCost);
-        _distributionHistory.Add(record.Data!);
 
-        return Result<InventoryResult>.Success(result.Data);
+        return Result<InventoryResult>.Success(result.Data!);
     }
     #endregion
 

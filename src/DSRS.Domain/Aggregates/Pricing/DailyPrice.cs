@@ -6,7 +6,7 @@ using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Pricing;
 
-public sealed class DailyPrice : EntityBase<Guid>
+public sealed class DailyPrice : AggregateRoot<Guid>
 {
     public DateOnly Date { get; }
     public decimal Price { get; }
