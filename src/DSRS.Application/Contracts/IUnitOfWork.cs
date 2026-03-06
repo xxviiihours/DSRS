@@ -1,10 +1,12 @@
-﻿using System;
+﻿using DSRS.SharedKernel.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DSRS.Application.Contracts;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IAsyncDisposable
 {
     Task CommitAsync(CancellationToken cancellationToken = default);
+
 }

@@ -1,9 +1,11 @@
 ﻿using DSRS.Application.Features.Leaderboards;
+using DSRS.Domain.Aggregates.Distributions;
 using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Domain.Common;
+using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -16,6 +18,7 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     public DbSet<Item> Items => Set<Item>();
     public DbSet<DailyPrice> DailyPrices => Set<DailyPrice>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
+    public DbSet<DistributionRecord> DistributionRecords => Set<DistributionRecord>();
 
     // view
     public DbSet<PlayerLeaderboardDto> PlayerLeaderboards { get; set; }
@@ -24,6 +27,9 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Ignore<DomainEvent>();
+
         modelBuilder.Entity<PlayerLeaderboardDto>().HasNoKey().ToView("view-1");
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

@@ -2,9 +2,10 @@
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
 using DSRS.Infrastructure.Persistence.Migrations.SqlServer;
-using DSRS.Infrastructure.Queries;
-using DSRS.Infrastructure.Repositories;
-using DSRS.Infrastructure.Services;
+using DSRS.Infrastructure.Persistence.Queries;
+using DSRS.Infrastructure.Persistence.Repositories;
+using DSRS.Infrastructure.Persistence.Services;
+using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,9 +44,18 @@ public static class InfrastuctureServiceExtensions
 
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
-        services.AddScoped<IUnitOfWork, EFUnitOfWork>();
         services.AddScoped<IDailyPriceRepository, DailyPriceRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
+        services.AddScoped<IDistributionHistory, DistributionHistoryRepository>();
+
+        // Unit of Work
+        services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+
+        // Event Publishing Service
+        services.AddScoped<IDomainEventService, DomainEventService>();
+
+        // Event Handlers
+        //services.AddScoped<ItemPurchasedEvent, ItemPurchasedEventHandler>();
 
         // Query
         services.AddScoped<ILeaderboardsQuery, LeaderboardsQuery>();
