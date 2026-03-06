@@ -3,7 +3,7 @@ using DSRS.Domain.Aggregates.Items;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace DSRS.Infrastructure.Repositories;
+namespace DSRS.Infrastructure.Persistence.Repositories;
 
 public class ItemRepository(AppDbContext context) : IItemRepository
 {

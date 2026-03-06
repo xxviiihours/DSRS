@@ -4,7 +4,7 @@ using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace DSRS.Infrastructure.Queries;
+namespace DSRS.Infrastructure.Persistence.Queries;
 
 public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
 {

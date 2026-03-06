@@ -4,7 +4,7 @@ using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace DSRS.Infrastructure.Repositories;
+namespace DSRS.Infrastructure.Persistence.Repositories;
 
 public class DailyPriceRepository(AppDbContext context) : IDailyPriceRepository
 {

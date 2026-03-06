@@ -1,7 +1,7 @@
 using DSRS.SharedKernel.Interfaces;
 using System;
 
-namespace DSRS.Infrastructure.Services;
+namespace DSRS.Infrastructure.Persistence.Services;
 
 public class DateTimeService : IDateTime
 {

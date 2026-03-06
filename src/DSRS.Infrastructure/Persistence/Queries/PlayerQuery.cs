@@ -5,7 +5,7 @@ using DSRS.Application.Features.Players;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace DSRS.Infrastructure.Queries;
+namespace DSRS.Infrastructure.Persistence.Queries;
 
 public class PlayerQuery(AppDbContext context) : IPlayerQuery
 {

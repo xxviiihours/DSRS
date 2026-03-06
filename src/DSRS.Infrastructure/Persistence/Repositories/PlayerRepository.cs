@@ -4,7 +4,7 @@ using DSRS.Infrastructure.Persistence;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DSRS.Infrastructure.Repositories;
+namespace DSRS.Infrastructure.Persistence.Repositories;
 
 public class PlayerRepository(AppDbContext context,
      IDateTime dateTimeService) : IPlayerRepository

@@ -3,7 +3,7 @@ using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Infrastructure.Persistence;
 using Microsoft.Extensions.Logging;
 
-namespace DSRS.Infrastructure.Repositories;
+namespace DSRS.Infrastructure.Persistence.Repositories;
 
 public class InventoryRepository(AppDbContext context,
     ILogger<InventoryRepository> logger) : IInventoryRepository
