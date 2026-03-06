@@ -30,7 +30,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAsync_Should_AddDailyPriceToContext));
-        var player = Player.Create("Test Player", 1000m, 100).Data!;
+        var player = Player.Create("Test Player").Data!;
         var item = Item.Create("Iron Ore", "Mining resource", 100m, 0.5m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -59,7 +59,7 @@ public class DailyPriceRepositoryTests
         // Arrange & Act
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
-            var player = Player.Create("Test Player", 1000m, 100).Data!;
+            var player = Player.Create("Test Player").Data!;
             var item = Item.Create("Gold Bar", "Precious metal", 500m, 0.3m).Data!;
             context.Items.Add(item);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -85,7 +85,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAsync_Should_MaintainDailyPriceProperties));
-        var player = Player.Create("Test Player", 1000m, 100).Data!;
+        var player = Player.Create("Test Player").Data!;
         var item = Item.Create("Copper Ore", "Metal ore", 75m, 0.4m).Data!;
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -112,7 +112,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAllAsync_Should_AddMultipleDailyPricesToContext));
-        var player = Player.Create("Test Player", 1000m, 100).Data!;
+        var player = Player.Create("Test Player").Data!;
         var item1 = Item.Create("Silver Ore", "Precious metal ore", 150m, 0.6m).Data!;
         var item2 = Item.Create("Tin Ore", "Metal ore", 50m, 0.2m).Data!;
         context.Items.AddRange(item1, item2);
@@ -147,7 +147,7 @@ public class DailyPriceRepositoryTests
         // Arrange & Act
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
-            var player = Player.Create("Test Player", 1000m, 100).Data!;
+            var player = Player.Create("Test Player").Data!;
             var item1 = Item.Create("Diamond", "Precious stone", 1000m, 0.8m).Data!;
             var item2 = Item.Create("Emerald", "Precious stone", 800m, 0.7m).Data!;
             context.Items.AddRange(item1, item2);
@@ -197,7 +197,7 @@ public class DailyPriceRepositoryTests
     {
         // Arrange
         using var context = CreateContext(nameof(CreateAllAsync_Should_MaintainAllDailyPriceProperties));
-        var player = Player.Create("Test Player", 1000m, 100).Data!;
+        var player = Player.Create("Test Player").Data!;
         var item1 = Item.Create("Platinum", "Precious metal", 1200m, 0.5m).Data!;
         var item2 = Item.Create("Palladium", "Precious metal", 900m, 0.4m).Data!;
         context.Items.AddRange(item1, item2);
