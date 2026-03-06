@@ -20,11 +20,10 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
                      .HasColumnType("decimal(18,2)")
                      .IsRequired();
 
-              builder.Property(p => p.MaxLimit)
-                     .HasDefaultValue(100)
+              builder.Property(p => p.PurchaseLimit)
                      .IsRequired();
 
-              builder.Property(p => p.LastStorageGeneration)
+              builder.Property(p => p.LastLimitGeneration)
                      .IsRequired();
 
               builder.HasMany(p => p.InventoryItems)

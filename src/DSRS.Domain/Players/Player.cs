@@ -12,9 +12,9 @@ public sealed class Player : EntityBase<Guid>
 {
     public string Name { get; } = string.Empty;
     public decimal Balance { get; private set; }
-    public int MaxLimit { get; private set; }
-    public DateOnly LastStorageGeneration { get; private set; }
-    private const int MaxStorageCap = 100;
+    public int PurchaseLimit { get; private set; }
+    private const int MaxPurchaseLimit = 100;
+    public DateOnly LastLimitGeneration { get; private set; }
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
@@ -26,8 +26,8 @@ public sealed class Player : EntityBase<Guid>
     {
         Name = name;
         Balance = 1000;
-        MaxLimit = 0;
-        LastStorageGeneration = DateOnly.FromDateTime(DateTime.Now);
+        PurchaseLimit = 25;
+        LastLimitGeneration = DateOnly.FromDateTime(DateTime.Now);
     }
     public static Result<Player> Create(string name)
     {
@@ -39,9 +39,12 @@ public sealed class Player : EntityBase<Guid>
 
         return Result<Player>.Success(new Player(name));
     }
-    public void IncreaseStorage(int amount) => MaxLimit = Math.Min(MaxLimit + amount, MaxStorageCap);
-    public void DecreaseStorage(int amount) => MaxLimit -= amount;
-    public void SetLastGeneration(DateOnly date) => LastStorageGeneration = date;
+    public void RegenerateLimit(int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, MaxPurchaseLimit);
+    public void ConsumeLimit(int amount) => PurchaseLimit -= amount;
+    public bool CanAfford(decimal amount) => Balance >= amount;
+    public void DecreaseBalance(decimal amount) => Balance -= amount;
+    public void IncreaseBalance(decimal amount) => Balance += amount;
+    public void SetLastGeneration(DateOnly date) => LastLimitGeneration = date;
 
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
@@ -75,14 +78,17 @@ public sealed class Player : EntityBase<Guid>
     #endregion
 
     #region Buy
-    public bool CanAfford(decimal amount) => Balance >= amount;
-    public void DecreaseBalance(decimal amount) => Balance -= amount;
 
     public Result<InventoryResult> BuyItem(Guid itemId, int quantity)
     {
         if (quantity <= 0)
             return Result<InventoryResult>.Failure(
                 new Error("Inventory.Quantity.Invalid", "Quantity must be greater than zero."));
+
+        if (quantity > PurchaseLimit)
+            return Result<InventoryResult>.Failure(
+                new Error("Player.PurchaseLimit.Insufficient", "Max purchase limit reached."));
+
 
         var dailyPrice = GetDailyPrice(itemId);
         if (dailyPrice is null)
@@ -95,25 +101,30 @@ public sealed class Player : EntityBase<Guid>
             return Result<InventoryResult>.Failure(
                 new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
-        DecreaseBalance(totalCost);
 
         var result = AddToInventory(itemId, quantity);
 
-        DecreaseStorage(quantity);
+        if (!result.IsSuccess)
+            return Result<InventoryResult>.Failure(result.Error!);
 
         var record = DistributionRecord.Create(
-            result.Inventory.ItemId,
-            result.Inventory.PlayerId,
+            result.Data!.Inventory.ItemId,
+            result.Data!.Inventory.PlayerId,
             totalCost, DistributionType.BUY);
 
+        if (!record.IsSuccess)
+            return Result<InventoryResult>.Failure(record.Error!);
+
+
+        ConsumeLimit(quantity);
+        DecreaseBalance(totalCost);
         _distributionHistory.Add(record.Data!);
 
-        return Result<InventoryResult>.Success(result);
+        return Result<InventoryResult>.Success(result.Data);
     }
     #endregion
 
     #region Selling    
-    public void IncreaseBalance(decimal amount) => Balance += amount;
 
     public Result<Inventory> SellItem(Guid itemId, int quantity)
     {
@@ -127,10 +138,8 @@ public sealed class Player : EntityBase<Guid>
                 new Error("Player.DailyPrice.Missing", "Daily price not found."));
 
         var revenue = dailyPrice.Price * quantity;
-        IncreaseBalance(revenue);
 
         var result = RemoveFromInventory(itemId, quantity);
-
         if (!result.IsSuccess)
             return Result<Inventory>.Failure(result.Error!);
 
@@ -139,6 +148,10 @@ public sealed class Player : EntityBase<Guid>
             result.Data!.PlayerId,
             revenue, DistributionType.SELL);
 
+        if (!record.IsSuccess)
+            return Result<Inventory>.Failure(record.Error!);
+
+        IncreaseBalance(revenue);
         _distributionHistory.Add(record.Data!);
 
         return result;
@@ -150,23 +163,26 @@ public sealed class Player : EntityBase<Guid>
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
 
     public record InventoryResult(Inventory Inventory, bool IsNew);
-    public InventoryResult AddToInventory(Guid itemId, int quantity)
+    public Result<InventoryResult> AddToInventory(Guid itemId, int quantity)
     {
         var existingItem = GetInventory(itemId);
 
         if (existingItem is null)
         {
             var createResult = Inventory.Create(Id, itemId, quantity);
+            if (!createResult.IsSuccess)
+                return Result<InventoryResult>.Failure(createResult.Error!);
 
             _inventoryItems.Add(createResult.Data!);
 
-            return new InventoryResult(createResult.Data!, true);
+            return Result<InventoryResult>.Success(
+                new InventoryResult(createResult.Data!, true));
         }
 
         existingItem.Increase(quantity);
-        return new InventoryResult(existingItem, false);
+        return Result<InventoryResult>.Success(
+               new InventoryResult(existingItem, false));
     }
-
     public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity)
     {
         var inventory = GetInventory(itemId);

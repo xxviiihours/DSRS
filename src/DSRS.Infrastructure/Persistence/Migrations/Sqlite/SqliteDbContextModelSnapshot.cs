@@ -136,18 +136,16 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateOnly>("LastStorageGeneration")
+                    b.Property<DateOnly>("LastLimitGeneration")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("MaxLimit")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(100);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PurchaseLimit")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

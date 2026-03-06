@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    [Migration("20260305155310_AddedMaxLimitPlayerTable")]
-    partial class AddedMaxLimitPlayerTable
+    [Migration("20260306173505_AdditionalColumnsInPlayerTable")]
+    partial class AdditionalColumnsInPlayerTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,13 +139,16 @@ namespace DSRS.Infrastructure.Persistence.Migrations.Sqlite
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("MaxLimit")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateOnly>("LastLimitGeneration")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PurchaseLimit")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
