@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Players;
+using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System.Data.Common;
@@ -7,10 +8,11 @@ using System.Data.Common;
 namespace DSRS.Application.Features.Players.Create;
 
 public class CreatePlayerHandler(IPlayerRepository playerRepository,
-    IUnitOfWork unitOfWork) : ICommandHandler<CreatePlayerCommand, Result<Player>>
+    IUnitOfWork unitOfWork, IDateTime datetimeService) : ICommandHandler<CreatePlayerCommand, Result<Player>>
 {
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IDateTime _datetimeService = datetimeService;
 
     public async ValueTask<Result<Player>> Handle(CreatePlayerCommand command, CancellationToken cancellationToken)
     {
@@ -22,10 +24,13 @@ public class CreatePlayerHandler(IPlayerRepository playerRepository,
                     $"A player with the name '{command.Name}' already exists."));
             }
 
-            var player = Player.Create(command.Name, 1000, 100);
+            var player = Player.Create(command.Name);
 
             if (!player.IsSuccess)
                 return Result<Player>.Failure(player.Error!);
+
+            var today = DateOnly.FromDateTime(_datetimeService.Now);
+            PlayerStorageService.GenerateDailyStorage(player.Data!, today);
 
             await _playerRepository.CreateAsync(player.Data!);
             await _unitOfWork.CommitAsync(cancellationToken);
