@@ -4,6 +4,7 @@ using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
+using Microsoft.Identity.Client.Extensions.Msal;
 using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Players;
@@ -44,7 +45,8 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
             mapResponse => new CreatePlayerResponse(
                 result.Data!.Id.ToString(),
                 result.Data!.Name,
-                result.Data!.Balance),
+                result.Data!.Balance,
+                result.Data!.PurchaseLimit),
             locationBuilder => $"market/{result.Data!.Id}",
             successStatusCode: StatusCodes.Status201Created
         );
@@ -72,10 +74,10 @@ public class CreatePlayerValidator : Validator<CreatePlayerRequest>
     }
 }
 
-public class CreatePlayerResponse(string id, string name, decimal balance)
+public class CreatePlayerResponse(string id, string name, decimal balance, int purchaseLimit)
 {
     public string Id { get; set; } = id;
     public string Name { get; set; } = name;
     public decimal Balance { get; set; } = balance;
-    public List<InventoryDto> InventoryItems { get; set; } = [];
+    public int PurchaseLimit { get; set; } = purchaseLimit;
 }

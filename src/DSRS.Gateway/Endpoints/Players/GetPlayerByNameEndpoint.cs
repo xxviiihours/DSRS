@@ -1,4 +1,5 @@
-﻿using DSRS.Application.Features.Players.Get;
+﻿using DSRS.Application.Features.Market;
+using DSRS.Application.Features.Players.Get;
 using DSRS.Gateway.Common.Extensions;
 using DSRS.SharedKernel.Primitives;
 using FastEndpoints;
@@ -52,9 +53,12 @@ public class GetPlayerByNameRequest
     public string Name { get; set; } = string.Empty;
 }
 
-public class GetPlayerByNameResponse(Guid id, string name, decimal balance)
+public class GetPlayerByNameResponse(Guid id, string name, decimal balance, int storage)
 {
     public Guid Id { get; set; } = id;
     public string Name { get; set; } = name;
     public decimal Balance { get; set; } = balance;
+    public int Storage { get; set; } = storage;
+
+    public List<InventoryDto> InventoryItems { get; set; } = [];
 }
