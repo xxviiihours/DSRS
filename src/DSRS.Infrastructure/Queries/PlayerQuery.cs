@@ -22,6 +22,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                 Id = p.Id,
                 Name = p.Name,
                 Balance = p.Balance,
+                PurchaseLimit = p.PurchaseLimit,
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
                     {
@@ -52,6 +53,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                 Id = p.Id,
                 Name = p.Name,
                 Balance = p.Balance,
+                PurchaseLimit = p.PurchaseLimit,
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
                     {

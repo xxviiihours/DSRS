@@ -30,7 +30,7 @@ public class CreatePlayerHandler(IPlayerRepository playerRepository,
                 return Result<Player>.Failure(player.Error!);
 
             var today = DateOnly.FromDateTime(_datetimeService.Now);
-            PlayerStorageService.GenerateDailyStorage(player.Data!, today);
+            PlayerPurchaseService.GenerateDailyPurchaseLimit(player.Data!, today);
 
             await _playerRepository.CreateAsync(player.Data!);
             await _unitOfWork.CommitAsync(cancellationToken);

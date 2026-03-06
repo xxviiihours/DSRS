@@ -10,10 +10,11 @@ using System.Text;
 namespace DSRS.Application.Features.Players.Get;
 
 public class GetPlayerByNameHandler(IPlayerRepository playerRepository,
-    IDateTime datetimeService) : ICommandHandler<GetPlayerByNameCommand, Result<Player>>
+    IDateTime datetimeService, IUnitOfWork unitOfWork) : ICommandHandler<GetPlayerByNameCommand, Result<Player>>
 {
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IDateTime _datetimeService = datetimeService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async ValueTask<Result<Player>> Handle(GetPlayerByNameCommand command, CancellationToken cancellationToken)
     {
@@ -24,8 +25,9 @@ public class GetPlayerByNameHandler(IPlayerRepository playerRepository,
 
         var today = DateOnly.FromDateTime(_datetimeService.Now);
 
-        PlayerStorageService.GenerateDailyStorage(player, today);
+        PlayerPurchaseService.GenerateDailyPurchaseLimit(player, today);
 
+        await _unitOfWork.CommitAsync(cancellationToken);
         return Result<Player>.Success(player);
     }
 }
