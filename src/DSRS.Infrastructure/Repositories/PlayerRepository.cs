@@ -1,6 +1,5 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Players;
-using DSRS.Infrastructure.Extensions;
 using DSRS.Infrastructure.Persistence;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +47,17 @@ public class PlayerRepository(AppDbContext context,
                 .Where(p => p.Date == _dateTimeService.DateToday))
             .Include(p => p.InventoryItems)
             .SingleOrDefaultAsync();
+
+        return player!;
+    }
+
+    public async Task<Player> GetByName(string name)
+    {
+        var player = await _context.Players
+            .Where(p => p.Name == name)
+            .Include(p => p.InventoryItems)
+                .ThenInclude(p => p.Item)
+            .FirstOrDefaultAsync();
 
         return player!;
     }
