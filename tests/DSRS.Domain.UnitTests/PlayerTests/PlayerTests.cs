@@ -22,24 +22,21 @@ public class PlayerTests
     {
         // Arrange
         var name = "Alice";
-        var balance = 100m;
-        var maxLimit = 100;
 
         // Act
-        var result = Player.Create(name, balance, maxLimit);
+        var result = Player.Create(name);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().NotBeNull();
         result.Data!.Name.Should().Be(name);
-        result.Data.Balance.Should().Be(balance);
     }
 
     [Fact]
     public void Create_WithValidName_SetsNameCorrectly()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 500m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
         result.Data!.Name.Should().Be("TestPlayer");
@@ -49,17 +46,18 @@ public class PlayerTests
     public void Create_WithValidBalance_SetsBalanceCorrectly()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 1500.50m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
-        result.Data!.Balance.Should().Be(1500.50m);
+        result.Data!.Balance.Should().Be(1000m);
     }
 
     [Fact]
     public void Create_WithZeroBalance_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("ZeroBalancePlayer", 0m, 100);
+        var result = Player.Create("ZeroBalancePlayer");
+        result.Data!.DecreaseBalance(1000m);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -70,18 +68,19 @@ public class PlayerTests
     public void Create_WithVeryLargeBalance_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("RichPlayer", 9999999999.99m, 100);
-
+        var result = Player.Create("RichPlayer");
+        result.Data!.IncreaseBalance(10000007999.99m);
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(9999999999.99m);
+        result.Data!.Balance.Should().Be(10000008999.99m);
     }
 
     [Fact]
     public void Create_WithVerySmallBalance_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("PoorPlayer", 0.01m, 100);
+        var result = Player.Create("PoorPlayer");
+        result.Data!.DecreaseBalance(999.99m);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -95,17 +94,18 @@ public class PlayerTests
         var balance = 123.456m;
 
         // Act
-        var result = Player.Create("TestPlayer", balance, 100);
+        var result = Player.Create("TestPlayer");
+        result.Data!.IncreaseBalance(balance);
 
         // Assert
-        result.Data!.Balance.Should().Be(balance);
+        result.Data!.Balance.Should().Be(balance + 1000m);
     }
 
     [Fact]
     public void Create_WithSingleCharacterName_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("A", 100m, 100);
+        var result = Player.Create("A");
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -119,7 +119,7 @@ public class PlayerTests
         var longName = new string('A', 1000);
 
         // Act
-        var result = Player.Create(longName, 100m, 100);
+        var result = Player.Create(longName);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -130,7 +130,7 @@ public class PlayerTests
     public void Create_WithSpecialCharactersInName_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("Player™-123 [VIP]", 100m, 100);
+        var result = Player.Create("Player™-123 [VIP]");
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -141,7 +141,7 @@ public class PlayerTests
     public void Create_WithUnicodeCharactersInName_ReturnsSuccess()
     {
         // Arrange & Act
-        var result = Player.Create("जॉन वॉन 🎮", 100m, 100);
+        var result = Player.Create("जॉन वॉन 🎮");
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -157,12 +157,14 @@ public class PlayerTests
         var maxLImit = 100;
 
         // Act
-        var result = Player.Create(name, balance, maxLImit);
+        var result = Player.Create(name);
+        result.Data!.IncreaseBalance(balance);
+        result.Data!.IncreaseStorage(maxLImit);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data!.Name.Should().Be(name);
-        result.Data.Balance.Should().Be(balance);
+        result.Data.Balance.Should().Be(balance + 1000);
         result.Data!.MaxLimit.Should().Be(maxLImit);
     }
 
@@ -170,7 +172,7 @@ public class PlayerTests
     public void Create_InitializesDailyPricesAsEmptyCollection()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 100m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
         result.Data!.DailyPrices.Should().BeEmpty();
@@ -185,7 +187,7 @@ public class PlayerTests
     public void Create_WithNullName_ReturnsFailure()
     {
         // Arrange & Act
-        var result = Player.Create(null!, 100m, 100);
+        var result = Player.Create(null!);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -197,7 +199,7 @@ public class PlayerTests
     public void Create_WithEmptyName_ReturnsFailure()
     {
         // Arrange & Act
-        var result = Player.Create(string.Empty, 100m, 100);
+        var result = Player.Create(string.Empty);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -208,7 +210,7 @@ public class PlayerTests
     public void Create_WithWhitespaceName_ReturnsFailure()
     {
         // Arrange & Act
-        var result = Player.Create("   ", 100m, 100);
+        var result = Player.Create("   ");
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -219,7 +221,7 @@ public class PlayerTests
     public void Create_WithTabName_ReturnsFailure()
     {
         // Arrange & Act
-        var result = Player.Create("\t", 100m, 100);
+        var result = Player.Create("\t");
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -230,7 +232,7 @@ public class PlayerTests
     public void Create_WithNewlineOnlyName_ReturnsFailure()
     {
         // Arrange & Act
-        var result = Player.Create("\n\r", 100m, 100);
+        var result = Player.Create("\n\r");
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -241,7 +243,7 @@ public class PlayerTests
     public void Create_NullNameError_HasCorrectMessage()
     {
         // Arrange & Act
-        var result = Player.Create(null!, 100m, 100);
+        var result = Player.Create(null!);
 
         // Assert
         result.Error!.Message.Should().Contain("empty");
@@ -251,7 +253,7 @@ public class PlayerTests
     public void Create_EmptyNameError_HasCorrectMessage()
     {
         // Arrange & Act
-        var result = Player.Create(string.Empty, 100m, 100);
+        var result = Player.Create(string.Empty);
 
         // Assert
         result.Error!.Message.Should().Contain("empty");
@@ -261,7 +263,7 @@ public class PlayerTests
     public void Create_FailureResult_DataIsNull()
     {
         // Arrange & Act
-        var result = Player.Create("", 100m, 100);
+        var result = Player.Create("");
 
         // Assert
         result.Data.Should().BeNull();
@@ -271,7 +273,7 @@ public class PlayerTests
     public void Create_FailureResult_ErrorIsNotNull()
     {
         // Arrange & Act
-        var result = Player.Create(null!, 100m, 100);
+        var result = Player.Create(null!);
 
         // Assert
         result.Error.Should().NotBeNull();
@@ -286,7 +288,7 @@ public class PlayerTests
     public void Create_WithEmptyOrWhitespaceName_ReturnsFailure(string name)
     {
         // Arrange & Act
-        var result = Player.Create(name, 100m, 100);
+        var result = Player.Create(name);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -301,7 +303,7 @@ public class PlayerTests
     public void Create_Success_ReturnsResultType()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 100m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
         result.Should().BeOfType<Result<Player>>();
@@ -311,7 +313,7 @@ public class PlayerTests
     public void Create_Failure_ReturnsResultType()
     {
         // Arrange & Act
-        var result = Player.Create(null!, 100m, 100);
+        var result = Player.Create(null!);
 
         // Assert
         result.Should().BeOfType<Result<Player>>();
@@ -321,7 +323,7 @@ public class PlayerTests
     public void Create_Success_DataNotNull()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 100m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
         result.Data.Should().NotBeNull();
@@ -331,7 +333,7 @@ public class PlayerTests
     public void Create_Success_ErrorNull()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 100m, 100);
+        var result = Player.Create("TestPlayer");
 
         // Assert
         result.Error.Should().BeNull();
@@ -341,7 +343,7 @@ public class PlayerTests
     public void Create_Failure_DataNull()
     {
         // Arrange & Act
-        var result = Player.Create("", 100m, 100);
+        var result = Player.Create("");
 
         // Assert
         result.Data.Should().BeNull();
@@ -351,7 +353,7 @@ public class PlayerTests
     public void Create_Failure_ErrorNotNull()
     {
         // Arrange & Act
-        var result = Player.Create("", 100m, 100);
+        var result = Player.Create("");
 
         // Assert
         result.Error.Should().NotBeNull();
@@ -365,7 +367,7 @@ public class PlayerTests
     public void AddDailyPrice_WithValidParameters_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
@@ -385,7 +387,7 @@ public class PlayerTests
     public void AddDailyPrice_WithValidParameters_AddsToCollection()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
@@ -403,7 +405,7 @@ public class PlayerTests
     public void AddDailyPrice_VerifyDailyPriceProperties()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 6, 15);
@@ -427,7 +429,7 @@ public class PlayerTests
     public void AddDailyPrice_WithMultipleItems_AndSameItemDateFails()
     {
         // Arrange - Since items have the same default ID, we can only test same date with different items by using different dates
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item1 = CreateValidItem("Item1");
         var item2 = CreateValidItem("Item2");
@@ -448,7 +450,7 @@ public class PlayerTests
     public void AddDailyPrice_WithMultipleDates_AddsMultiplePrices()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date1 = new DateOnly(2024, 1, 15);
@@ -468,7 +470,7 @@ public class PlayerTests
     public void AddDailyPrice_WithDifferentStates_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -487,7 +489,7 @@ public class PlayerTests
     public void AddDailyPrice_WithVerySmallPrice_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -503,7 +505,7 @@ public class PlayerTests
     public void AddDailyPrice_WithVeryLargePrice_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -519,7 +521,7 @@ public class PlayerTests
     public void AddDailyPrice_DailyPricesIsReadOnlyCollection()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -539,7 +541,7 @@ public class PlayerTests
     public void AddDailyPrice_WithZeroPrice_ReturnsFailure()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -556,7 +558,7 @@ public class PlayerTests
     public void AddDailyPrice_WithNegativePrice_ReturnsFailure()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -572,7 +574,7 @@ public class PlayerTests
     public void AddDailyPrice_WithZeroPriceError_HasCorrectMessage()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -587,7 +589,7 @@ public class PlayerTests
     public void AddDailyPrice_WithDuplicateItemAndDate_ReturnsFailure()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
@@ -606,7 +608,7 @@ public class PlayerTests
     public void AddDailyPrice_WithDuplicateItemAndDateError_HasCorrectMessage()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
@@ -623,7 +625,7 @@ public class PlayerTests
     public void AddDailyPrice_FirstSucceeds_SecondWithSameItemDateFails()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
@@ -642,7 +644,7 @@ public class PlayerTests
     public void AddDailyPrice_WithInvalidItemFromDailyPriceValidation_ReturnsFailure()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Act
@@ -661,7 +663,7 @@ public class PlayerTests
     public void AddDailyPrice_Success_ReturnsResultType()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -676,7 +678,7 @@ public class PlayerTests
     public void AddDailyPrice_Failure_ReturnsResultType()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Act
@@ -690,7 +692,7 @@ public class PlayerTests
     public void AddDailyPrice_Success_DataNotNull()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -705,7 +707,7 @@ public class PlayerTests
     public void AddDailyPrice_Success_ErrorNull()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -720,7 +722,7 @@ public class PlayerTests
     public void AddDailyPrice_Failure_DataNull()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Act
@@ -734,7 +736,7 @@ public class PlayerTests
     public void AddDailyPrice_Failure_ErrorNotNull()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Act
@@ -752,7 +754,7 @@ public class PlayerTests
     public void DailyPrices_NewPlayer_ReturnsEmptyCollection()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Assert
@@ -764,7 +766,7 @@ public class PlayerTests
     public void DailyPrices_AfterAddingOne_CountIsOne()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -779,7 +781,7 @@ public class PlayerTests
     public void DailyPrices_AfterAddingMultiple_CountIsCorrect()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem("TestItem");
 
@@ -796,7 +798,7 @@ public class PlayerTests
     public void DailyPrices_IsReadOnlyCollection()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
 
         // Assert
@@ -807,7 +809,7 @@ public class PlayerTests
     public void DailyPrices_CanIterateCollection()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -828,8 +830,10 @@ public class PlayerTests
     public void Create_MultipleInstances_AreIndependent()
     {
         // Arrange & Act
-        var player1Result = Player.Create("Player1", 100m, 100);
-        var player2Result = Player.Create("Player2", 200m, 100);
+        var player1Result = Player.Create("Player1");
+        player1Result.Data!.DecreaseBalance(900m);
+        var player2Result = Player.Create("Player2");
+        player2Result.Data!.DecreaseBalance(800m);
 
         // Assert
         player1Result.Data!.Name.Should().Be("Player1");
@@ -842,8 +846,8 @@ public class PlayerTests
     public void AddDailyPrice_MultiplePlayersIndependent()
     {
         // Arrange
-        var player1Result = Player.Create("Player1", 1000m, 100);
-        var player2Result = Player.Create("Player2", 1000m, 100);
+        var player1Result = Player.Create("Player1");
+        var player2Result = Player.Create("Player2");
         var player1 = player1Result.Data!;
         var player2 = player2Result.Data!;
         var item = CreateValidItem();
@@ -867,7 +871,7 @@ public class PlayerTests
     public void AddDailyPrice_WithFutureDate_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -882,7 +886,7 @@ public class PlayerTests
     public void AddDailyPrice_WithPastDate_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
 
@@ -897,7 +901,7 @@ public class PlayerTests
     public void AddDailyPrice_SameItemSamePriceDifferentDates_BothSucceed()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 1000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var item = CreateValidItem();
         var price = 100m;
@@ -920,12 +924,12 @@ public class PlayerTests
     public void Create_AllPropertiesAccessible()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 500m, 100);
+        var result = Player.Create("TestPlayer");
         var player = result.Data!;
 
         // Assert
         player.Name.Should().NotBeNull();
-        player.Balance.Should().Be(500m);
+        player.Balance.Should().Be(1000m);
         player.DailyPrices.Should().NotBeNull();
     }
 
@@ -933,7 +937,7 @@ public class PlayerTests
     public void Create_NameIsReadOnly()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 500m, 100);
+        var result = Player.Create("TestPlayer");
         var player = result.Data!;
 
         // Assert
@@ -944,11 +948,11 @@ public class PlayerTests
     public void Create_BalanceIsReadOnly()
     {
         // Arrange & Act
-        var result = Player.Create("TestPlayer", 500.50m, 100);
+        var result = Player.Create("TestPlayer");
         var player = result.Data!;
 
         // Assert
-        player.Balance.Should().Be(500.50m);
+        player.Balance.Should().Be(1000m);
     }
 
     #endregion

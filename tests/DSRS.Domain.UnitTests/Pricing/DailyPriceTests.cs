@@ -10,9 +10,9 @@ namespace DSRS.Domain.UnitTests.Pricing;
 
 public class DailyPriceTests
 {
-    private static Player CreateValidPlayer(string name = "TestPlayer", decimal balance = 1000m, int maxLimit = 100)
+    private static Player CreateValidPlayer(string name = "TestPlayer")
     {
-        var result = Player.Create(name, balance, maxLimit);
+        var result = Player.Create(name);
         return result.Data!;
     }
 
@@ -156,7 +156,7 @@ public class DailyPriceTests
     public void Create_WithAllPropertiesSet_AllPropertiesAreCorrect()
     {
         // Arrange
-        var player = CreateValidPlayer("Alice", 10000m);
+        var player = CreateValidPlayer("Alice");
         var item = CreateValidItem("Potion", "Health potion", 25m, 0.3m);
         var date = new DateOnly(2024, 3, 10);
         var price = 30.75m;
@@ -662,7 +662,7 @@ public class DailyPriceTests
     public void Create_WithPlayerAddDailyPriceMethod_ReturnsSuccess()
     {
         // Arrange
-        var playerResult = Player.Create("TestPlayer", 10000m, 100);
+        var playerResult = Player.Create("TestPlayer");
         var player = playerResult.Data!;
         var itemResult = Item.Create("TestItem", "A test item", 100m, 0.5m);
         var item = itemResult.Data!;
