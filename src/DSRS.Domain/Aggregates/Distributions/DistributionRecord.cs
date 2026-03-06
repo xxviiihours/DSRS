@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DSRS.Domain.Aggregates.Distributions;
 
-public class DistributionRecord : EntityBase<Guid>, IAuditableEntity
+public class DistributionRecord : AggregateRoot<Guid>, IAuditableEntity
 {
     private DistributionRecord() { }
     internal DistributionRecord(Guid dailyPriceId, Guid playerId, decimal priceTotal, DistributionType type)
