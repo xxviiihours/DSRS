@@ -9,4 +9,5 @@ public interface IPlayerQuery
 {
     Task<PlayerDto> GetPlayerByIdAsync(Guid playerId);
     Task<PlayerDto> GetPlayerByName(string name);
+    Task<List<PlayerDto>> GetPlayers(string query);
 }

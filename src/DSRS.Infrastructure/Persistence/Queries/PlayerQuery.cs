@@ -72,4 +72,20 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
 
         return player!;
     }
+
+    public async Task<List<PlayerDto>> GetPlayers(string query)
+    {
+        var players = await _context.Players
+            .AsNoTracking()
+            .Where(p => string.IsNullOrEmpty(query) || p.Name.Contains(query))
+            .Select(p => new PlayerDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+            })
+            .Take(100)
+            .ToListAsync();
+
+        return players;
+    }
 }
