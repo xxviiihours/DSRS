@@ -18,6 +18,10 @@
     <Folder Include="Features\Players\Delete\" />
     <Folder Include="Features\Players\List\" />
     <Folder Include="Features\Players\Update\" />
+    <Folder Include="Features\Socials\" />
+    <Folder Include="Features\Socials\Get\" />
+    <Folder Include="Features\Socials\List\" />
+    <Folder Include="Features\Socials\Reject\" />
   </ItemGroup>
 
   <ItemGroup>
