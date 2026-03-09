@@ -20,7 +20,7 @@ public class DomainEventService(IMediator mediator, ILogger<DomainEventService> 
         _logger.LogInformation("Publishing domain event. Event - {event}", domainEvent.GetType().Name);
         var notification = CreateNotification(domainEvent);
         if (notification == null)
-            _logger.LogWarning($"No handler registered for domain event {domainEvent.GetType().Name}");
+            _logger.LogWarning("No handler registered for domain event - {event}", domainEvent.GetType().Name);
 
         await _mediator.Publish(notification!, cancellationToken);
     }
@@ -30,6 +30,7 @@ public class DomainEventService(IMediator mediator, ILogger<DomainEventService> 
         return domainEvent switch
         {
             ItemPurchasedEvent e => new ItemPurchasedNotification(e),
+            ItemSoldEvent e => new ItemSoldNotification(e),
             _ => null
         };
     }
