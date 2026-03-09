@@ -11,8 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Aggregates\Friendships\" />
     <Folder Include="Common\" />
     <Folder Include="Aggregates\Inventories\" />
+    <Folder Include="Common\Enums\" />
+    <Folder Include="Common\Interfaces\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

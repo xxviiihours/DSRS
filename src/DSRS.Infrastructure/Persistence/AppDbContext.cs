@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Features.Leaderboards;
 using DSRS.Domain.Aggregates.Distributions;
+using DSRS.Domain.Aggregates.Friendships;
 using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
@@ -19,6 +20,7 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     public DbSet<DailyPrice> DailyPrices => Set<DailyPrice>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<DistributionRecord> DistributionRecords => Set<DistributionRecord>();
+    public DbSet<Friendship> Friendships => Set<Friendship>();
 
     // view
     public DbSet<PlayerLeaderboardDto> PlayerLeaderboards { get; set; }
