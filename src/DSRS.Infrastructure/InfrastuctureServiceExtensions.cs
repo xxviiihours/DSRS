@@ -47,6 +47,7 @@ public static class InfrastuctureServiceExtensions
         services.AddScoped<IDailyPriceRepository, DailyPriceRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
         services.AddScoped<IDistributionHistory, DistributionHistoryRepository>();
+        services.AddScoped<ISocialRepository, SocialRepository>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();
