@@ -6,11 +6,7 @@ using System.Text;
 
 namespace DSRS.Application.Notifications;
 
-public sealed class ItemPurchasedNotification : INotification
+public sealed class ItemPurchasedNotification(ItemPurchasedEvent @event) : INotification
 {
-    public ItemPurchasedEvent Event { get; }
-    public ItemPurchasedNotification(ItemPurchasedEvent @event)
-    {
-        Event = @event;
-    }
+    public ItemPurchasedEvent Event { get; } = @event;
 }

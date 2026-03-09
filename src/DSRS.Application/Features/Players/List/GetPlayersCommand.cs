@@ -4,4 +4,4 @@ using System;
 
 namespace DSRS.Application.Features.Players.List;
 
-public record GetPlayersCommand(string Query) : ICommand<Result<List<PlayerDto>>> { }
+public record GetPlayersCommand(string? Query) : ICommand<Result<List<PlayerDto>>> { }

@@ -11,7 +11,7 @@ public class GetPlayersHandler(IPlayerQuery playerQuery) : ICommandHandler<GetPl
 
   public async ValueTask<Result<List<PlayerDto>>> Handle(GetPlayersCommand command, CancellationToken cancellationToken)
   {
-    var players = await _playerQuery.GetPlayers(command.Query);
+    var players = await _playerQuery.GetPlayers(command.Query!);
     if (players.Count < 0)
       return Result<List<PlayerDto>>.Failure(
         new Error("Player.List.Empty", "Empty player list"));
