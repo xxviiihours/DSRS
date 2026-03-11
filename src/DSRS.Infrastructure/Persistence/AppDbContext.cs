@@ -6,14 +6,18 @@ using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Domain.Common;
+using DSRS.Infrastructure.Identity.Models;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace DSRS.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) : DbContext(options)
+public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
+    IdentityDbContext<ApplicationUser, IdentityRole<Guid>,Guid>(options) 
 {
     public DbSet<Player> Players => Set<Player>();
     public DbSet<Item> Items => Set<Item>();
@@ -26,6 +30,7 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     public DbSet<PlayerLeaderboardDto> PlayerLeaderboards { get; set; }
 
     private readonly IDateTime _dateTimeService = dateTimeService;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
