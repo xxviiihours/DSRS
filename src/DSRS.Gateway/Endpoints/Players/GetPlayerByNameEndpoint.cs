@@ -14,7 +14,7 @@ public class GetPlayerByNameEndpoint(IMediator mediator) : Endpoint<GetPlayerByN
     public override void Configure()
     {
         Get(GetPlayerByNameRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Retrieves player information by name";

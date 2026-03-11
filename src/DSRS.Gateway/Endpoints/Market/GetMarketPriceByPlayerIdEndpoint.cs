@@ -15,7 +15,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
     public override void Configure()
     {
         Get(GetMarketPriceByPlayerIdRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Generates daily prices based on player ID";
