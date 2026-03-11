@@ -29,5 +29,7 @@ internal class DistributionConfiguration : IEntityTypeConfiguration<Distribution
             .IsRequired();
         builder.Property(dr => dr.LastModified)
             .IsRequired();
+
+
     }
 }

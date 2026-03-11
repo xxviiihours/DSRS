@@ -30,10 +30,5 @@ public class PlayerConfiguration : IEntityTypeConfiguration<Player>
                      .WithOne()
                      .HasForeignKey(i => i.PlayerId)
                      .OnDelete(DeleteBehavior.Cascade);
-
-              builder.HasMany(p => p.DistributionHistory)
-                     .WithOne()
-                     .HasForeignKey(d => d.PlayerId)
-                     .OnDelete(DeleteBehavior.Cascade);
        }
 }

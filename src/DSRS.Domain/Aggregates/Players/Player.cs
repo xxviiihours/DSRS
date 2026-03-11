@@ -14,22 +14,30 @@ public sealed class Player : AggregateRoot<Guid>
     public string Name { get; } = string.Empty;
     public decimal Balance { get; private set; }
     public int PurchaseLimit { get; private set; }
+    public bool IsGuest { get; private set; }
+
     private const int MaxPurchaseLimit = 100;
     public DateOnly LastLimitGeneration { get; private set; }
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
     public IReadOnlyCollection<Inventory> InventoryItems => _inventoryItems.AsReadOnly();
-    private readonly List<DistributionRecord> _distributionHistory = [];
-    public IReadOnlyCollection<DistributionRecord> DistributionHistory => _distributionHistory.AsReadOnly();
 
-    private Player(string name)
+    private Player(string name, bool isGuest = false)
     {
         Name = name;
         Balance = 1000;
+        IsGuest = isGuest;
         PurchaseLimit = 25;
         LastLimitGeneration = DateOnly.FromDateTime(DateTime.Now);
     }
+
+    public static Result<Player> CreateGuest()
+    {
+        var name = $"Guest_{Random.Shared.Next(1000, 9999)}";
+        return Result<Player>.Success(new Player(name, true));
+    }
+
     public static Result<Player> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -40,7 +48,7 @@ public sealed class Player : AggregateRoot<Guid>
 
         return Result<Player>.Success(new Player(name));
     }
-    public void RegenerateLimit(int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, MaxPurchaseLimit);
+    public void RegenerateLimit(int maxLimit, int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, maxLimit);
     public void ConsumeLimit(int amount) => PurchaseLimit -= amount;
     public bool CanAfford(decimal amount) => Balance >= amount;
     public void DecreaseBalance(decimal amount) => Balance -= amount;

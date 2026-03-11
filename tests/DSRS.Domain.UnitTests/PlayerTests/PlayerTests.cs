@@ -160,13 +160,13 @@ public class PlayerTests
         // Act
         var result = Player.Create(name);
         result.Data!.IncreaseBalance(balance);
-        result.Data!.RegenerateLimit(purchaseLimit);
+        result.Data!.RegenerateLimit(purchaseLimit, 25);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data!.Name.Should().Be(name);
         result.Data.Balance.Should().Be(balance + 1000);
-        result.Data!.PurchaseLimit.Should().Be(purchaseLimit);
+        result.Data!.PurchaseLimit.Should().Be(50);
     }
 
     [Fact]
