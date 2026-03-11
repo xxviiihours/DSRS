@@ -45,6 +45,7 @@ public static class InfrastuctureServiceExtensions
         }
 
         services.AddIdentityServices(logger);
+        services.AddHttpContextAccessor();
 
         services.AddSingleton<IDateTime, DateTimeService>();
 
@@ -67,6 +68,7 @@ public static class InfrastuctureServiceExtensions
         services.AddScoped<IDashboardQuery, DashboardQuery>();
 
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         logger.LogInformation("{Project} services registered", "Infrastructure");
 
