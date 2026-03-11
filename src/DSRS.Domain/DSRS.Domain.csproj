@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DSRS.SharedKernel\DSRS.SharedKernel.csproj" />
   </ItemGroup>
 
@@ -16,7 +22,6 @@
     <Folder Include="Aggregates\Inventories\" />
     <Folder Include="Common\Enums\" />
     <Folder Include="Common\Interfaces\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
