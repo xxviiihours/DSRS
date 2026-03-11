@@ -8,19 +8,20 @@ using System.Text;
 
 namespace DSRS.Application.Features.Authentications.GuestLogin;
 
-public class GuestLoginHandler(IPlayerRepository playerRepository, IUnitOfWork unitOfWork) : ICommandHandler<GuestLoginCommand, Result<Player>>
+public class GuestLoginHandler(IPlayerRepository playerRepository, IUnitOfWork unitOfWork) : ICommandHandler<GuestLoginCommand, Result<AuthenticateResponse>>
 {
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async ValueTask<Result<Player>> Handle(GuestLoginCommand command, CancellationToken cancellationToken)
+    public async ValueTask<Result<AuthenticateResponse>> Handle(GuestLoginCommand command, CancellationToken cancellationToken)
     {
         var player = Player.CreateGuest();
 
         await _playerRepository.CreateAsync(player.Data!);
         await _unitOfWork.CommitAsync(cancellationToken);
 
-        return Result<Player>.Success(player.Data!);
+        return Result<AuthenticateResponse>.Success(
+            new AuthenticateResponse(player.Data!.Id, player.Data!.Name));
 
     }
 }

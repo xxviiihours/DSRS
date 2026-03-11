@@ -22,6 +22,7 @@ public class GetPlayerByNameEndpoint(IMediator mediator) : Endpoint<GetPlayerByN
             s.ResponseExamples[200] = new { Id = "25598df5-6e11-45fb-975f-7cf85af872ea", Name = "John Doe" };
             // Document possible responses
             s.Responses[200] = "Player found and returned successfully";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Player with specified name not found";
         });
         // Add tags for API grouping

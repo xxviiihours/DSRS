@@ -7,6 +7,6 @@ using System.Text;
 
 namespace DSRS.Application.Features.Authentications.GuestLogin;
 
-public record GuestLoginCommand : ICommand<Result<Player>>
+public record GuestLoginCommand : ICommand<Result<AuthenticateResponse>>
 {
 }

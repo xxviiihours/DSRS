@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DSRS.Application.Features.Authentications;
 
-public class AuthenticateResponse
+public record AuthenticateResponse(Guid Id, string UserName)
 {
-    public Guid Id { get; set; }
-    public string UserName { get; set; } = string.Empty;
+    public Guid Id { get; set; } = Id;
+    public string UserName { get; set; } = UserName;
 }
