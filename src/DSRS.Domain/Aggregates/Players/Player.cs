@@ -48,6 +48,7 @@ public sealed class Player : AggregateRoot<Guid>
 
         return Result<Player>.Success(new Player(name));
     }
+    public void Register() => IsGuest = false;
     public void RegenerateLimit(int maxLimit, int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, maxLimit);
     public void ConsumeLimit(int amount) => PurchaseLimit -= amount;
     public bool CanAfford(decimal amount) => Balance >= amount;
