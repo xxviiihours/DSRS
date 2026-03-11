@@ -1,13 +1,21 @@
-@DSRS.Gateway_HostAddress = http://localhost:5223
+@DSRS.Gateway_HostAddress = https://localhost:44387
 
-GET {{DSRS.Gateway_HostAddress}}/weatherforecast/
+# Authenticate as a guest user to obtain an access token
+
+POST {{DSRS.Gateway_HostAddress}}/auth/guest
 Accept: application/json
 
-###
+
+GET {{DSRS.Gateway_HostAddress}}/auth/init
+Accept: application/json
+
+
+GET {{DSRS.Gateway_HostAddress}}/players
+Accept: application/json
+
 
 POST {{DSRS.Gateway_HostAddress}}/players/
 Accept: application/json
-
 {
   "name": "John Doe 3",
   "balance": "99"

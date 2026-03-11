@@ -10,8 +10,6 @@ public static class MiddlewareConfiguration
     public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app)
     {
 
-        app.UseFastEndpoints();
-
         if (app.Environment.IsDevelopment())
         {
             app.UseOpenApi();
@@ -37,11 +35,14 @@ public static class MiddlewareConfiguration
             await SeedDatabaseAsync(app);
         }
 
+
+        app.UseHttpsRedirection();
         app.UseCors("AllowedClients");
 
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseHttpsRedirection();
+
+        app.UseFastEndpoints();
 
         return app;
     }
