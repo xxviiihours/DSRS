@@ -13,15 +13,15 @@ public sealed class PlayerPurchaseService
     if (player.LastLimitGeneration == today)
       return;
 
-    int daysPassed = today.DayNumber - player.LastLimitGeneration.DayNumber;
+        int daysPassed = today.DayNumber - player.LastLimitGeneration.DayNumber;
 
-    if (daysPassed <= 0)
-      return;
+        if (daysPassed <= 0)
+            return;
 
-    int storageToAdd = daysPassed * DailyIncrease;
+        int storageToAdd = daysPassed * DailyIncrease;
 
     player.RegenerateLimit(MaxPurchaseLimit, storageToAdd);
 
-    player.SetLastGeneration(today);
-  }
+        player.SetLastGeneration(today);
+    }
 }

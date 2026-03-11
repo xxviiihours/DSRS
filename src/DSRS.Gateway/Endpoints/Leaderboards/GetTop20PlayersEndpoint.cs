@@ -15,7 +15,7 @@ public class GetTop20PlayersEndpoint(IMediator mediator) : Endpoint<GetTop20Play
   public override void Configure()
   {
     Get(GetTop20PlayersRequest.Route);
-    AllowAnonymous();
+    Policies("authenticated");
     Summary(s =>
     {
       s.Summary = "Retrieves top 20 players";

@@ -9,8 +9,16 @@ public static class MiddlewareConfiguration
 {
     public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app)
     {
+
+        app.UseFastEndpoints();
+
         if (app.Environment.IsDevelopment())
         {
+            app.UseOpenApi();
+            app.UseSwaggerGen(options =>
+            {
+                options.Path = "/swagger/v1/swagger.json";
+            });
             app.UseDeveloperExceptionPage();
         }
         else
@@ -18,18 +26,6 @@ public static class MiddlewareConfiguration
             app.UseDefaultExceptionHandler(); // from FastEndpoints
             app.UseHsts();
         }
-
-        app.UseFastEndpoints();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwaggerGen(options =>
-            {
-                options.Path = "/swagger/v1/swagger.json";
-            });
-        }
-
-        app.UseHttpsRedirection(); // Note this will drop Authorization headers
 
         // Run migrations and seed in Development or when explicitly requested via environment variable
         var shouldMigrate = app.Environment.IsDevelopment() ||
@@ -40,6 +36,12 @@ public static class MiddlewareConfiguration
             await MigrateDatabaseAsync(app);
             await SeedDatabaseAsync(app);
         }
+
+        app.UseCors("AllowedClients");
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseHttpsRedirection();
 
         return app;
     }

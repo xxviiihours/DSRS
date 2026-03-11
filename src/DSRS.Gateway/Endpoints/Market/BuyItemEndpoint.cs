@@ -15,7 +15,7 @@ public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemReques
     public override void Configure()
     {
         Post(BuyItemRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Use to purchase a new item";

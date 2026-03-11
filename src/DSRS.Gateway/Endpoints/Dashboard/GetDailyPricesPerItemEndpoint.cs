@@ -15,7 +15,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
     public override void Configure()
     {
         Get(GetDailyPricesPerItemRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Retrieves daily prices based on item ID and player ID";

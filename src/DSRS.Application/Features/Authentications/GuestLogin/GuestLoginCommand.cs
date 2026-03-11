@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Application.Features.Accounts.GuestLogin;
+namespace DSRS.Application.Features.Authentications.GuestLogin;
 
 public record GuestLoginCommand : ICommand<Result<Player>>
 {

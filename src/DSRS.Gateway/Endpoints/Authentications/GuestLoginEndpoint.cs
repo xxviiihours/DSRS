@@ -1,16 +1,14 @@
-﻿using DSRS.Application.Features.Accounts.GuestLogin;
-using DSRS.Application.Features.Items.Create;
-using DSRS.Gateway.Endpoints.Items;
+﻿using DSRS.Application.Features.Authentications.GuestLogin;
+using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Security.Principal;
 
-namespace DSRS.Gateway.Endpoints.Accounts;
+namespace DSRS.Gateway.Endpoints.Authentications;
 
-public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest
+public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest<IResult>
 {
     private readonly IMediator _mediator = mediator;
 
@@ -35,26 +33,26 @@ public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest
           .ProducesProblem(500));
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task<IResult> ExecuteAsync(CancellationToken ct)
     {
         var result = await _mediator.Send(new GuestLoginCommand(), ct);
 
-        if (result.IsSuccess)
+        var authClaims = new List<Claim>
         {
-            var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.Name, result.Data!.Id.ToString()),
-            };
+            new(ClaimTypes.NameIdentifier, result.Data!.Id.ToString()),
+        };
 
-            var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
+        var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
 
-            await HttpContext.SignInAsync(
-                IdentityConstants.ApplicationScheme,
-                new ClaimsPrincipal(identity)
-            );
+        await HttpContext.SignInAsync(
+            IdentityConstants.ApplicationScheme,
+            new ClaimsPrincipal(identity)
+        );
 
-            await Send.NoContentAsync(ct);
-        }
-       
+        return result.ToHttpResult(
+            mapResponse => mapResponse,
+            locationBuilder => "",
+            successStatusCode: 200
+        );
     }
 }

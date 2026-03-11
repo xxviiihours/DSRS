@@ -14,7 +14,7 @@ public class SendFriendRequestEndpoint(IMediator mediator) : Endpoint<SendFriend
     public override void Configure()
     {
         Post(SendFriendRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Initiates Friend Requests";

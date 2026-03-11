@@ -13,7 +13,7 @@ public class GetPlayerByIdEndpoint(IMediator mediator) : Endpoint<GetPlayerByIdR
     public override void Configure()
     {
         Get(GetPlayerByIdRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Retrieves player information by Id";

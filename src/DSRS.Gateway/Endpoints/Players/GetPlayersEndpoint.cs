@@ -14,7 +14,7 @@ public class GetPlayersEndpoint(IMediator mediator) : Endpoint<GetPlayersRequest
   public override void Configure()
   {
     Get(GetPlayersRequest.Route);
-    AllowAnonymous();
+    Policies("authenticated");
     Summary(s =>
     {
       s.Summary = "Retrieves list of players";

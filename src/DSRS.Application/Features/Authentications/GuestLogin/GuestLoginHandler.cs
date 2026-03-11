@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Application.Features.Accounts.GuestLogin;
+namespace DSRS.Application.Features.Authentications.GuestLogin;
 
 public class GuestLoginHandler(IPlayerRepository playerRepository, IUnitOfWork unitOfWork) : ICommandHandler<GuestLoginCommand, Result<Player>>
 {

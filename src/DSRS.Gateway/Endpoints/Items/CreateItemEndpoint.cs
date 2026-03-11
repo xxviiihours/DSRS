@@ -13,7 +13,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
     public override void Configure()
     {
         Post(CreateItemRequest.Route);
-        AllowAnonymous();
+        Policies("authenticated");
         Summary(s =>
         {
             s.Summary = "Create a new item";
