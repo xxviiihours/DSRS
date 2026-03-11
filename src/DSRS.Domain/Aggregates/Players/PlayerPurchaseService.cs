@@ -4,7 +4,9 @@ namespace DSRS.Domain.Aggregates.Players;
 
 public sealed class PlayerPurchaseService
 {
-  private const int DailyIncrease = 25;
+
+    private const int MaxPurchaseLimit = 100;
+    private const int DailyIncrease = 25;
 
   public static void GenerateDailyPurchaseLimit(Player player, DateOnly today)
   {
@@ -18,7 +20,7 @@ public sealed class PlayerPurchaseService
 
     int storageToAdd = daysPassed * DailyIncrease;
 
-    player.RegenerateLimit(storageToAdd);
+    player.RegenerateLimit(MaxPurchaseLimit, storageToAdd);
 
     player.SetLastGeneration(today);
   }
