@@ -38,7 +38,7 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
         var player = await _mediator.Send(new InitAuthCommand());
 
          return player.ToHttpResult(
-             mapResponse => new PlayerAuthResponse(player.Data!.Id, player.Data!.UserName),
+             mapResponse => mapResponse,
              locationBuilder => "",
              successStatusCode: StatusCodes.Status200OK);
     }
