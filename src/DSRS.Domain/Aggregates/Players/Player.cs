@@ -11,12 +11,10 @@ namespace DSRS.Domain.Aggregates.Players;
 
 public sealed class Player : AggregateRoot<Guid>
 {
-    public string Name { get; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
     public decimal Balance { get; private set; }
     public int PurchaseLimit { get; private set; }
     public bool IsGuest { get; private set; }
-
-    private const int MaxPurchaseLimit = 100;
     public DateOnly LastLimitGeneration { get; private set; }
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
@@ -47,6 +45,14 @@ public sealed class Player : AggregateRoot<Guid>
         // maybe add domain event here
 
         return Result<Player>.Success(new Player(name));
+    }
+
+    public void UpdateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Player name cannot be empty", nameof(name));
+
+        Name = name;
     }
     public void Register() => IsGuest = false;
     public void RegenerateLimit(int maxLimit, int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, maxLimit);
