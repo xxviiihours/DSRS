@@ -4,18 +4,19 @@ using DSRS.Gateway.Endpoints.Items;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DSRS.Gateway.Endpoints.Accounts;
 
-public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAccountCommand, IResult>
+public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAccountRequest, IResult>
 {
     private readonly IMediator _mediator = mediator;
 
     public override void Configure()
     {
         Post(RegisterAccountRequest.Route);
-        Policies("authenticated");
-
+        //Policies("authenticated");
+        AllowAnonymous();
         Summary(s =>
         {
             s.Summary = "Register account";
@@ -36,9 +37,16 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
           .ProducesProblem(500));
     }
 
-    public override async Task<IResult> ExecuteAsync(RegisterAccountCommand request, CancellationToken ct)
+    public override async Task<IResult> ExecuteAsync(RegisterAccountRequest request, CancellationToken ct)
     {
-        var result = await _mediator.Send(request, ct);
+        Guid id = string.IsNullOrEmpty(request.Id) ? Guid.Empty : Guid.Parse(request.Id!);
+        var result = await _mediator.Send(
+            new RegisterAccountCommand(
+                id, 
+                request.Username,
+                request.Email,
+                request.Password), ct);
+
         return result.ToHttpResult(
             mapResponse => mapResponse,
             locationBuilder => $"{RegisterAccountRequest.Route}/{result.Data?.Id}",
@@ -50,8 +58,9 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
 public class RegisterAccountRequest
 {
     public const string Route = "/accounts/register";
-    public string Id { get; set; } = string.Empty;
+    public string? Id { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string ConfirmPassword { get; set; } = string.Empty;
 }
@@ -60,8 +69,8 @@ public class RegisterAccountValidator : Validator<RegisterAccountRequest>
 {
     public RegisterAccountValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
+        //RuleFor(x => x.Id)
+        //    .NotEmpty().WithMessage("Id is required.");
         RuleFor(x => x.Username)
             .NotEmpty()
             .WithMessage("Username is required.");
