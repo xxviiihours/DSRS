@@ -11,4 +11,5 @@ public interface IPlayerRepository
     Task<Player> GetByIdWithDailyPrices(Guid id);
     Task<Player> GetByIdWithInventories(Guid id);
     Task<bool> NameExistsAsync(string name);
+    Task<Player> FindGuestById(Guid id);
 }

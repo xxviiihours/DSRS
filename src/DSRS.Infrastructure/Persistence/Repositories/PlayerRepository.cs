@@ -19,6 +19,13 @@ public class PlayerRepository(AppDbContext context,
         await Task.CompletedTask;
     }
 
+    public async Task<Player> FindGuestById(Guid id)
+    {
+        var result = await _context.Players
+            .FirstOrDefaultAsync(p => p.Id == id && p.IsGuest);
+        return result!;
+    }
+
     public async Task<Player> GetById(Guid Id)
     {
         var result = await _context.Players.FindAsync(Id);
