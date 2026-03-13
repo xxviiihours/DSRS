@@ -8,6 +8,10 @@ using System.Windows.Input;
 
 namespace DSRS.Application.Features.Accounts.Register;
 
-public record RegisterAccountCommand(Guid Id, string Username, string Password) : ICommand<Result<Player>>
+public record RegisterAccountCommand(
+    Guid Id, 
+    string Username, 
+    string Email, 
+    string Password) : ICommand<Result<Player>>
 {
 }

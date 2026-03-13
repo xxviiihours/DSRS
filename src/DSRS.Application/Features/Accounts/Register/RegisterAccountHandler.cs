@@ -2,6 +2,8 @@
 using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
+using System.Numerics;
+using System.Xml.Linq;
 
 namespace DSRS.Application.Features.Accounts.Register;
 
@@ -16,16 +18,34 @@ public class RegisterAccountHandler(IPlayerRepository playerRepository,
     {
         try
         {
-            var player = await _playerRepository.GetById(command.Id);
+            Player player;
 
-            if (player == null)
+            var nameExists = await _playerRepository.NameExistsAsync(command.Username);
+
+            if (nameExists)
                 return Result<Player>.Failure(
-                    new Error("Player.Id.NotFound", "Player not found."));
+                    new Error("Player.Username.Exists", "Username already exists."));
 
-            await _identityService.RegisterAccount(player, command.Password);
+            if (command.Id != Guid.Empty)
+            {
+                player = await _playerRepository.FindGuestById(command.Id);
+
+                if (player == null)
+                    return Result<Player>.Failure(
+                        new Error("Player.Id.NotFound", "Player not found."));
+
+                player.UpdateName(command.Username);
+            }
+            else
+            {
+                player = Player.Create(command.Username).Data!;
+                await _playerRepository.CreateAsync(player);
+
+            }
 
             player.Register();
 
+            await _identityService.RegisterAccount(player, command.Email, command.Password);
             await _unitOfWork.CommitAsync(cancellationToken);
 
             return Result<Player>.Success(player);
