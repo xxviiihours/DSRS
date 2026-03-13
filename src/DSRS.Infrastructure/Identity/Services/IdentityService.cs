@@ -1,12 +1,7 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Infrastructure.Identity.Models;
-using DSRS.SharedKernel.Primitives;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
 
 namespace DSRS.Infrastructure.Identity.Services;
 
@@ -22,9 +17,9 @@ internal class IdentityService(UserManager<ApplicationUser> userManager,
         throw new NotImplementedException();
     }
 
-    public async Task RegisterAccount(Player player, string password)
+    public async Task RegisterAccount(Player player, string email, string password)
     {
-        var user = new ApplicationUser { UserName = player.Name, PlayerId = player.Id };
+        var user = new ApplicationUser { UserName = player.Name, Email = email, PlayerId = player.Id };
 
         var result = await _userManager.CreateAsync(user, password);
 

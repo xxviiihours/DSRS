@@ -8,6 +8,6 @@ namespace DSRS.Application.Contracts;
 
 public interface IIdentityService
 {
-    Task RegisterAccount(Player player, string password);
+    Task RegisterAccount(Player player, string email, string password);
     Task<string> Authenticate(string username, string password);
 }
