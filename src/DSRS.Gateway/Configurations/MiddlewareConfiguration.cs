@@ -1,6 +1,8 @@
-﻿using DSRS.Infrastructure.Persistence;
+﻿using DSRS.Application.Exceptions;
+using DSRS.Infrastructure.Persistence;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Gateway.Configurations;
@@ -35,6 +37,7 @@ public static class MiddlewareConfiguration
             await SeedDatabaseAsync(app);
         }
 
+        app.UseExceptionMiddleware();
 
         app.UseHttpsRedirection();
         app.UseCors("AllowedClients");
@@ -85,5 +88,23 @@ public static class MiddlewareConfiguration
             logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
             // Don't re-throw for seeding errors - it's not critical
         }
+    }
+
+    static void UseExceptionMiddleware(this WebApplication app)
+    {
+        app.UseExceptionHandler(app =>
+        {
+            app.Run(async context =>
+            {
+                var exception = context.Features
+                    .Get<IExceptionHandlerFeature>()?.Error;
+
+                if (exception is UnauthorizedException)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsync(exception.Message);
+                }
+            });
+        });
     }
 }
