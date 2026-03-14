@@ -22,6 +22,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                 Name = p.Name,
                 Balance = p.Balance,
                 PurchaseLimit = p.PurchaseLimit,
+                IsGuest = p.IsGuest,
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
                     {
