@@ -2,8 +2,6 @@
 using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
-using System.Numerics;
-using System.Xml.Linq;
 
 namespace DSRS.Application.Features.Accounts.Register;
 

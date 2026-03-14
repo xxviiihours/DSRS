@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DSRS.Application.Features.Players;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DSRS.Application.Features.Authentications;
 
-public record AuthenticateResponse(Guid Id, string UserName)
+public record AuthenticateResponse(PlayerDto Player, bool IsLoggedIn)
 {
-    public Guid Id { get; set; } = Id;
-    public string UserName { get; set; } = UserName;
+    public PlayerDto Player { get; set; } = Player;
+    public bool IsLoggedIn { get; set; } = IsLoggedIn;
 }
