@@ -11,6 +11,7 @@ public record PlayerDto
     public string Name { get; set; } = string.Empty;
     public decimal Balance { get; set; }
     public int PurchaseLimit { get; set; }
+    public bool IsGuest { get; set; }
 
     [MapFilter("Date", "Today")]
     public IReadOnlyList<DailyPriceDto> DailyPrices { get; set; } = [];

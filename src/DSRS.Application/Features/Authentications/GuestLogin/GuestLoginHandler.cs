@@ -29,6 +29,7 @@ public class GuestLoginHandler(IPlayerRepository playerRepository,
                 Name = player.Data!.Name,
                 Balance = player.Data!.Balance,
                 PurchaseLimit = player.Data!.PurchaseLimit,
+                IsGuest = player.Data!.IsGuest,
             });
 
     }

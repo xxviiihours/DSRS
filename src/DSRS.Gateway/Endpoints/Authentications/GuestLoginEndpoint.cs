@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Features.Authentications;
 using DSRS.Application.Features.Authentications.GuestLogin;
+using DSRS.Domain.Aggregates.Players;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -41,14 +42,20 @@ public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest<IRe
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, result.Data!.Id.ToString()),
+            new(ClaimTypes.Name, result.Data!.Name),
+            new("is_guest", result.Data!.IsGuest.ToString())
         };
 
         var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
 
         await HttpContext.SignInAsync(
             IdentityConstants.ApplicationScheme,
-            new ClaimsPrincipal(identity)
-        );
+            new ClaimsPrincipal(identity),
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            });
 
         return result.ToHttpResult(
             mapResponse => new AuthenticateResponse(mapResponse, identity.IsAuthenticated),

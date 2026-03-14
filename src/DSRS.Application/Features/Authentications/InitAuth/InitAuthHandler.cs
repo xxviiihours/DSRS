@@ -9,13 +9,15 @@ using System.Text;
 
 namespace DSRS.Application.Features.Authentications.InitAuth;
 
-public class InitAuthHandler(ICurrentUserService currentUserService, IPlayerQuery playerQuery) : ICommandHandler<InitAuthCommand, Result<PlayerDto>>
+public class InitAuthHandler(ICurrentUserService currentUserService, 
+    IPlayerQuery playerQuery) : ICommandHandler<InitAuthCommand, Result<PlayerDto>>
 {
     private readonly IPlayerQuery _playerQuery = playerQuery;
     private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async ValueTask<Result<PlayerDto>> Handle(InitAuthCommand command, CancellationToken cancellationToken)
     {
+       
         var player = await _playerQuery.GetPlayerByIdAsync(_currentUserService.Id);
 
         if (player == null)
