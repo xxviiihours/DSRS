@@ -1,9 +1,8 @@
-﻿using DSRS.Application.Features.Authentications.InitAuth;
-using DSRS.Application.Features.Players.Get;
+﻿using DSRS.Application.Features.Authentications;
+using DSRS.Application.Features.Authentications.InitAuth;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
-using System.Security.Claims;
 
 namespace DSRS.Gateway.Endpoints.Authentications;
 
@@ -27,7 +26,7 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
         Tags("Authentication");
         // Add additional metadata
         Description(builder => builder
-          .Produces<PlayerAuthResponse>(200, "application/json")
+          .Produces<AuthenticateResponse>(200, "application/json")
           .ProducesProblem(400)
           .ProducesProblem(401)
           .ProducesProblem(500));
@@ -38,13 +37,8 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
         var player = await _mediator.Send(new InitAuthCommand());
 
          return player.ToHttpResult(
-             mapResponse => mapResponse,
+             mapResponse => new AuthenticateResponse(player.Data!, true),
              locationBuilder => "",
              successStatusCode: StatusCodes.Status200OK);
     }
-}
-public class PlayerAuthResponse(Guid id, string username)
-{
-    public Guid Id { get; set; } = id;
-    public string Username { get; set; } = username;
 }

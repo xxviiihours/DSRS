@@ -1,4 +1,5 @@
-﻿using DSRS.Application.Features.Authentications.GuestLogin;
+﻿using DSRS.Application.Features.Authentications;
+using DSRS.Application.Features.Authentications.GuestLogin;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -50,7 +51,7 @@ public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest<IRe
         );
 
         return result.ToHttpResult(
-            mapResponse => mapResponse,
+            mapResponse => new AuthenticateResponse(mapResponse, identity.IsAuthenticated),
             locationBuilder => "",
             successStatusCode: 200
         );
