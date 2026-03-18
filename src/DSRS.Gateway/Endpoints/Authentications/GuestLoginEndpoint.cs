@@ -23,7 +23,7 @@ public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest<IRe
             s.Summary = "Login using Guest Account";
             // Document possible responses
             s.Responses[200] = "Guest logon successfully";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping
@@ -39,26 +39,8 @@ public class GuestLoginEndpoint(IMediator mediator) : EndpointWithoutRequest<IRe
     {
         var result = await _mediator.Send(new GuestLoginCommand(), ct);
 
-        var authClaims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, result.Data!.Id.ToString()),
-            new(ClaimTypes.Name, result.Data!.Name),
-            new("is_guest", result.Data!.IsGuest.ToString())
-        };
-
-        var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
-
-        await HttpContext.SignInAsync(
-            IdentityConstants.ApplicationScheme,
-            new ClaimsPrincipal(identity),
-            new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            });
-
         return result.ToHttpResult(
-            mapResponse => new AuthenticateResponse(mapResponse, identity.IsAuthenticated),
+            mapResponse => new AuthenticateResponse(mapResponse),
             locationBuilder => "",
             successStatusCode: 200
         );
