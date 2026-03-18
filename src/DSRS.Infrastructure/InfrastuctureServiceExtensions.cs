@@ -1,6 +1,5 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Infrastructure.Identity;
-using DSRS.Infrastructure.Identity.Models;
 using DSRS.Infrastructure.Identity.Services;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Migrations.Sqlite;
@@ -8,10 +7,7 @@ using DSRS.Infrastructure.Persistence.Migrations.SqlServer;
 using DSRS.Infrastructure.Persistence.Queries;
 using DSRS.Infrastructure.Persistence.Repositories;
 using DSRS.Infrastructure.Persistence.Services;
-using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

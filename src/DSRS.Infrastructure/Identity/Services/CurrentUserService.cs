@@ -1,4 +1,5 @@
 ﻿using DSRS.Application.Contracts;
+using DSRS.Infrastructure.Constants;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ public class CurrentUserService : ICurrentUserService
 
     public CurrentUserService(IHttpContextAccessor httpContextAccessor)
     {
-        var claim = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var claim = httpContextAccessor.HttpContext?.User?.FindFirstValue(AppClaimTypes.NameIdentifier);
 
         Id = Guid.Parse(claim!);
         IsAuthenticated = !string.IsNullOrEmpty(claim);
