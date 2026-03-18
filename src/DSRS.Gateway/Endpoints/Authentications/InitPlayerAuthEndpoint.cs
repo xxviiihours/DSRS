@@ -20,6 +20,7 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
             s.Summary = "Initialize player authentication";
             // Document possible responses
             s.Responses[200] = "Player authentication initialized successfully";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[500] = "Internal server error";
         });
         // Add tags for API grouping

@@ -24,6 +24,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
 
             // Document possible responses
             s.Responses[200] = "Player found and returned successfully";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Player with specified ID not found";
         });
 
@@ -35,6 +36,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
           .Accepts<GetMarketPriceByPlayerIdRequest>()
           .Produces<GetMarketPriceByPlayerIdResponse>(200, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401)
           .ProducesProblem(500));
     }
 

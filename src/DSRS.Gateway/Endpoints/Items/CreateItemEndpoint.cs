@@ -20,6 +20,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
             // Document possible responses
             s.Responses[201] = "Item created successfully";
             s.Responses[400] = "Invalid input data - validation errors";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[500] = "Internal server error";
         });
 
@@ -31,6 +32,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
           .Accepts<CreateItemRequest>("application/json")
           .Produces<CreateItemResponse>(201, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401)
           .ProducesProblem(500));
     }
 

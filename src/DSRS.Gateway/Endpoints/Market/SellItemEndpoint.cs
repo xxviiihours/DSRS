@@ -21,6 +21,7 @@ public sealed class SellItemEndpoint(IMediator mediator) : Endpoint<SellItemRequ
             // Document possible responses
             s.Responses[200] = "Item sold successfully";
             s.Responses[400] = "Invalid input data - validation errors";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[500] = "Internal server error";
         });
 
@@ -32,6 +33,7 @@ public sealed class SellItemEndpoint(IMediator mediator) : Endpoint<SellItemRequ
           .Accepts<BuyItemRequest>("application/json")
           .Produces<BuyItemResponse>(204, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401)
           .ProducesProblem(500));
     }
 

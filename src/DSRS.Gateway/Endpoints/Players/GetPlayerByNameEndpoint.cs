@@ -32,6 +32,7 @@ public class GetPlayerByNameEndpoint(IMediator mediator) : Endpoint<GetPlayerByN
           .Accepts<GetPlayerByNameRequest>()
           .Produces<GetPlayerByNameResponse>(200, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401) 
           .ProducesProblem(500));
     }
 

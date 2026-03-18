@@ -22,6 +22,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
             s.Description = "Retrieves previous daily prices for a specific item";
             // Document possible responses
             s.Responses[200] = "Daily Prices found and returned successfully";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Daily Price with specified IDs not found";
         });
 
@@ -33,6 +34,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
           .Accepts<GetDailyPricesPerItemRequest>()
           .Produces<List<DashboardDto>>(200, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401)
           .ProducesProblem(500));
     }
     public override async Task<IResult> ExecuteAsync(GetDailyPricesPerItemRequest request, CancellationToken cancellationToken)
