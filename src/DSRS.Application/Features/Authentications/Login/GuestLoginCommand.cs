@@ -2,7 +2,7 @@
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Authentications.GuestLogin;
+namespace DSRS.Application.Features.Authentications.Login;
 
 public record GuestLoginCommand : ICommand<Result<PlayerDto>>
 {
