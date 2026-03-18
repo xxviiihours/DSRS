@@ -2,7 +2,9 @@
 using DSRS.Application.Exceptions;
 using DSRS.Application.Features.Players;
 using DSRS.Domain.Aggregates.Players;
+using DSRS.Infrastructure.Constants;
 using DSRS.Infrastructure.Identity.Models;
+using DSRS.SharedKernel.Primitives;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -31,9 +33,9 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
         var claims = new List<Claim>
     {
-        new(ClaimTypes.NameIdentifier, user.PlayerId.ToString()),
-        new(ClaimTypes.Name, player.Name),
-        new("is_guest", player.IsGuest.ToString())
+        new(AppClaimTypes.NameIdentifier, user.PlayerId.ToString()),
+        new(AppClaimTypes.Name, player.Name),
+        new(AppClaimTypes.IsGuest, player.IsGuest.ToString())
     };
 
         var identity = new ClaimsIdentity(
@@ -41,16 +43,32 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
             IdentityConstants.ApplicationScheme
         );
 
-        var principal = new ClaimsPrincipal(identity);
-
         await _httpContextAccessor.HttpContext!.SignInAsync(
             IdentityConstants.ApplicationScheme,
-            principal,
+            new ClaimsPrincipal(identity),
             new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
             });
+
+        return player;
+    }
+
+    public async Task<Player> AuthenticateAsGuest(Player player)
+    {
+        var authClaims = new List<Claim>
+        {
+            new(AppClaimTypes.NameIdentifier, player.Id.ToString()),
+            new(AppClaimTypes.Name, player.Name),
+            new(AppClaimTypes.IsGuest, player.IsGuest.ToString())
+        };
+
+        var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
+
+        await _httpContextAccessor.HttpContext!.SignInAsync(
+            IdentityConstants.ApplicationScheme,
+            new ClaimsPrincipal(identity),
+            new AuthenticationProperties { IsPersistent = true});
 
         return player;
     }
