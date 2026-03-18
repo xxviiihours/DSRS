@@ -14,7 +14,9 @@ var startupLogger = loggerFactory.CreateLogger<Program>();
 startupLogger.LogInformation("Starting web host");
 
 builder.Services.AddServiceConfigurations(startupLogger, builder);
+builder.Services.AddAuthenticationConfiguration(startupLogger);
 builder.Services.AddAuthorizationConfiguration(startupLogger);
+
 
 builder.Services.AddFastEndpoints()
     .SwaggerDocument(o =>
