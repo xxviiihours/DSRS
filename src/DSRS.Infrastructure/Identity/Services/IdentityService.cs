@@ -4,7 +4,6 @@ using DSRS.Application.Features.Players;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Infrastructure.Constants;
 using DSRS.Infrastructure.Identity.Models;
-using DSRS.SharedKernel.Primitives;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -65,10 +64,11 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
         var identity = new ClaimsIdentity(authClaims, IdentityConstants.ApplicationScheme);
 
-        await _httpContextAccessor.HttpContext!.SignInAsync(
-            IdentityConstants.ApplicationScheme,
-            new ClaimsPrincipal(identity),
-            new AuthenticationProperties { IsPersistent = true});
+        await _httpContextAccessor
+            .HttpContext!.SignInAsync(
+                IdentityConstants.ApplicationScheme,
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties { IsPersistent = true});
 
         return player;
     }
@@ -93,5 +93,13 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
         await Task.CompletedTask;
 
+    }
+
+    public async Task SignOutAsync()
+    {
+
+        await _httpContextAccessor.HttpContext!
+            .SignOutAsync(IdentityConstants.ApplicationScheme);
+        await Task.CompletedTask;
     }
 }

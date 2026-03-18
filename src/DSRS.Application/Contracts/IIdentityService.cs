@@ -1,9 +1,5 @@
 ﻿using DSRS.Application.Features.Players;
 using DSRS.Domain.Aggregates.Players;
-using DSRS.SharedKernel.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DSRS.Application.Contracts;
 
@@ -13,4 +9,6 @@ public interface IIdentityService
     Task<PlayerDto> Authenticate(string username, string password);
     Task<Player> AuthenticateAsGuest(Player player);
     Task<Guid> FindByIdAsync(string username);
+
+    Task SignOutAsync();
 }
