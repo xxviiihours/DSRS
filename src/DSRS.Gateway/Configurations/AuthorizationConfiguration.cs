@@ -1,4 +1,7 @@
-﻿namespace DSRS.Gateway.Configurations;
+﻿using DSRS.Infrastructure.Constants;
+using Microsoft.AspNetCore.Identity;
+
+namespace DSRS.Gateway.Configurations;
 
 public static class AuthorizationConfiguration
 {
@@ -7,9 +10,14 @@ public static class AuthorizationConfiguration
         logger.LogInformation("Configuring authorization policies");
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("authenticated", policy =>
+            options.AddPolicy("Authenticated", policy =>
             {
                 policy.RequireAuthenticatedUser();
+            });
+            options.AddPolicy("RegisteredUser", policy =>
+            {
+                policy.RequireAuthenticatedUser()
+                    .RequireClaim(AppClaimTypes.IsGuest, "False");
             });
         });
 
