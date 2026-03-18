@@ -15,7 +15,6 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
     public override void Configure()
     {
         Post(RegisterAccountRequest.Route);
-        //Policies("authenticated");
         AllowAnonymous();
         Summary(s =>
         {
@@ -23,7 +22,7 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
             // Document possible responses
             s.Responses[201] = "Account created successfully";
             s.Responses[400] = "Invalid input data - validation errors";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping

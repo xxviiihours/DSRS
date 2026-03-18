@@ -16,7 +16,7 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
     public override void Configure()
     {
         Post(CreatePlayerRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Create a new player";

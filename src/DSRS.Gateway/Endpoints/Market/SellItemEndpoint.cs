@@ -14,7 +14,7 @@ public sealed class SellItemEndpoint(IMediator mediator) : Endpoint<SellItemRequ
     public override void Configure()
     {
         Put(SellItemRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Use to sell an item in the inventory";

@@ -15,7 +15,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
     public override void Configure()
     {
         Get(GetDailyPricesPerItemRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Retrieves daily prices based on item ID and player ID";
@@ -24,6 +24,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
             s.Responses[200] = "Daily Prices found and returned successfully";
             s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Daily Price with specified IDs not found";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping

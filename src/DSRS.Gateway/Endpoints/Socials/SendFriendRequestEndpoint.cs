@@ -14,14 +14,17 @@ public class SendFriendRequestEndpoint(IMediator mediator) : Endpoint<SendFriend
     public override void Configure()
     {
         Post(SendFriendRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated", "RegistedUser");
         Summary(s =>
         {
             s.Summary = "Initiates Friend Requests";
             s.Description = "Sends friend requests using RequesterId and AddresseeId";
             // Document possible responses
             s.Responses[201] = "Friend request created successfully";
+            s.Responses[400] = "Invalid input data - validation errors";
+            s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Unable to find Addresee using the parameters provided.";
+            s.Responses[500] = "Internal server error occurred while processing the request";
         });
         // Add tags for API grouping
         Tags("Socials");
@@ -30,6 +33,8 @@ public class SendFriendRequestEndpoint(IMediator mediator) : Endpoint<SendFriend
           .Accepts<SendFriendRequest>("application/json")
           .Produces<SendFriendResponse>(201, "application/json")
           .ProducesProblem(400)
+          .ProducesProblem(401)
+          .ProducesProblem(404)
           .ProducesProblem(500));
     }
 

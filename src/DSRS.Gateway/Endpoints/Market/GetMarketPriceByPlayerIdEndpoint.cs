@@ -15,7 +15,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
     public override void Configure()
     {
         Get(GetMarketPriceByPlayerIdRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Generates daily prices based on player ID";
@@ -26,6 +26,7 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
             s.Responses[200] = "Player found and returned successfully";
             s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Player with specified ID not found";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping

@@ -15,7 +15,7 @@ public class GetTop20PlayersEndpoint(IMediator mediator) : Endpoint<GetTop20Play
     public override void Configure()
     {
         Get(GetTop20PlayersRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Retrieves top 20 players";
@@ -24,6 +24,7 @@ public class GetTop20PlayersEndpoint(IMediator mediator) : Endpoint<GetTop20Play
             s.Responses[200] = "List found and returned successfully";
             s.Responses[401] = "Authentication failed.";
             s.Responses[404] = "Unable to find top 20 players";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping

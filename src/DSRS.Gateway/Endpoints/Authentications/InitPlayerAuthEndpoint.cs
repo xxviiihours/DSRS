@@ -14,14 +14,14 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
     public override void Configure()
     {
         Get("auth/init");
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Initialize player authentication";
             // Document possible responses
             s.Responses[200] = "Player authentication initialized successfully";
             s.Responses[401] = "Authentication failed.";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
         // Add tags for API grouping
         Tags("Authentication");
@@ -38,7 +38,7 @@ public class InitPlayerAuthEndpoint(IMediator mediator) : EndpointWithoutRequest
         var player = await _mediator.Send(new InitAuthCommand());
 
          return player.ToHttpResult(
-             mapResponse => new AuthenticateResponse(player.Data!, true),
+             mapResponse => new AuthenticateResponse(player.Data!),
              locationBuilder => "",
              successStatusCode: StatusCodes.Status200OK);
     }

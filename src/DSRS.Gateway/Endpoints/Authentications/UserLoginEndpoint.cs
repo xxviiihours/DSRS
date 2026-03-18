@@ -25,7 +25,7 @@ public class UserLoginEndpoint(IMediator mediator) : Endpoint<AuthenticateReques
             s.Responses[200] = "Login successfully";
             s.Responses[400] = "Invalid input data - validation errors";
             s.Responses[401] = "Unauthorized - invalid credentials";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping

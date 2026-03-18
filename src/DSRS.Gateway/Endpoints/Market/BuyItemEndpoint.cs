@@ -15,7 +15,7 @@ public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemReques
     public override void Configure()
     {
         Post(BuyItemRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Use to purchase a new item";
@@ -23,7 +23,7 @@ public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemReques
             s.Responses[201] = "Item bought successfully";
             s.Responses[400] = "Invalid input data - validation errors";
             s.Responses[401] = "Authentication failed.";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request";
         });
 
         // Add tags for API grouping

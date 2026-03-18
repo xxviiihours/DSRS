@@ -13,7 +13,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
     public override void Configure()
     {
         Post(CreateItemRequest.Route);
-        Policies("authenticated");
+        Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Create a new item";
@@ -21,7 +21,7 @@ public class CreateItemEndpoint(IMediator mediator) : Endpoint<CreateItemRequest
             s.Responses[201] = "Item created successfully";
             s.Responses[400] = "Invalid input data - validation errors";
             s.Responses[401] = "Authentication failed.";
-            s.Responses[500] = "Internal server error";
+            s.Responses[500] = "Internal server error occurred while processing the request.";
         });
 
         // Add tags for API grouping
