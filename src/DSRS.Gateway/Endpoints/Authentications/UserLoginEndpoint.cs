@@ -1,12 +1,9 @@
-﻿using DSRS.Application.Features.Authentications.GuestLogin;
-using DSRS.Application.Features.Authentications.UserLogin;
+﻿
+using DSRS.Application.Features.Authentications.Login;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace DSRS.Gateway.Endpoints.Authentications;
 

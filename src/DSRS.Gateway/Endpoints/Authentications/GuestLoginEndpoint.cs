@@ -1,12 +1,8 @@
 ﻿using DSRS.Application.Features.Authentications;
-using DSRS.Application.Features.Authentications.GuestLogin;
-using DSRS.Domain.Aggregates.Players;
+using DSRS.Application.Features.Authentications.Login;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace DSRS.Gateway.Endpoints.Authentications;
 
