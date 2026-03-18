@@ -24,18 +24,6 @@ public static class IdentityServiceExtension
         }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SameSite = SameSiteMode.None;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            options.Events.OnRedirectToLogin = ctx =>
-            {
-                ctx.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            };
-        });
-
         logger.LogInformation("{Project} Identity services registered", "DSRS.Infrastructure");
         return services;
     }
