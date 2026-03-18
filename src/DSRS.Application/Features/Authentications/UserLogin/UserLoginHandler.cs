@@ -17,6 +17,6 @@ public class UserLoginHandler(IIdentityService identityService) : ICommandHandle
                 new Error("Authentication failed", "Invalid username or password"));
 
         return Result<AuthenticateResponse>.Success(
-            new AuthenticateResponse(player, true));
+            new AuthenticateResponse(player));
     }
 }
