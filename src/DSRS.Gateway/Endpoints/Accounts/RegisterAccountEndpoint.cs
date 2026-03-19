@@ -38,11 +38,9 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
 
     public override async Task<IResult> ExecuteAsync(RegisterAccountRequest request, CancellationToken ct)
     {
-        Guid id = string.IsNullOrEmpty(request.Id) ? Guid.Empty : Guid.Parse(request.Id!);
         var result = await _mediator.Send(
             new RegisterAccountCommand(
-                id, 
-                request.Username,
+                request.Name,
                 request.Email,
                 request.Password), ct);
 
@@ -57,8 +55,7 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
 public class RegisterAccountRequest
 {
     public const string Route = "/accounts/register";
-    public string? Id { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string ConfirmPassword { get; set; } = string.Empty;
@@ -68,11 +65,9 @@ public class RegisterAccountValidator : Validator<RegisterAccountRequest>
 {
     public RegisterAccountValidator()
     {
-        //RuleFor(x => x.Id)
-        //    .NotEmpty().WithMessage("Id is required.");
-        RuleFor(x => x.Username)
+        RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Username is required.");
+            .WithMessage("Name is required.");
         RuleFor(x => x.Password)
             .NotEmpty()
             .WithMessage("Password is required.")
