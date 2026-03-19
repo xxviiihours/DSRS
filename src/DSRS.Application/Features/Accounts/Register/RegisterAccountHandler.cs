@@ -16,32 +16,14 @@ public class RegisterAccountHandler(IPlayerRepository playerRepository,
     {
         try
         {
-            Player player;
-
             var nameExists = await _playerRepository.NameExistsAsync(command.Username);
 
             if (nameExists)
                 return Result<Player>.Failure(
                     new Error("Player.Username.Exists", "Username already exists."));
 
-            if (command.Id != Guid.Empty)
-            {
-                player = await _playerRepository.FindGuestById(command.Id);
-
-                if (player == null)
-                    return Result<Player>.Failure(
-                        new Error("Player.Id.NotFound", "Player not found."));
-
-                player.UpdateName(command.Username);
-            }
-            else
-            {
-                player = Player.Create(command.Username).Data!;
-                await _playerRepository.CreateAsync(player);
-
-            }
-
-            player.Register();
+            var player = Player.Create(command.Username).Data!;
+            await _playerRepository.CreateAsync(player);
 
             await _identityService.RegisterAccount(player, command.Email, command.Password);
             await _unitOfWork.CommitAsync(cancellationToken);
