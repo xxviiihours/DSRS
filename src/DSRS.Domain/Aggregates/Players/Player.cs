@@ -2,6 +2,7 @@
 using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.Common;
 using DSRS.Domain.Events;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
@@ -16,6 +17,8 @@ public sealed class Player : AggregateRoot<Guid>
     public int PurchaseLimit { get; private set; }
     public bool IsGuest { get; private set; }
     public DateOnly LastLimitGeneration { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
     private readonly List<DailyPrice> _dailyPrices = [];
     public IReadOnlyCollection<DailyPrice> DailyPrices => _dailyPrices.AsReadOnly();
     private readonly List<Inventory> _inventoryItems = [];
@@ -28,6 +31,7 @@ public sealed class Player : AggregateRoot<Guid>
         IsGuest = isGuest;
         PurchaseLimit = 25;
         LastLimitGeneration = DateOnly.FromDateTime(DateTime.Now);
+        CreatedAt = DateTime.Now;
     }
 
     public static Result<Player> CreateGuest()
@@ -215,6 +219,16 @@ public sealed class Player : AggregateRoot<Guid>
             _inventoryItems.Remove(inventory);
 
         return Result<Inventory>.Success(inventory);
+    }
+
+    public void SetCreated(DateTime now)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetModified(DateTime now)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 }

@@ -12,6 +12,7 @@ public record PlayerDto
     public decimal Balance { get; set; }
     public int PurchaseLimit { get; set; }
     public bool IsGuest { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     [MapFilter("Date", "Today")]
     public IReadOnlyList<DailyPriceDto> DailyPrices { get; set; } = [];
