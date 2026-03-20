@@ -75,4 +75,10 @@ public class PlayerRepository(AppDbContext context,
             .AsNoTracking()
             .AnyAsync(p => p.Name == name);
     }
+
+    public async Task PatchAsync(Player player)
+    {
+        _context.Players.Update(player);
+        await Task.CompletedTask;
+    }
 }
