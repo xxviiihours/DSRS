@@ -14,6 +14,7 @@ public class DashboardQuery(AppDbContext context) : IDashboardQuery
     {
         var result = await _context.DailyPrices
             .Where(p => p.ItemId == ItemId && p.PlayerId == PlayerId)
+            .OrderByDescending(p => p.Date)
             .Take(7)
             .Select(p => new DashboardDto
             {
