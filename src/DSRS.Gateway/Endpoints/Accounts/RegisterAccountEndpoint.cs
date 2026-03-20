@@ -1,10 +1,9 @@
 ﻿using DSRS.Application.Features.Accounts.Register;
+using DSRS.Application.Features.Players;
 using DSRS.Gateway.Common.Extensions;
-using DSRS.Gateway.Endpoints.Items;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
-using Microsoft.IdentityModel.Tokens;
 
 namespace DSRS.Gateway.Endpoints.Accounts;
 
@@ -31,7 +30,7 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
         // Add additional metadata
         Description(builder => builder
           .Accepts<RegisterAccountRequest>("application/json")
-          .Produces<CreateItemResponse>(201, "application/json")
+          .Produces<RegisterAccountResponse>(201, "application/json")
           .ProducesProblem(400)
           .ProducesProblem(500));
     }
@@ -45,7 +44,11 @@ public class RegisterAccountEndpoint(IMediator mediator) : Endpoint<RegisterAcco
                 request.Password), ct);
 
         return result.ToHttpResult(
-            mapResponse => mapResponse,
+            mapResponse => new RegisterAccountResponse
+            {
+                Id = mapResponse.Id,
+                Player = mapResponse
+            },
             locationBuilder => $"{RegisterAccountRequest.Route}/{result.Data?.Id}",
             successStatusCode: StatusCodes.Status201Created
         );
@@ -84,4 +87,10 @@ public class RegisterAccountValidator : Validator<RegisterAccountRequest>
             .Matches("[^a-zA-Z0-9]")
             .WithMessage("Password must contain at least one special character."); ;
     }
+}
+
+public class RegisterAccountResponse
+{
+    public Guid Id { get; set; }
+    public PlayerDto Player { get; set; } = new();
 }
