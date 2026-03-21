@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Application.Features.Accounts.Register;
+namespace DSRS.Application.Features.Accounts.Upgrade;
 
 public class UpgradeAccountHandler(IPlayerRepository playerRepository,
     IIdentityService identityService, IUnitOfWork unitOfWork) : ICommandHandler<UpgradeAccountCommand, Result<PlayerDto>>

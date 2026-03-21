@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace DSRS.Application.Features.Accounts.Register;
+namespace DSRS.Application.Features.Accounts.Upgrade;
 
 public record UpgradeAccountCommand(
     Guid Id, 
