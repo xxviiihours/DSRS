@@ -13,12 +13,35 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
     public async Task<List<PlayerLeaderboardDto>> GetTop20Players(Guid playerId)
     {
         var top20Sql = @"
-            SELECT Id,
-                   Name,
-                   Balance AS TotalBalance,
-                   ROW_NUMBER() OVER (ORDER BY Balance DESC) AS Rank
-            FROM Players
-            ORDER BY Balance DESC
+            WITH CurrentRanks AS (
+                SELECT
+                    Id,
+                    Name,
+                    Balance,
+                    ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankToday
+                FROM Players
+                WHERE IsGuest = 0
+            ),
+            YesterdayRanks AS (
+                SELECT
+                    PlayerId,
+                    ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankYesterday
+                FROM PlayerBalanceSnapshots
+                WHERE SnapshotDate = DATE('now','-1 day')
+            )
+            SELECT
+                c.Id,
+                c.Name,
+                c.Balance AS TotalBalance,
+                c.RankToday AS Rank,
+                ROUND(
+                    ((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,
+                    2
+                ) AS RankChangePercent
+            FROM CurrentRanks c
+            LEFT JOIN YesterdayRanks y
+                ON c.Id = y.PlayerId
+            ORDER BY c.RankToday
             LIMIT 20
         ";
 
@@ -33,15 +56,34 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
             return top20;
 
         var currentUserSql = @"
-            SELECT *
-            FROM (
-                SELECT Id,
-                       Name,
-                       Balance AS TotalBalance,
-                       ROW_NUMBER() OVER (ORDER BY Balance DESC) AS Rank
+            WITH CurrentRanks AS (
+                SELECT
+                    Id,
+                    Name,
+                    Balance,
+                    ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankToday
                 FROM Players
+            ),
+            YesterdayRanks AS (
+                SELECT
+                    PlayerId,
+                    ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankYesterday
+                FROM PlayerBalanceSnapshots
+                WHERE DATE(SnapshotDate) = DATE('now','-1 day')
             )
-            WHERE Id = {0}
+            SELECT
+                c.Id,
+                c.Name,
+                c.Balance AS TotalBalance,
+                c.RankToday AS Rank,
+                ROUND(
+                    ((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,
+                    2
+                ) AS RankChangePercent
+            FROM CurrentRanks c
+            LEFT JOIN YesterdayRanks y
+                ON c.Id = y.PlayerId
+            WHERE c.Id = {0}
         ";
 
         var currentPlayer = await _context.PlayerLeaderboards
