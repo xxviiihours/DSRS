@@ -25,6 +25,7 @@ public class AppDbContext(DbContextOptions options, IDateTime dateTimeService) :
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<DistributionRecord> DistributionRecords => Set<DistributionRecord>();
     public DbSet<Friendship> Friendships => Set<Friendship>();
+    public DbSet<PlayerBalanceSnapshot> PlayerBalanceSnapshots => Set<PlayerBalanceSnapshot>();
 
     // view
     public DbSet<PlayerLeaderboardDto> PlayerLeaderboards { get; set; }
