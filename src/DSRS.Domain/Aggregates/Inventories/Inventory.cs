@@ -12,6 +12,7 @@ public class Inventory : AggregateRoot<Guid>, IAuditableEntity
     public Guid ItemId { get; }
     public Item Item { get; } = null!;
     public int Quantity { get; private set; }
+    public decimal PurchasePrice { get; }
     public DateTime CreatedAt { get; private set; }
     public DateTime LastModified { get; private set; }
 
@@ -19,17 +20,20 @@ public class Inventory : AggregateRoot<Guid>, IAuditableEntity
     internal Inventory(
         Guid playerId,
         Guid itemId,
-        int quantity)
+        int quantity,
+        decimal purchasePrice)
     {
         PlayerId = playerId;
         ItemId = itemId;
         Quantity = quantity;
+        PurchasePrice = purchasePrice;
     }
 
     public static Result<Inventory> Create(
         Guid playerId,
         Guid itemId,
-        int quantity)
+        int quantity,
+        decimal purchasePrice)
     {
         if (playerId == Guid.Empty)
             return Result<Inventory>.Failure(
@@ -44,7 +48,8 @@ public class Inventory : AggregateRoot<Guid>, IAuditableEntity
             new Inventory(
                 playerId,
                 itemId,
-                quantity));
+                quantity,
+                purchasePrice));
     }
     public Result Increase(int amount)
     {

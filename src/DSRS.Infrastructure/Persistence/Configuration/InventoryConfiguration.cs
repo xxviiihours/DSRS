@@ -9,17 +9,20 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
 {
     public void Configure(EntityTypeBuilder<Inventory> builder)
     {
-        builder.HasKey(dp => dp.Id);
+        builder.HasKey(p => p.Id);
 
-        builder.Property(dp => dp.ItemId)
+        builder.Property(p => p.ItemId)
             .IsRequired();
         
-        builder.Property(dp => dp.Quantity)
+        builder.Property(p => p.Quantity)
             .IsRequired();
 
-        builder.HasOne(dp => dp.Item)
+        builder.Property(p => p.PurchasePrice)
+            .IsRequired();
+
+        builder.HasOne(p => p.Item)
             .WithMany()
-            .HasForeignKey(dp => dp.ItemId)
+            .HasForeignKey(p => p.ItemId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
