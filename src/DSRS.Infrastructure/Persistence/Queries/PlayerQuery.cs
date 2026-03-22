@@ -30,6 +30,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                         Id = i.Id,
                         ItemId = i.ItemId,
                         Quantity = i.Quantity,
+                        PurchasePrice = i.PurchasePrice,
                         Item = new ItemDto
                         {
                             Name = i.Item.Name,
@@ -61,6 +62,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                         Id = i.Id,
                         ItemId = i.ItemId,
                         Quantity = i.Quantity,
+                        PurchasePrice= i.PurchasePrice,
                         Item = new ItemDto
                         {
                             Name = i.Item.Name,
