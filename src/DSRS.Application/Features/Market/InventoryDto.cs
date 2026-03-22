@@ -8,4 +8,5 @@ public class InventoryDto
     public Guid ItemId { get; set; }
     public ItemDto Item { get; set; } = null!;
     public int Quantity { get; set; }
+    public decimal PurchasePrice { get; set; }
 }
