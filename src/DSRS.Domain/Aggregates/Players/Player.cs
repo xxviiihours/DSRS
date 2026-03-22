@@ -122,7 +122,7 @@ public sealed class Player : AggregateRoot<Guid>
                 new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
 
-        var result = AddToInventory(itemId, quantity);
+        var result = AddToInventory(itemId, quantity, dailyPrice.Price);
 
         if (!result.IsSuccess)
             return Result<InventoryResult>.Failure(result.Error!);
@@ -178,13 +178,13 @@ public sealed class Player : AggregateRoot<Guid>
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
 
     public record InventoryResult(Inventory Inventory, bool IsNew);
-    public Result<InventoryResult> AddToInventory(Guid itemId, int quantity)
+    public Result<InventoryResult> AddToInventory(Guid itemId, int quantity, decimal purchasePrice)
     {
         var existingItem = GetInventory(itemId);
 
         if (existingItem is null)
         {
-            var createResult = Inventory.Create(Id, itemId, quantity);
+            var createResult = Inventory.Create(Id, itemId, quantity, purchasePrice);
             if (!createResult.IsSuccess)
                 return Result<InventoryResult>.Failure(createResult.Error!);
 
