@@ -1,7 +1,7 @@
 using DSRS.Application.Contracts;
 using DSRS.Application.Features.Players;
 using DSRS.Domain.Aggregates.Players;
-using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.Services;
 using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Mappings;
 using DSRS.SharedKernel.Primitives;

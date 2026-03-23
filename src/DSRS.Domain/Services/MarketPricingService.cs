@@ -1,7 +1,8 @@
 ﻿using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.Aggregates.Pricing;
 using DSRS.SharedKernel.Enums;
 
-namespace DSRS.Domain.Aggregates.Pricing;
+namespace DSRS.Domain.Services;
 
 public class MarketPricingService
 {
@@ -23,6 +24,12 @@ public class MarketPricingService
         var percentage = Math.Round((price - item.BasePrice) / item.BasePrice * 100, 2);
 
         return new GeneratedPrice(price, percentage, high ? PriceState.HIGH : PriceState.LOW);
+
+    }
+
+
+    public static void Buy()
+    {
 
     }
 

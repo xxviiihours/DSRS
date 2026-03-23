@@ -1,6 +1,6 @@
 using DSRS.Application.Contracts;
 using DSRS.Domain.Aggregates.Items;
-using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.Services;
 using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
