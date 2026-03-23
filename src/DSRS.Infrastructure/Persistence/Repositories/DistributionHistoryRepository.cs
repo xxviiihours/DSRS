@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DSRS.Infrastructure.Persistence.Repositories;
 
-public class DistributionHistoryRepository(AppDbContext context) : IDistributionHistory
+public class DistributionHistoryRepository(AppDbContext context) : IDistributionHistoryRepository
 {
     private readonly AppDbContext _context = context;
 

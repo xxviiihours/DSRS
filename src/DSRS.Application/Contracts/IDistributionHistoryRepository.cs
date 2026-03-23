@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DSRS.Application.Contracts;
 
-public interface IDistributionHistory
+public interface IDistributionHistoryRepository
 {
     Task CreateAsync(DistributionRecord record);
 }
