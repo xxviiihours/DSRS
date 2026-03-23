@@ -9,11 +9,11 @@ using System;
 namespace DSRS.Application.EventHandlers;
 
 public class ItemSoldEventHandler(
-    IDistributionHistory distributionHistoryRepository,
+    IDistributionHistoryRepository distributionHistoryRepository,
     ILogger<ItemSoldEventHandler> logger,
     IPlayerSnapshotRepository playerSnapshotRepository) : INotificationHandler<ItemSoldNotification>
 {
-    private readonly IDistributionHistory _distributionHistoryRepository = distributionHistoryRepository;
+    private readonly IDistributionHistoryRepository _distributionHistoryRepository = distributionHistoryRepository;
     private readonly IPlayerSnapshotRepository _playerSnapshotRepository = playerSnapshotRepository;
     private readonly ILogger<ItemSoldEventHandler> _logger = logger;
     public async ValueTask Handle(ItemSoldNotification notification, CancellationToken cancellationToken)

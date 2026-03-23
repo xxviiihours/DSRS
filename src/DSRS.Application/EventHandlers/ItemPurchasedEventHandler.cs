@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 namespace DSRS.Application.EventHandlers;
 
 public class ItemPurchasedEventHandler(
-    IDistributionHistory distributionHistoryRepository,
+    IDistributionHistoryRepository distributionHistoryRepository,
     ILogger<ItemPurchasedEventHandler> logger,
     IPlayerSnapshotRepository playerSnapshotRepository) : INotificationHandler<ItemPurchasedNotification>
 {
-    private readonly IDistributionHistory _distributionHistoryRepository = distributionHistoryRepository;
+    private readonly IDistributionHistoryRepository _distributionHistoryRepository = distributionHistoryRepository;
     private readonly IPlayerSnapshotRepository _playerSnapshotRepository = playerSnapshotRepository;
     private readonly ILogger<ItemPurchasedEventHandler> _logger = logger;
 
