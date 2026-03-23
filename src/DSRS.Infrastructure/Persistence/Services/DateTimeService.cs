@@ -10,4 +10,5 @@ public class DateTimeService : IDateTime
     public DateOnly DateToday => DateOnly.FromDateTime(Now);
 
     public DateTime UtcNow => DateTime.UtcNow;
+    public DateOnly DateTodayUtc => DateOnly.FromDateTime(UtcNow);
 }
