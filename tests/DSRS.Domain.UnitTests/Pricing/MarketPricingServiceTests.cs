@@ -1,5 +1,5 @@
 using DSRS.Domain.Aggregates.Items;
-using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.Services;
 using DSRS.SharedKernel.Enums;
 using FluentAssertions;
 using Xunit;
