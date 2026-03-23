@@ -1,6 +1,5 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Aggregates.Players;
-using DSRS.Infrastructure.Persistence;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +23,24 @@ public class PlayerRepository(AppDbContext context,
         var result = await _context.Players
             .FirstOrDefaultAsync(p => p.Id == id && p.IsGuest);
         return result!;
+    }
+
+    public async Task<List<Player>> GetAllAsync()
+    {
+        var players = await _context.Players
+            .Where(p => !p.IsGuest)
+            .ToListAsync();
+
+        return players;
+    }
+
+    public async Task<List<Player>> GetAllGuest()
+    {
+        var guestPlayers = await _context.Players
+            .Where(p => p.IsGuest)
+            .ToListAsync();
+
+        return guestPlayers;
     }
 
     public async Task<Player> GetById(Guid Id)
