@@ -8,4 +8,5 @@ public interface IDailyPriceRepository
     Task<List<DailyPriceDto>> GetDailyPricesByPlayerId(Guid id);
     Task CreateAsync(DailyPrice dailyPrice);
     Task CreateAllAsync(List<DailyPrice> dailyPrices);
+    Task<bool> CheckExistingDailyPrice(Guid playerId, Guid itemId, DateOnly today);
 }

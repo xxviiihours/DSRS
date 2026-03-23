@@ -10,6 +10,16 @@ public class DailyPriceRepository(AppDbContext context) : IDailyPriceRepository
 {
     private readonly AppDbContext _context = context;
 
+    public async Task<bool> CheckExistingDailyPrice(Guid playerId, Guid itemId, DateOnly today)
+    {
+        var result = await _context.DailyPrices
+            .AnyAsync(p => p.PlayerId == playerId 
+                && p.ItemId == itemId 
+                && p.Date == today);
+
+        return result;
+    }
+
     public async Task CreateAllAsync(List<DailyPrice> dailyPrices)
     {
         await _context.AddRangeAsync(dailyPrices);
