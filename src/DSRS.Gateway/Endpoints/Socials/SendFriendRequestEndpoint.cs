@@ -1,4 +1,4 @@
-using DSRS.Application.Features.Socials.Accept;
+using DSRS.Application.Features.Socials.SendRequest;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;

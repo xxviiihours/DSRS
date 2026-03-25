@@ -1,5 +1,5 @@
 using DSRS.Application.Features.Leaderboards;
-using DSRS.Application.Features.Leaderboards.Queries;
+using DSRS.Application.Features.Leaderboards.GetTop20Players;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;

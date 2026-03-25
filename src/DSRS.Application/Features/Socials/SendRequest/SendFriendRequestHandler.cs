@@ -4,7 +4,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Features.Socials.Accept;
+namespace DSRS.Application.Features.Socials.SendRequest;
 
 public class SendFriendRequestHandler(ISocialRepository socialRepository,
      IUnitOfWork unitOfWork) : ICommandHandler<SendFriendRequestCommand, Result<Friendship>>

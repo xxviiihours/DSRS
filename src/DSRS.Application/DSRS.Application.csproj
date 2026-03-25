@@ -8,9 +8,6 @@
 	
   <ItemGroup>
     <Folder Include="Features\DailyPrices\" />
-    <Folder Include="Features\Leaderboards\" />
-    <Folder Include="Features\Leaderboards\Queries\" />
-    <Folder Include="Features\Socials\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System.Data.Common;
 
-namespace DSRS.Application.Features.Leaderboards.Queries;
+namespace DSRS.Application.Features.Leaderboards.GetTop20Players;
 
 public class GetTop20PlayersHandler(ILeaderboardsQuery leaderboardQuery) :
     ICommandHandler<GetTop20PlayersCommand, Result<List<PlayerLeaderboardDto>>>
