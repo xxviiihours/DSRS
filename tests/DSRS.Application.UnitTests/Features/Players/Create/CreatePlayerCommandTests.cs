@@ -1,4 +1,4 @@
-﻿using DSRS.Application.Features.Players.Create;
+﻿using DSRS.Application.Features.Players.CreatePlayer;
 using FluentAssertions;
 
 namespace DSRS.Application.UnitTests.Features.Players.Create;

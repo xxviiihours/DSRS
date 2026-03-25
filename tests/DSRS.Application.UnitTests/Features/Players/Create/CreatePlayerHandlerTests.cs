@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Contracts;
-using DSRS.Application.Features.Players.Create;
+using DSRS.Application.Features.Players.CreatePlayer;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Primitives;
