@@ -21,7 +21,6 @@
     <Folder Include="Features\Dashboard\Queries\" />
     <Folder Include="Features\Leaderboards\" />
     <Folder Include="Features\Leaderboards\Queries\" />
-    <Folder Include="Features\Market\Sell\" />
     <Folder Include="Features\Socials\" />
     <Folder Include="Features\Socials\Get\" />
     <Folder Include="Features\Socials\List\" />
