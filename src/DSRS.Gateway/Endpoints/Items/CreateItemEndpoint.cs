@@ -1,4 +1,4 @@
-﻿using DSRS.Application.Features.Items.Create;
+﻿using DSRS.Application.Features.Items.CreateItem;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;

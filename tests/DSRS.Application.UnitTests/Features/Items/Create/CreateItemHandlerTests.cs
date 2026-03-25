@@ -3,9 +3,9 @@ using Moq;
 using System.Data.Common;
 using Xunit;
 using DSRS.SharedKernel.Interfaces;
-using DSRS.Application.Features.Items.Create;
 using DSRS.Application.Contracts;
 using DSRS.Domain.Aggregates.Items;
+using DSRS.Application.Features.Items.CreateItem;
 
 namespace DSRS.Application.UnitTests.Features.Items.Create;
 
