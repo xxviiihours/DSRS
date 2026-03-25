@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Features.Market;
-using DSRS.Application.Features.Players.Create;
+using DSRS.Application.Features.Players.CreatePlayer;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;

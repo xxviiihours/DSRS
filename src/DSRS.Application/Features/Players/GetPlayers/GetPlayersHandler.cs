@@ -3,7 +3,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Features.Players.Queries;
+namespace DSRS.Application.Features.Players.GetPlayers;
 
 public class GetPlayersHandler(IPlayerQuery playerQuery) : ICommandHandler<GetPlayersCommand, Result<List<PlayerDto>>>
 {

@@ -1,9 +1,8 @@
 ﻿using DSRS.Application.Contracts;
-using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Players.Queries;
+namespace DSRS.Application.Features.Players.GetOtherPlayers;
 
 public class GetOtherPlayersHandler(IPlayerQuery playerQuery) : ICommandHandler<GetOtherPlayersCommand, Result<List<PlayerDto>>>
 {

@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Features.Market;
-using DSRS.Application.Features.Players.Queries;
+using DSRS.Application.Features.Players.GetPlayerByName;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;

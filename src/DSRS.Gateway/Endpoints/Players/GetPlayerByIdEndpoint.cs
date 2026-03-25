@@ -1,4 +1,4 @@
-using DSRS.Application.Features.Players.Queries;
+using DSRS.Application.Features.Players.GetPlayerById;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;

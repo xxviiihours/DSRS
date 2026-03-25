@@ -1,8 +1,7 @@
-using DSRS.Application.Features.Players.List;
+using DSRS.Application.Features.Players.GetPlayers;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
-using System;
 
 namespace DSRS.Gateway.Endpoints.Players;
 

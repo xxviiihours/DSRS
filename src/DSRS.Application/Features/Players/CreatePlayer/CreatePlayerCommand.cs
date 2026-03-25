@@ -2,7 +2,7 @@
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Players.Create;
+namespace DSRS.Application.Features.Players.CreatePlayer;
 
 public record CreatePlayerCommand(string Name) : ICommand<Result<Player>>
 {
