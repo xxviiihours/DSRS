@@ -1,5 +1,5 @@
 ﻿using DSRS.Application.Features.Authentications;
-using DSRS.Application.Features.Authentications.Login;
+using DSRS.Application.Features.Authentications.GuestLogin;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;

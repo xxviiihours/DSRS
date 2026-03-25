@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Application.Features.Authentications.Login;
+namespace DSRS.Application.Features.Authentications.GuestLogin;
 
 public class GuestLoginHandler(IPlayerRepository playerRepository,
     IUnitOfWork unitOfWork, IIdentityService identityService) : ICommandHandler<GuestLoginCommand, Result<PlayerDto>>

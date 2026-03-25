@@ -3,7 +3,7 @@ using DSRS.Application.Features.Players;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Authentications.Login;
+namespace DSRS.Application.Features.Authentications.UserLogin;
 
 public class UserLoginHandler(IIdentityService identityService) : ICommandHandler<UserLoginCommand, Result<AuthenticateResponse>>
 {

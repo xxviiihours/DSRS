@@ -13,8 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Authentications\GuestLogin\" />
-    <Folder Include="Features\Authentications\UserLogin\" />
     <Folder Include="Features\DailyPrices\" />
     <Folder Include="Features\DailyPrices\Get\" />
     <Folder Include="Features\Dashboard\" />
