@@ -3,7 +3,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Features.Dashboard.Queries;
+namespace DSRS.Application.Features.Dashboard.GetDailyPricesPerItem;
 
 public class GetDailyPricesPerItemHandler(IDashboardQuery dashboardQuery) :
     ICommandHandler<GetDailyPricesPerItemCommand, Result<List<DashboardDto>>>

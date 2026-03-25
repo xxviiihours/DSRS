@@ -1,5 +1,5 @@
 using DSRS.Application.Features.Dashboard;
-using DSRS.Application.Features.Dashboard.Queries;
+using DSRS.Application.Features.Dashboard.GetDailyPricesPerItem;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
