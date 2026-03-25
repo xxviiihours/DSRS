@@ -20,7 +20,7 @@ public class ItemSoldEventHandler(
     {
         try
         {
-            _logger.LogInformation("Creating distribution record for player {PlayerId} purchasing item {ItemId}",
+            _logger.LogInformation("Creating distribution record for player {PlayerId} selling item {ItemId}",
                 notification.Event.PlayerId, notification.Event.ItemId);
 
             var record = DistributionRecord.Create(
@@ -41,7 +41,7 @@ public class ItemSoldEventHandler(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to handle ItemPurchasedNotification");
+            _logger.LogError(ex, "Failed to handle ItemSoldNotification");
         }
     }
 }
