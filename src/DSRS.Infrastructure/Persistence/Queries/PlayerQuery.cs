@@ -2,14 +2,32 @@
 using DSRS.Application.Features.Items;
 using DSRS.Application.Features.Market;
 using DSRS.Application.Features.Players;
-using DSRS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Infrastructure.Persistence.Queries;
 
-public class PlayerQuery(AppDbContext context) : IPlayerQuery
+public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserService) : IPlayerQuery
 {
     private readonly AppDbContext _context = context;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
+
+    public async Task<List<PlayerDto>> GetOtherPlayers(string query)
+    {
+        var players = await _context.Players
+            .AsNoTracking()
+            .Where(p => !p.Id.Equals(_currentUserService.Id))
+            .Where(p => !p.IsGuest)
+            .Where(p => string.IsNullOrEmpty(query) || p.Name.Contains(query))
+            .Select(p => new PlayerDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+            })
+            .Take(100)
+            .ToListAsync();
+
+        return players;
+    }
 
     public async Task<PlayerDto> GetPlayerByIdAsync(Guid playerId)
     {
@@ -62,7 +80,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
                         Id = i.Id,
                         ItemId = i.ItemId,
                         Quantity = i.Quantity,
-                        PurchasePrice= i.PurchasePrice,
+                        PurchasePrice = i.PurchasePrice,
                         Item = new ItemDto
                         {
                             Name = i.Item.Name,
@@ -81,6 +99,7 @@ public class PlayerQuery(AppDbContext context) : IPlayerQuery
     {
         var players = await _context.Players
             .AsNoTracking()
+            .Where(p => !p.IsGuest)
             .Where(p => string.IsNullOrEmpty(query) || p.Name.Contains(query))
             .Select(p => new PlayerDto
             {
