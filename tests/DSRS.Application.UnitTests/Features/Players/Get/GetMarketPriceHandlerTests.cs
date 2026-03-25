@@ -1,5 +1,5 @@
 using DSRS.Application.Contracts;
-using DSRS.Application.Features.Market.Get;
+using DSRS.Application.Features.Market.GetMarketPrices;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.SharedKernel.Enums;
@@ -15,7 +15,7 @@ public class GetMarketPriceHandlerTests
     private readonly Mock<IItemRepository> _mockItemRepository;
     private readonly Mock<IDateTime> _mockDateTimeService;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly GetMarketPriceHandler _handler;
+    private readonly GetMarketPricesHandler _handler;
 
     public GetMarketPriceHandlerTests()
     {
@@ -23,7 +23,7 @@ public class GetMarketPriceHandlerTests
         _mockItemRepository = new Mock<IItemRepository>();
         _mockDateTimeService = new Mock<IDateTime>();
         _mockUnitOfWork = new Mock<IUnitOfWork>();
-        _handler = new GetMarketPriceHandler(
+        _handler = new GetMarketPricesHandler(
             _mockPlayerRepository.Object,
             _mockItemRepository.Object,
             _mockDateTimeService.Object,
@@ -41,7 +41,7 @@ public class GetMarketPriceHandlerTests
 
         player.AddDailyPrice(item, today, 100m, 29m, PriceState.HIGH);
 
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
 
         _mockPlayerRepository
             .Setup(r => r.GetByIdWithDailyPrices(playerId))
@@ -69,7 +69,7 @@ public class GetMarketPriceHandlerTests
         // Arrange
         var playerId = Guid.NewGuid();
         var player = Player.Create("John Doe").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
@@ -100,7 +100,7 @@ public class GetMarketPriceHandlerTests
         // Arrange
         var playerId = Guid.NewGuid();
         var player = Player.Create("Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
@@ -146,7 +146,7 @@ public class GetMarketPriceHandlerTests
             .Setup(s => s.DateToday)
             .Returns(today);
 
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
@@ -160,7 +160,7 @@ public class GetMarketPriceHandlerTests
     {
         // Arrange
         var playerId = Guid.NewGuid();
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
 
         _mockPlayerRepository
             .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<Guid>()))
@@ -177,7 +177,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - When a player has no daily prices (Count == 0), prices should be generated
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item1 = Item.Create("Sword", "A sharp blade", 100m, 0.1m).Data!;
@@ -212,7 +212,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - When Count == 0, item repository should be called
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var items = new List<Item>();
@@ -245,7 +245,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - When player has no daily prices, DateTimeService is used
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item = Item.Create("Test Item", "A test item", 100m, 0.1m).Data!;
@@ -279,7 +279,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - Even with no items, the repository should be called when Count == 0
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
@@ -311,7 +311,7 @@ public class GetMarketPriceHandlerTests
         // the exception should be propagated
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
 
         _mockPlayerRepository
             .Setup(r => r.GetByIdWithDailyPrices(playerId))
@@ -336,7 +336,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - Player with large balance but no daily prices should generate prices
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item = Item.Create("Expensive Item", "A costly item", 500m, 0.15m).Data!;
@@ -375,7 +375,7 @@ public class GetMarketPriceHandlerTests
         // Add an existing daily price so Count > 0
         player.AddDailyPrice(item, today, 100m, 10m, PriceState.HIGH);
 
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
 
         _mockPlayerRepository
             .Setup(r => r.GetByIdWithDailyPrices(playerId))
@@ -404,7 +404,7 @@ public class GetMarketPriceHandlerTests
         var playerName = "Test Player";
         var playerBalance = 1000m;
         var player = Player.Create(playerName).Data!;
-        var command = new GetMarketPriceCommand(playerId);
+        var command = new GetMarketPricesCommand(playerId);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository

@@ -7,16 +7,16 @@ using DSRS.SharedKernel.Mappings;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Market.Get;
+namespace DSRS.Application.Features.Market.GetMarketPrices;
 
-public class GetMarketPriceHandler(IPlayerRepository playerRepository, IItemRepository itemRepository,
-    IDateTime dateTimeService, IUnitOfWork unitOfWork) : ICommandHandler<GetMarketPriceCommand, Result<PlayerDto>>
+public class GetMarketPricesHandler(IPlayerRepository playerRepository, IItemRepository itemRepository,
+    IDateTime dateTimeService, IUnitOfWork unitOfWork) : ICommandHandler<GetMarketPricesCommand, Result<PlayerDto>>
 {
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IItemRepository _itemRepository = itemRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IDateTime _dateTimeService = dateTimeService;
-    public async ValueTask<Result<PlayerDto>> Handle(GetMarketPriceCommand command, CancellationToken cancellationToken)
+    public async ValueTask<Result<PlayerDto>> Handle(GetMarketPricesCommand command, CancellationToken cancellationToken)
     {
         var playerResult = await _playerRepository.GetByIdWithDailyPrices(command.Id);
 

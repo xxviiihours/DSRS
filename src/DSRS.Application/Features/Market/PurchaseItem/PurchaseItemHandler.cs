@@ -4,16 +4,16 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Features.Market.Buy;
+namespace DSRS.Application.Features.Market.PurchaseItem;
 
-public class BuyItemHandler(IInventoryRepository inventoryRepository,
-    IUnitOfWork unitOfWOrk, IPlayerRepository playerRepository) : ICommandHandler<BuyItemCommand, Result<Inventory>>
+public class PurchaseItemHandler(IInventoryRepository inventoryRepository,
+    IUnitOfWork unitOfWOrk, IPlayerRepository playerRepository) : ICommandHandler<PurchaseItemCommand, Result<Inventory>>
 {
     private readonly IInventoryRepository _inventoryRepository = inventoryRepository;
     private readonly IPlayerRepository _playerRepository = playerRepository;
     private readonly IUnitOfWork _unitOfWOrk = unitOfWOrk;
 
-    public async ValueTask<Result<Inventory>> Handle(BuyItemCommand command, CancellationToken cancellationToken)
+    public async ValueTask<Result<Inventory>> Handle(PurchaseItemCommand command, CancellationToken cancellationToken)
     {
 
         var player = await _playerRepository.GetByIdWithDailyPrices(command.PlayerId);

@@ -1,14 +1,13 @@
-using DSRS.Application.Features.Market.Buy;
+using DSRS.Application.Features.Market.PurchaseItem;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
-using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Market;
 
-public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemRequest, IResult>
+public sealed class PurchaseItemEndpoint(IMediator mediator) : Endpoint<BuyItemRequest, IResult>
 {
     private readonly IMediator _mediator = mediator;
 
@@ -41,7 +40,7 @@ public sealed class BuyItemEndpoint(IMediator mediator) : Endpoint<BuyItemReques
     public override async Task<IResult> ExecuteAsync(BuyItemRequest req, CancellationToken ct)
     {
         var result = await _mediator.Send(
-            new BuyItemCommand(Guid.Parse(req.PlayerId), Guid.Parse(req.ItemId), req.Quantity), ct);
+            new PurchaseItemCommand(Guid.Parse(req.PlayerId), Guid.Parse(req.ItemId), req.Quantity), ct);
 
         return result.ToHttpResult(
              mapResponse => new BuyItemResponse(mapResponse.Id.ToString()),

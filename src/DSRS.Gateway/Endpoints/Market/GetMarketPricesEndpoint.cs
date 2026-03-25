@@ -1,4 +1,4 @@
-using DSRS.Application.Features.Market.Get;
+using DSRS.Application.Features.Market.GetMarketPrices;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
@@ -7,20 +7,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DSRS.Gateway.Endpoints.Market;
 
-public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
-    Endpoint<GetMarketPriceByPlayerIdRequest, IResult>
+public class GetMarketPricesEndpoint(IMediator mediator) :
+    Endpoint<GetMarketPricesRequest, IResult>
 {
     private readonly IMediator _mediator = mediator;
 
     public override void Configure()
     {
-        Get(GetMarketPriceByPlayerIdRequest.Route);
+        Get(GetMarketPricesRequest.Route);
         Policies("Authenticated");
         Summary(s =>
         {
             s.Summary = "Generates daily prices based on player ID";
             s.Description = "Retrieves daily prices for each items in the market";
-            s.ResponseExamples[200] = new GetMarketPriceByPlayerIdResponse("25598df5-6e11-45fb-975f-7cf85af872ea", "John Doe");
 
             // Document possible responses
             s.Responses[200] = "Player found and returned successfully";
@@ -34,26 +33,26 @@ public class GetMarketPriceByPlayerIdEndpoint(IMediator mediator) :
 
         // Add additional metadata
         Description(builder => builder
-          .Accepts<GetMarketPriceByPlayerIdRequest>()
-          .Produces<GetMarketPriceByPlayerIdResponse>(200, "application/json")
+          .Accepts<GetMarketPricesRequest>()
+          .Produces<GetMarketPricesResponse>(200, "application/json")
           .ProducesProblem(400)
           .ProducesProblem(401)
           .ProducesProblem(500));
     }
 
-    public override async Task<IResult> ExecuteAsync(GetMarketPriceByPlayerIdRequest request, CancellationToken cancellationToken)
+    public override async Task<IResult> ExecuteAsync(GetMarketPricesRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(
-            new GetMarketPriceCommand(Guid.Parse(request.PlayerId)), cancellationToken);
+            new GetMarketPricesCommand(Guid.Parse(request.PlayerId)), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,
-            locationBuilder => $"{GetMarketPriceByPlayerIdRequest.Route}",
+            locationBuilder => $"{GetMarketPricesRequest.Route}",
             successStatusCode: StatusCodes.Status302Found);
     }
 }
 
-public class GetMarketPriceByPlayerIdRequest
+public class GetMarketPricesRequest
 {
     public const string Route = "/market/{playerId}";
 
@@ -61,9 +60,9 @@ public class GetMarketPriceByPlayerIdRequest
     public string PlayerId { get; set; } = string.Empty;
 }
 
-public class GetMarketPriceByPlayerIdValidator : Validator<GetMarketPriceByPlayerIdRequest>
+public class GetMarketPricesValidator : Validator<GetMarketPricesRequest>
 {
-    public GetMarketPriceByPlayerIdValidator()
+    public GetMarketPricesValidator()
     {
         RuleFor(x => x.PlayerId)
           .NotEmpty()
@@ -71,7 +70,7 @@ public class GetMarketPriceByPlayerIdValidator : Validator<GetMarketPriceByPlaye
     }
 }
 
-public sealed record GetMarketPriceByPlayerIdResponse(string Id, string Name)
+public sealed record GetMarketPricesResponse(string Id, string Name)
 {
     public string Id { get; set; } = Id;
     public string Name { get; set; } = Name;

@@ -2,7 +2,7 @@ using DSRS.Domain.Aggregates.Inventories;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
 
-namespace DSRS.Application.Features.Market.Sell;
+namespace DSRS.Application.Features.Market.SellItem;
 
 public record SellItemCommand(
     Guid PlayerId,

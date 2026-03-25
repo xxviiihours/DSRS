@@ -1,4 +1,4 @@
-using DSRS.Application.Features.Market.Sell;
+using DSRS.Application.Features.Market.SellItem;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;

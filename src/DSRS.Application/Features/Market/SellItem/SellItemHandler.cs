@@ -4,7 +4,7 @@ using DSRS.SharedKernel.Primitives;
 using Mediator;
 using System;
 
-namespace DSRS.Application.Features.Market.Sell;
+namespace DSRS.Application.Features.Market.SellItem;
 
 public class SellItemHandler(
     IInventoryRepository inventoryRepository,
