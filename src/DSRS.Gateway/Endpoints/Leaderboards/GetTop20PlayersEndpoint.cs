@@ -1,11 +1,8 @@
 using DSRS.Application.Features.Leaderboards;
 using DSRS.Application.Features.Leaderboards.Queries;
-using DSRS.Application.Features.Players.Get;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
-using System;
-
 namespace DSRS.Gateway.Endpoints.Leaderboards;
 
 public class GetTop20PlayersEndpoint(IMediator mediator) : Endpoint<GetTop20PlayersRequest, IResult>

@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DSRS.Application.Features.Players.Get;
+namespace DSRS.Application.Features.Players.Queries;
 
 public class GetPlayerByNameHandler(IPlayerRepository playerRepository,
     IDateTime datetimeService, IUnitOfWork unitOfWork) : ICommandHandler<GetPlayerByNameCommand, Result<Player>>

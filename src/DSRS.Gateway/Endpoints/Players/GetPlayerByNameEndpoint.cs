@@ -1,7 +1,6 @@
 ﻿using DSRS.Application.Features.Market;
-using DSRS.Application.Features.Players.Get;
+using DSRS.Application.Features.Players.Queries;
 using DSRS.Gateway.Common.Extensions;
-using DSRS.SharedKernel.Primitives;
 using FastEndpoints;
 using Mediator;
 
