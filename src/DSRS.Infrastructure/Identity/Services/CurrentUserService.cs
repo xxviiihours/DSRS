@@ -1,10 +1,7 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Infrastructure.Constants;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 
 namespace DSRS.Infrastructure.Identity.Services;
 
@@ -17,7 +14,7 @@ public class CurrentUserService : ICurrentUserService
     {
         var claim = httpContextAccessor.HttpContext?.User?.FindFirstValue(AppClaimTypes.NameIdentifier);
 
-        Id = Guid.Parse(claim!);
+        Id = !string.IsNullOrEmpty(claim) ? Guid.Parse(claim) : Guid.Empty;
         IsAuthenticated = !string.IsNullOrEmpty(claim);
     }
 }
