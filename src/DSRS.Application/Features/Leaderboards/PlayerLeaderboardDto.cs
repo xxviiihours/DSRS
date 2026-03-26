@@ -8,6 +8,6 @@ public class PlayerLeaderboardDto
     public string Name { get; set; } = string.Empty;
     public decimal TotalBalance { get; set; }
     public int Rank { get; set; }
-
+    public int TotalTrades { get; set; }
     public double? RankChangePercent { get; init; }
 }
