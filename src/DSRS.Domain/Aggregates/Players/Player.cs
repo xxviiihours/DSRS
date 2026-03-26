@@ -131,6 +131,7 @@ public sealed class Player : AggregateRoot<Guid>
             new ItemPurchasedEvent(
                 dailyPrice.Id,
                 result.Data!.Inventory.PlayerId,
+                dailyPrice.Item.Name,
                 quantity,
                 totalCost,
                 Balance));
@@ -162,8 +163,9 @@ public sealed class Player : AggregateRoot<Guid>
 
         RaiseDomainEvent(
            new ItemSoldEvent(
-               result.Data!.ItemId,
-               result.Data!.PlayerId,
+               itemId,
+               Id,
+               dailyPrice.Item.Name,
                quantity,
                revenue, 
                Balance));

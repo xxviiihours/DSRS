@@ -26,6 +26,7 @@ public class ItemPurchasedEventHandler(
             var record = DistributionRecord.Create(
                 notification.Event.ItemId,
                 notification.Event.PlayerId,
+                notification.Event.ItemName,
                 notification.Event.TotalCost,
                 DistributionType.BUY).Data!;
 
