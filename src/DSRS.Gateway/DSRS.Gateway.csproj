@@ -33,7 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Endpoints\Dashboard\" />
 		<Folder Include="Endpoints\Leaderboards\" />
 		<Folder Include="Endpoints\Socials\" />
 	</ItemGroup>

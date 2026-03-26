@@ -52,7 +52,7 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
 
 public class GetDailyPricesPerItemRequest
 {
-    public const string Route = "dashboard/{ItemId}/{PlayerId}";
+    public const string Route = "/dashboard/{PlayerId}/daily-prices";
     public string ItemId { get; set; } = string.Empty;
     public string PlayerId { get; set; } = string.Empty;
 }
