@@ -1,37 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>ef0dc670-7a08-4231-b165-16eb6a8de6a0</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>ef0dc670-7a08-4231-b165-16eb6a8de6a0</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="8.1.0" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="8.1.0" />
-    <PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Scriban" Version="7.0.3" />
-    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FastEndpoints" Version="8.1.0" />
+		<PackageReference Include="FastEndpoints.Generator" Version="8.1.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="FastEndpoints.Swagger" Version="8.1.0" />
+		<PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Scriban" Version="7.0.5" />
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DSRS.Application\DSRS.Application.csproj" />
-    <ProjectReference Include="..\DSRS.Infrastructure\DSRS.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DSRS.Application\DSRS.Application.csproj" />
+		<ProjectReference Include="..\DSRS.Infrastructure\DSRS.Infrastructure.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Endpoints\Dashboard\" />
-    <Folder Include="Endpoints\Leaderboards\" />
-    <Folder Include="Endpoints\Socials\" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<Folder Include="Endpoints\Dashboard\" />
+		<Folder Include="Endpoints\Leaderboards\" />
+		<Folder Include="Endpoints\Socials\" />
+	</ItemGroup>
+	
+	<Target Name="CreateDataFolderOnPublish" AfterTargets="Publish">
+		<MakeDir Directories="$(PublishDir)data" />
+	</Target>
 </Project>

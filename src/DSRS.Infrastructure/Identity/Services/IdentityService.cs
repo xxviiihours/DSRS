@@ -84,7 +84,12 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
     public async Task RegisterAccount(Player player, string email, string password)
     {
-        var user = new ApplicationUser { UserName = player.Name, Email = email, PlayerId = player.Id };
+        var user = new ApplicationUser
+        { 
+            UserName = player.Name, 
+            Email = email, 
+            PlayerId = player.Id
+        };
 
         var result = await _userManager.CreateAsync(user, password);
 
