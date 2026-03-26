@@ -27,4 +27,22 @@ public class DashboardQuery(AppDbContext context) : IDashboardQuery
 
         return result;
     }
+
+    public async Task<List<TradeActivityDto>> GetRecentTradeActivities(Guid PlayerId)
+    {
+        var result = await _context.DistributionRecords
+            .Where(p => p.PlayerId == PlayerId)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(20)
+            .Select(p => new TradeActivityDto
+            {
+                ItemName = p.ItemName,
+                TransactionDate = p.CreatedAt,
+                Type = p.Type,
+                PriceTotal = p.PriceTotal
+            })
+            .ToListAsync();
+
+        return result;
+    }
 }
