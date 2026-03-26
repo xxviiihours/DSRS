@@ -18,6 +18,8 @@ internal class DistributionConfiguration : IEntityTypeConfiguration<Distribution
 
         builder.Property(dr => dr.PlayerId)
             .IsRequired();
+        builder.Property(dr => dr.ItemName)
+            .HasMaxLength(25);
         builder.Property(dr => dr.PriceTotal)
             .HasColumnType("decimal(18,2)")
             .IsRequired();

@@ -10,26 +10,37 @@ namespace DSRS.Domain.Aggregates.Distributions;
 public class DistributionRecord : AggregateRoot<Guid>, IAuditableEntity
 {
     private DistributionRecord() { }
-    internal DistributionRecord(Guid dailyPriceId, Guid playerId, decimal priceTotal, DistributionType type)
-    {
-        DailyPriceId = dailyPriceId;
-        PlayerId = playerId;
-        PriceTotal = priceTotal;
-        Type = type;
-    }
-
     public DateTime CreatedAt { get; private set; }
 
     public DateTime LastModified { get; private set; }
 
     public Guid DailyPriceId { get; }
-    public Guid PlayerId { get; set; }
-
+    public Guid PlayerId { get; }
+    public string ItemName { get; } = string.Empty;
     public decimal PriceTotal { get; }
 
     public DistributionType Type { get; }
 
-    public static Result<DistributionRecord> Create(Guid dailyPriceId, Guid playerId, decimal priceTotal, DistributionType type)
+    internal DistributionRecord(
+        Guid dailyPriceId, 
+        Guid playerId, 
+        string itemName,
+        decimal priceTotal, 
+        DistributionType type)
+    {
+        DailyPriceId = dailyPriceId;
+        PlayerId = playerId;
+        ItemName = itemName;
+        PriceTotal = priceTotal;
+        Type = type;
+    }
+
+    public static Result<DistributionRecord> Create(
+        Guid dailyPriceId, 
+        Guid playerId,
+        string itemName,
+        decimal priceTotal, 
+        DistributionType type)
     {
         if (dailyPriceId == Guid.Empty)
             return Result<DistributionRecord>.Failure(
@@ -43,7 +54,13 @@ public class DistributionRecord : AggregateRoot<Guid>, IAuditableEntity
             return Result<DistributionRecord>.Failure(
                 new Error("DistributionRecord.PriceTotal.Invalid", "PriceTotal must be greater than zero."));
 
-        return Result<DistributionRecord>.Success(new DistributionRecord(dailyPriceId, playerId, priceTotal, type));
+        return Result<DistributionRecord>.Success(
+            new DistributionRecord(
+                dailyPriceId, 
+                playerId, 
+                itemName, 
+                priceTotal, 
+                type));
     }
 
     public void SetCreated(DateTime now)
