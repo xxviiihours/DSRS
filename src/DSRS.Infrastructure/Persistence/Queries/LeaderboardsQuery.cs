@@ -23,35 +23,42 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
                 WHERE IsGuest = 0
             ),
             OverallTrades AS (
-	            SELECT
-		            PlayerId,
-		            COUNT(*) AS TotalTrades
-	            FROM DistributionHistory
-	            GROUP BY PlayerId 
+                SELECT
+                    PlayerId,
+                    COUNT(*) AS TotalTrades
+                FROM DistributionHistory
+                GROUP BY PlayerId 
             ),
             YesterdayRanks AS (
                 SELECT
                     PlayerId,
+                    Balance,
                     ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankYesterday
-                FROM PlayerBalanceSnapshots
-                WHERE SnapshotDate = DATE('now','-1 day')
+                FROM (
+                    SELECT
+                        PlayerId,
+                        Balance,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY PlayerId
+                            ORDER BY SnapshotDate DESC
+                        ) AS rn
+                    FROM PlayerBalanceSnapshots
+                    WHERE DATE(SnapshotDate) = DATE('now','-1 day')
+                )
+                WHERE rn = 1
             )
             SELECT
                 c.Id,
                 c.Name,
                 c.Balance AS TotalBalance,
                 c.RankToday AS Rank,
-	            COALESCE(o.TotalTrades, 0) AS TotalTrades,
-                ROUND(
-                    ((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,
-                    2
-                ) AS RankChangePercent
+                COALESCE(o.TotalTrades, 0) AS TotalTrades,
+                ROUND(((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,2) AS RankChangePercent
             FROM CurrentRanks c
             LEFT JOIN YesterdayRanks y ON c.Id = y.PlayerId
             LEFT JOIN OverallTrades o ON c.Id = o.PlayerId
             ORDER BY c.RankToday
-            LIMIT 20
-        ";
+            LIMIT 20";
 
         var top20 = await _context.PlayerLeaderboards
             .FromSqlRaw(top20Sql)
@@ -71,31 +78,40 @@ public class LeaderboardsQuery(AppDbContext context) : ILeaderboardsQuery
                     Balance,
                     ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankToday
                 FROM Players
+                WHERE IsGuest = 0
             ),
             OverallTrades AS (
-	            SELECT
-		            PlayerId,
-		            COUNT(*) AS TotalTrades
-	            FROM DistributionHistory
-	            GROUP BY PlayerId 
+                SELECT
+                    PlayerId,
+                    COUNT(*) AS TotalTrades
+                FROM DistributionHistory
+                GROUP BY PlayerId 
             ),
             YesterdayRanks AS (
                 SELECT
                     PlayerId,
+                    Balance,
                     ROW_NUMBER() OVER (ORDER BY Balance DESC) AS RankYesterday
-                FROM PlayerBalanceSnapshots
-                WHERE DATE(SnapshotDate) = DATE('now','-1 day')
+                FROM (
+                    SELECT
+                        PlayerId,
+                        Balance,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY PlayerId
+                            ORDER BY SnapshotDate DESC
+                        ) AS rn
+                    FROM PlayerBalanceSnapshots
+                    WHERE DATE(SnapshotDate) = DATE('now','-1 day')
+                )
+                WHERE rn = 1
             )
             SELECT
                 c.Id,
                 c.Name,
                 c.Balance AS TotalBalance,
                 c.RankToday AS Rank,
-	            COALESCE(o.TotalTrades, 0) AS TotalTrades,
-                ROUND(
-                    ((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,
-                    2
-                ) AS RankChangePercent
+                COALESCE(o.TotalTrades, 0) AS TotalTrades,
+                ROUND(((y.RankYesterday - c.RankToday) * 100.0) / y.RankYesterday,2) AS RankChangePercent
             FROM CurrentRanks c
             LEFT JOIN YesterdayRanks y ON c.Id = y.PlayerId
             LEFT JOIN OverallTrades o ON c.Id = o.PlayerId
