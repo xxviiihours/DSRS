@@ -69,6 +69,7 @@ public class PlayerRepository(AppDbContext context,
             .Where(p => p.Id == id)
             .Include(p => p.DailyPrices
                 .Where(p => p.Date == _dateTimeService.DateToday))
+                .ThenInclude(p => p.Item)
             .Include(p => p.InventoryItems)
             .SingleOrDefaultAsync();
 
