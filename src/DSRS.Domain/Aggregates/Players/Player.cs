@@ -127,6 +127,9 @@ public sealed class Player : AggregateRoot<Guid>
         if (!result.IsSuccess)
             return Result<InventoryResult>.Failure(result.Error!);
 
+        ConsumeLimit(quantity);
+        DecreaseBalance(totalCost);
+
         RaiseDomainEvent(
             new ItemPurchasedEvent(
                 dailyPrice.Id,
@@ -136,8 +139,6 @@ public sealed class Player : AggregateRoot<Guid>
                 totalCost,
                 Balance));
 
-        ConsumeLimit(quantity);
-        DecreaseBalance(totalCost);
         return Result<InventoryResult>.Success(result.Data!);
     }
     #endregion
@@ -161,6 +162,8 @@ public sealed class Player : AggregateRoot<Guid>
         if (!result.IsSuccess)
             return Result<Inventory>.Failure(result.Error!);
 
+        IncreaseBalance(revenue);
+
         RaiseDomainEvent(
            new ItemSoldEvent(
                itemId,
@@ -170,7 +173,6 @@ public sealed class Player : AggregateRoot<Guid>
                revenue, 
                Balance));
 
-        IncreaseBalance(revenue);
         return result;
     }
     #endregion
