@@ -2,18 +2,20 @@ using DSRS.Application.Contracts;
 using DSRS.Application.Features.Dashboard;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Infrastructure.Persistence;
+using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace DSRS.Infrastructure.Persistence.Queries;
 
-public class DashboardQuery(AppDbContext context) : IDashboardQuery
+public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : IDashboardQuery
 {
     private readonly AppDbContext _context = context;
+    private readonly IDateTime _dateTimeService = dateTimeService;
 
     public async Task<List<BalancePerformanceDto>> GetBalancePerformanceData(Guid PlayerId)
     {
-        var fromDate = DateTime.UtcNow.Date.AddDays(-30);
+        var fromDate = _dateTimeService.UtcNow.Date.AddDays(-30);
 
         var performance = await _context.PlayerBalanceSnapshots
             .Where(x => x.PlayerId == PlayerId && x.SnapshotDate >= fromDate)
@@ -75,6 +77,23 @@ public class DashboardQuery(AppDbContext context) : IDashboardQuery
                 TransactionDate = p.CreatedAt,
                 Type = p.Type,
                 PriceTotal = p.PriceTotal
+            })
+            .ToListAsync();
+
+        return result;
+    }
+
+    public async Task<List<TradeActivityDto>> GetTotalTrades(Guid PlayerId)
+    {
+        var weeksAgo = _dateTimeService.UtcNow.Date.AddDays(-6);
+        var result = await _context.DistributionRecords
+            .Where(p => p.PlayerId == PlayerId
+                && p.CreatedAt >= weeksAgo)
+            .GroupBy(g => g.CreatedAt.Date)
+            .Select(x => new TradeActivityDto
+            {
+                TotalTrades = x.Count(),
+                TransactionDate = x.Key
             })
             .ToListAsync();
 
