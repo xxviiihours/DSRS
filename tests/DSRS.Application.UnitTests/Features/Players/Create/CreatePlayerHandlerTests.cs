@@ -1,6 +1,7 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Application.Features.Players.CreatePlayer;
 using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
@@ -71,7 +72,7 @@ public class CreatePlayerHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().NotBeNull();
         result.Data!.Name.Should().Be("John Doe");
-        result.Data!.Balance.Should().Be(1000m);
+        result.Data!.Balance.Should().Be(Money.From(1000m));
         _mockPlayerRepository.Verify(x => x.CreateAsync(It.IsAny<Player>()), Times.Once);
         _mockUnitOfWork.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -140,7 +141,7 @@ public class CreatePlayerHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(balance);
+        result.Data!.Balance.Should().Be(Money.From(balance));
     }
 
     [Fact]
@@ -174,7 +175,7 @@ public class CreatePlayerHandlerTests
         // Assert
         capturedPlayer.Should().NotBeNull();
         capturedPlayer!.Name.Should().Be("Jane Smith");
-        capturedPlayer!.Balance.Should().Be(1000m);
+        capturedPlayer!.Balance.Should().Be(Money.From(1000m));
     }
 
     [Fact]

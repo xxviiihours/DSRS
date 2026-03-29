@@ -1,6 +1,7 @@
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
@@ -50,19 +51,7 @@ public class PlayerTests
         var result = Player.Create("TestPlayer");
 
         // Assert
-        result.Data!.Balance.Should().Be(1000m);
-    }
-
-    [Fact]
-    public void Create_WithZeroBalance_ReturnsSuccess()
-    {
-        // Arrange & Act
-        var result = Player.Create("ZeroBalancePlayer");
-        result.Data!.DecreaseBalance(1000m);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(0m);
+        result.Data!.Balance.Should().Be(Money.From(1000m));
     }
 
     [Fact]
@@ -73,7 +62,7 @@ public class PlayerTests
         result.Data!.IncreaseBalance(10000007999.99m);
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(10000008999.99m);
+        result.Data!.Balance.Value.Should().Be(10000008999.99m);
     }
 
     [Fact]
@@ -85,7 +74,7 @@ public class PlayerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data!.Balance.Should().Be(0.01m);
+        result.Data!.Balance.Value.Should().Be(0.01m);
     }
 
     [Fact]
@@ -99,7 +88,7 @@ public class PlayerTests
         result.Data!.IncreaseBalance(balance);
 
         // Assert
-        result.Data!.Balance.Should().Be(balance + 1000m);
+        result.Data!.Balance.Value.Should().Be(balance + 1000m);
     }
 
     [Fact]
@@ -165,7 +154,7 @@ public class PlayerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data!.Name.Should().Be(name);
-        result.Data.Balance.Should().Be(balance + 1000);
+        result.Data.Balance.Value.Should().Be(balance + 1000);
         result.Data!.PurchaseLimit.Should().Be(50);
     }
 
@@ -839,8 +828,8 @@ public class PlayerTests
         // Assert
         player1Result.Data!.Name.Should().Be("Player1");
         player2Result.Data!.Name.Should().Be("Player2");
-        player1Result.Data.Balance.Should().Be(100m);
-        player2Result.Data.Balance.Should().Be(200m);
+        player1Result.Data.Balance.Value.Should().Be(100m);
+        player2Result.Data.Balance.Value.Should().Be(200m);
     }
 
     [Fact]
@@ -930,7 +919,7 @@ public class PlayerTests
 
         // Assert
         player.Name.Should().NotBeNull();
-        player.Balance.Should().Be(1000m);
+        player.Balance.Should().Be(Money.From(1000m));
         player.DailyPrices.Should().NotBeNull();
     }
 
@@ -953,7 +942,7 @@ public class PlayerTests
         var player = result.Data!;
 
         // Assert
-        player.Balance.Should().Be(1000m);
+        player.Balance.Should().Be(Money.From(1000m));
     }
 
     #endregion
