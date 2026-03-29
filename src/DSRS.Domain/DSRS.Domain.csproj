@@ -18,4 +18,8 @@
     <Folder Include="Common\Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Vogen" Version="8.0.5" />
+  </ItemGroup>
+
 </Project>

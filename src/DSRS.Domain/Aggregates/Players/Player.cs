@@ -4,6 +4,8 @@ using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Pricing;
 using DSRS.Domain.Common;
 using DSRS.Domain.Events;
+using DSRS.Domain.Services;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
@@ -13,7 +15,7 @@ namespace DSRS.Domain.Aggregates.Players;
 public sealed class Player : AggregateRoot<Guid>
 {
     public string Name { get; private set; } = string.Empty;
-    public decimal Balance { get; private set; }
+    public Money Balance { get; private set; }
     public int PurchaseLimit { get; private set; }
     public bool IsGuest { get; private set; }
     public DateOnly LastLimitGeneration { get; private set; }
@@ -27,11 +29,12 @@ public sealed class Player : AggregateRoot<Guid>
     private Player(string name, bool isGuest = false)
     {
         Name = name;
-        Balance = 1000;
+        //Balance = Money.Set(1000).Data!;
+        Balance = Money.From(1000);
         IsGuest = isGuest;
         PurchaseLimit = 25;
-        LastLimitGeneration = DateOnly.FromDateTime(DateTime.Now);
-        CreatedAt = DateTime.Now;
+        LastLimitGeneration = DateOnly.FromDateTime(DateTime.UtcNow);
+        CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<Player> CreateGuest()
@@ -61,11 +64,31 @@ public sealed class Player : AggregateRoot<Guid>
     public void UpgradeAccount() => IsGuest = false;
     public void RegenerateLimit(int maxLimit, int amount) => PurchaseLimit = Math.Min(PurchaseLimit + amount, maxLimit);
     public void ConsumeLimit(int amount) => PurchaseLimit -= amount;
-    public bool CanAfford(decimal amount) => Balance >= amount;
-    public void DecreaseBalance(decimal amount) => Balance -= amount;
-    public void IncreaseBalance(decimal amount) => Balance += amount;
     public void SetLastGeneration(DateOnly date) => LastLimitGeneration = date;
+    public Result IncreaseBalance(decimal amount)
+    {
+        if (amount < 0)
+            return Result<Player>.Failure(
+                new Error("Player.Amount.Invalid", "Amount cannot be nagative"));
 
+        Balance = Money.From(Balance.Value + amount);
+        return Result.Success();
+    }
+    public Result DecreaseBalance(decimal amount)
+    {
+        if (amount < 0)
+            return Result<Player>.Failure(
+                new Error("Player.Amount.Invalid", "Amount cannot be negative"));
+
+        if (Balance.Value < amount)
+            return Result.Failure(
+                new Error("Player.Balance.Insufficient", 
+                $"Cannot subtract {amount} from {Balance.Value}"));
+
+        Balance = Money.From(Balance.Value - amount);
+
+        return Result.Success();
+    }
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
          decimal price, decimal percentage, PriceState state)
@@ -115,9 +138,9 @@ public sealed class Player : AggregateRoot<Guid>
             return Result<InventoryResult>.Failure(
                 new Error("Player.DailyPrice.Missing", "Daily price not found."));
 
-        var totalCost = dailyPrice.Price * quantity;
+        var totalCost = MarketPricingService.CalculateBuyCost(dailyPrice.Price, quantity);
 
-        if (!CanAfford(totalCost))
+        if (!Balance.CanAfford(totalCost))
             return Result<InventoryResult>.Failure(
                 new Error("Player.Balance.Insufficient", "Insufficient balance."));
 
@@ -129,14 +152,13 @@ public sealed class Player : AggregateRoot<Guid>
 
         ConsumeLimit(quantity);
         DecreaseBalance(totalCost);
-
+        //var cost = Money.From(totalCost);
         RaiseDomainEvent(
             new ItemPurchasedEvent(
                 dailyPrice.Id,
                 result.Data!.Inventory.PlayerId,
                 dailyPrice.Item.Name,
-                quantity,
-                totalCost,
+                Balance,
                 Balance));
 
         return Result<InventoryResult>.Success(result.Data!);
@@ -156,7 +178,7 @@ public sealed class Player : AggregateRoot<Guid>
             return Result<Inventory>.Failure(
                 new Error("Player.DailyPrice.Missing", "Daily price not found."));
 
-        var revenue = dailyPrice.Price * quantity;
+        var revenue = MarketPricingService.CalculateSellRevenue(dailyPrice.Price, quantity);
 
         var result = RemoveFromInventory(itemId, quantity);
         if (!result.IsSuccess)
@@ -169,8 +191,7 @@ public sealed class Player : AggregateRoot<Guid>
                itemId,
                Id,
                dailyPrice.Item.Name,
-               quantity,
-               revenue, 
+               Balance, 
                Balance));
 
         return result;
