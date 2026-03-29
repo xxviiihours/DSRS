@@ -4,40 +4,41 @@ using System.Text;
 
 namespace DSRS.SharedKernel.Abstractions;
 
-public abstract class ValueObject
+public abstract class ValueObject<T> where T : ValueObject<T>
 {
-    protected static bool EqualOperator(ValueObject left, ValueObject right)
-    {
-        if (left is null ^ right is null)
-        {
-            return false;
-        }
-
-        return left?.Equals(right!) != false;
-    }
-
-    protected static bool NotEqualOperator(ValueObject left, ValueObject right)
-    {
-        return !(EqualOperator(left, right));
-    }
-
     protected abstract IEnumerable<object> GetEqualityComponents();
 
     public override bool Equals(object? obj)
     {
-        if (obj == null || obj.GetType() != GetType())
-        {
+        if (obj is not T other)
             return false;
-        }
 
-        var other = (ValueObject)obj;
-        return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+        return GetEqualityComponents()
+            .SequenceEqual(other.GetEqualityComponents());
     }
 
     public override int GetHashCode()
     {
         return GetEqualityComponents()
-            .Select(x => x != null ? x.GetHashCode() : 0)
-            .Aggregate((x, y) => x ^ y);
+            .Aggregate(0, (current, next) =>
+                HashCode.Combine(current, next));
     }
+
+    public override string ToString()
+    {
+        var components = GetEqualityComponents()
+            .Select(c => c?.ToString() ?? "null");
+        return $"{GetType().Name}({string.Join(", ", components)})";
+    }
+
+    public static bool operator ==(ValueObject<T>? left, ValueObject<T>? right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ValueObject<T>? left, ValueObject<T>? right)
+        => !(left == right);
 }
