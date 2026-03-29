@@ -47,7 +47,7 @@ public class CreatePlayerEndpoint(IMediator mediator) : Endpoint<CreatePlayerReq
             mapResponse => new CreatePlayerResponse(
                 result.Data!.Id.ToString(),
                 result.Data!.Name,
-                result.Data!.Balance,
+                result.Data!.Balance.Value,
                 result.Data!.PurchaseLimit),
             locationBuilder => $"market/{result.Data!.Id}",
             successStatusCode: StatusCodes.Status201Created
