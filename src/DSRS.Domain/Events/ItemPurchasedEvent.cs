@@ -1,19 +1,20 @@
-﻿using DSRS.SharedKernel.Abstractions;
+﻿using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.ValueObjects;
+using DSRS.SharedKernel.Abstractions;
 
 namespace DSRS.Domain.Events;
 
 public sealed class ItemPurchasedEvent(
+    Guid playerId, 
     Guid dailyPriceId,
-    Guid playerId,
     string itemName,
-    int quantity,
-    decimal totalCost,
-    decimal balance) : DomainEvent
+    Money totalCost, 
+    Money balance) : DomainEvent
 {
     public Guid ItemId { get; init; } = dailyPriceId;
     public Guid PlayerId { get; init; } = playerId;
     public string ItemName { get; set; } = itemName;
-    public int Quantity { get; init; } = quantity;
-    public decimal TotalCost { get; init; } = totalCost;
-    public decimal Balance { get; set; } = balance;
+    public Money TotalCost { get; set; } = totalCost;
+    public Money Balance { get; set; } = balance;
 }

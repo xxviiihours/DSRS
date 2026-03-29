@@ -27,14 +27,14 @@ public class ItemPurchasedEventHandler(
                 notification.Event.ItemId,
                 notification.Event.PlayerId,
                 notification.Event.ItemName,
-                notification.Event.TotalCost,
+                notification.Event.TotalCost.Value,
                 DistributionType.BUY).Data!;
 
             await _distributionHistoryRepository.CreateAsync(record);
 
             var balanceSnapshot = PlayerBalanceSnapshot.Create(
                 notification.Event.PlayerId,
-                notification.Event.Balance).Data!;
+                notification.Event.Balance.Value).Data!;
 
             await _playerSnapshotRepository.SaveBalance(balanceSnapshot);
 
