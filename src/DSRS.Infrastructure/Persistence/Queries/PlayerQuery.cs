@@ -38,7 +38,7 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
             {
                 Id = p.Id,
                 Name = p.Name,
-                Balance = p.Balance,
+                Balance = p.Balance.Value,
                 PurchaseLimit = p.PurchaseLimit,
                 IsGuest = p.IsGuest,
                 CreatedAt = p.CreatedAt,
@@ -72,7 +72,7 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
             {
                 Id = p.Id,
                 Name = p.Name,
-                Balance = p.Balance,
+                Balance = p.Balance.Value,
                 PurchaseLimit = p.PurchaseLimit,
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
