@@ -1,6 +1,7 @@
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 using FluentAssertions;
@@ -31,12 +32,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
+        var price = Money.From(150m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -50,12 +51,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
+        var price = Money.From(150m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.Data!.ItemId.Should().Be(item.Id);
@@ -68,12 +69,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 6, 20);
-        var price = 150m;
+        var price = Money.From(150m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.Data!.Date.Should().Be(date);
@@ -86,12 +87,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 250.50m;
+        var price = Money.From(250.50m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.Data!.Price.Should().Be(price);
@@ -104,12 +105,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
+        var price = Money.From(150m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.Data!.State.Should().Be(PriceState.HIGH);
@@ -122,12 +123,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 50m;
+        var price = Money.From(50m);
         var percentage = 15m;
         var state = PriceState.LOW;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.Data!.State.Should().Be(PriceState.LOW);
@@ -140,16 +141,15 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem("Sword", "A legendary sword", 500m, 0.7m);
         var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
+        var price = Money.From(150m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
-        result.Data!.Item.Should().Be(item);
-        result.Data!.Item.Name.Should().Be("Sword");
+        result.Data!.ItemId.Should().Be(item.Id);
     }
 
     [Fact]
@@ -159,12 +159,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer("Alice");
         var item = CreateValidItem("Potion", "Health potion", 25m, 0.3m);
         var date = new DateOnly(2024, 3, 10);
-        var price = 30.75m;
+        var price = Money.From(30.75m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -173,7 +173,6 @@ public class DailyPriceTests
         result.Data!.Price.Should().Be(price);
         result.Data!.Percentage.Should().Be(percentage);
         result.Data!.State.Should().Be(state);
-        result.Data!.Item.Should().Be(item);
     }
 
     [Fact]
@@ -183,12 +182,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 0.01m;
+        var price = Money.From(0.01m);
         var percentage = 15m;
         var state = PriceState.LOW;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -202,12 +201,12 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 999999999.99m;
+        var price = Money.From(999999999.99m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -218,16 +217,16 @@ public class DailyPriceTests
     public void Create_WithPriceMatchingItemBasePrice_ReturnsSuccess()
     {
         // Arrange
-        var basePrice = 150m;
+        var basePrice = Money.From(150m);
         var player = CreateValidPlayer();
-        var item = CreateValidItem(basePrice: basePrice);
+        var item = CreateValidItem(basePrice: basePrice.Value);
         var date = new DateOnly(2024, 1, 15);
         var price = basePrice;
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -240,6 +239,7 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(150m);
         var dates = new[]
         {
             new DateOnly(2024, 1, 1),
@@ -251,7 +251,7 @@ public class DailyPriceTests
         // Act & Assert
         foreach (var date in dates)
         {
-            var result = DailyPrice.Create(player, item, date, 100m, 15m, PriceState.HIGH);
+            var result = DailyPrice.Create(player.Id, item.Id, date, price, 15m, PriceState.HIGH);
             result.IsSuccess.Should().BeTrue();
             result.Data!.Date.Should().Be(date);
         }
@@ -264,77 +264,16 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price = 123.456m;
+        var price = Money.From(123.456m);
         var percentage = 15m;
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, date, price, percentage, state);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, percentage, state);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data!.Price.Should().Be(price);
-    }
-
-    #endregion
-
-    #region Create Method - Null Item Cases
-
-    [Fact]
-    public void Create_WithNullItem_ReturnsFailure()
-    {
-        // Arrange
-        var player = CreateValidPlayer();
-        Item nullItem = null!;
-        var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
-        var percentage = 15m;
-        var state = PriceState.HIGH;
-
-        // Act
-        var result = DailyPrice.Create(player, nullItem, date, price, percentage, state);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Error.Should().NotBeNull();
-        result.Error!.Code.Should().Be("DailyPrice.Item.Null");
-    }
-
-    [Fact]
-    public void Create_WithNullItem_ReturnsCorrectError()
-    {
-        // Arrange
-        var player = CreateValidPlayer();
-        Item nullItem = null!;
-        var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
-        var percentage = 15m;
-        var state = PriceState.HIGH;
-
-        // Act
-        var result = DailyPrice.Create(player, nullItem, date, price, percentage, state);
-
-        // Assert
-        result.Error!.Message.Should().Contain("Item");
-        result.Error!.Message.Should().Contain("null");
-    }
-
-    [Fact]
-    public void Create_WithNullItem_ResultDataIsNull()
-    {
-        // Arrange
-        var player = CreateValidPlayer();
-        Item nullItem = null!;
-        var date = new DateOnly(2024, 1, 15);
-        var price = 150m;
-        var percentage = 15m;
-        var state = PriceState.HIGH;
-
-        // Act
-        var result = DailyPrice.Create(player, nullItem, date, price, percentage, state);
-
-        // Assert
-        result.Data.Should().BeNull();
     }
 
     #endregion
@@ -347,10 +286,11 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(150m);
         var state = PriceState.HIGH;
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 15m, state);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 15m, state);
 
         // Assert
         result.Data!.State.Should().Be(PriceState.HIGH);
@@ -362,10 +302,12 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+
+        var price = Money.From(100m);
         var state = PriceState.LOW;
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 10m, state);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 10m, state);
 
         // Assert
         result.Data!.State.Should().Be(PriceState.LOW);
@@ -379,8 +321,10 @@ public class DailyPriceTests
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
 
+        var price = Money.From(100m);
+
         // Act
-        var result = DailyPrice.Create(player, item, date, 100m, 10m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, 10m, PriceState.HIGH);
 
         // Assert
         result.Data.Should().NotBeNull();
@@ -394,8 +338,9 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
 
+        var price = Money.From(100m);
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 10m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 10m, PriceState.HIGH);
         var dailyPrice = result.Data!;
 
         // Assert
@@ -409,9 +354,10 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2025, 6, 30);
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, date, 100m, 10m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, 10m, PriceState.HIGH);
         var dailyPrice = result.Data!;
 
         // Assert
@@ -424,11 +370,11 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
-        var price = 999.99m;
+        var price = Money.From(999.99m);
         var percentage = 15m;
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), price, percentage, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, percentage, PriceState.HIGH);
         var dailyPrice = result.Data!;
 
         // Assert
@@ -441,9 +387,10 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 10m, PriceState.LOW);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 10m, PriceState.LOW);
         var dailyPrice = result.Data!;
 
         // Assert
@@ -460,9 +407,10 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 15m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 15m, PriceState.HIGH);
 
         // Assert
         result.Should().BeOfType<Result<DailyPrice>>();
@@ -474,9 +422,10 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 11m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 11m, PriceState.HIGH);
 
         // Assert
         result.Should().BeOfType<Result<DailyPrice>>();
@@ -488,9 +437,10 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 11m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 11m, PriceState.HIGH);
 
         // Assert
         result.Data.Should().NotBeNull();
@@ -502,9 +452,10 @@ public class DailyPriceTests
         // Arrange
         var player = CreateValidPlayer();
         var item = CreateValidItem();
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, new DateOnly(2024, 1, 15), 100m, 11m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, new DateOnly(2024, 1, 15), price, 11m, PriceState.HIGH);
 
         // Assert
         result.Error.Should().BeNull();
@@ -521,9 +472,10 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(1, 1, 1);
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, date, 100m, 10m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, 10m, PriceState.HIGH);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -537,9 +489,10 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2099, 12, 31);
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, date, 100m, 11m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, 11m, PriceState.HIGH);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -554,15 +507,15 @@ public class DailyPriceTests
         var item1 = CreateValidItem("Item1");
         var item2 = CreateValidItem("Item2");
         var date = new DateOnly(2024, 1, 15);
+        var price = Money.From(100m);
+        var price2 = Money.From(100m);
 
         // Act
-        var result1 = DailyPrice.Create(player, item1, date, 100m, 11m, PriceState.HIGH);
-        var result2 = DailyPrice.Create(player, item2, date, 200m, 10m, PriceState.LOW);
+        var result1 = DailyPrice.Create(player.Id, item1.Id, date, price, 11m, PriceState.HIGH);
+        var result2 = DailyPrice.Create(player.Id, item2.Id, date, price2, 10m, PriceState.LOW);
 
         // Assert
-        result1.Data!.Item.Should().Be(item1);
-        result2.Data!.Item.Should().Be(item2);
-        result1.Data!.Item.Should().NotBe(result2.Data!.Item);
+        result1.Data!.Should().NotBe(result2);
     }
 
     [Fact]
@@ -573,10 +526,12 @@ public class DailyPriceTests
         var item = CreateValidItem();
         var date1 = new DateOnly(2024, 1, 15);
         var date2 = new DateOnly(2024, 1, 16);
+        var price = Money.From(100m);
+        var price2 = Money.From(100m);
 
         // Act
-        var result1 = DailyPrice.Create(player, item, date1, 100m, 11m, PriceState.HIGH);
-        var result2 = DailyPrice.Create(player, item, date2, 150m, 10m, PriceState.LOW);
+        var result1 = DailyPrice.Create(player.Id, item.Id, date1, price, 11m, PriceState.HIGH);
+        var result2 = DailyPrice.Create(player.Id, item.Id, date2, price2, 10m, PriceState.LOW);
 
         // Assert
         result1.Data!.Date.Should().Be(date1);
@@ -591,51 +546,19 @@ public class DailyPriceTests
         var player = CreateValidPlayer();
         var item = CreateValidItem();
         var date = new DateOnly(2024, 1, 15);
-        var price1 = 100m;
+        var price1 = Money.From(100m);
         var percentage1 = 15m;
-        var price2 = 200m;
+        var price2 = Money.From(200m);
         var percentage2 = 25m;
 
         // Act
-        var result1 = DailyPrice.Create(player, item, date, price1, percentage1, PriceState.HIGH);
-        var result2 = DailyPrice.Create(player, item, date, price2, percentage2, PriceState.HIGH);
+        var result1 = DailyPrice.Create(player.Id, item.Id, date, price1, percentage1, PriceState.HIGH);
+        var result2 = DailyPrice.Create(player.Id, item.Id, date, price2, percentage2, PriceState.HIGH);
 
         // Assert
         result1.Data!.Price.Should().Be(price1);
         result2.Data!.Price.Should().Be(price2);
         result2.Data!.Should().NotBe(result1.Data!);
-    }
-
-    #endregion
-
-    #region Error Code and Message Validation
-
-    [Fact]
-    public void Create_NullItemError_HasCorrectCode()
-    {
-        // Arrange
-        var player = CreateValidPlayer();
-        Item nullItem = null!;
-
-        // Act
-        var result = DailyPrice.Create(player, nullItem, new DateOnly(2024, 1, 15), 100m, 11m, PriceState.HIGH);
-
-        // Assert
-        result.Error!.Code.Should().Be("DailyPrice.Item.Null");
-    }
-
-    [Fact]
-    public void Create_NullItemError_HasCorrectMessage()
-    {
-        // Arrange
-        var player = CreateValidPlayer();
-        Item nullItem = null!;
-
-        // Act
-        var result = DailyPrice.Create(player, nullItem, new DateOnly(2024, 1, 15), 100m, 11m, PriceState.HIGH);
-
-        // Assert
-        result.Error!.Message.Should().Be("Item cannot be null");
     }
 
     #endregion
@@ -650,9 +573,10 @@ public class DailyPriceTests
         var itemResult = Item.Create("Legendary Sword", "A powerful sword", 500m, 0.8m);
         var item = itemResult.Data!;
         var date = new DateOnly(2024, 1, 15);
+        var price = Money.From(100m);
 
         // Act
-        var result = DailyPrice.Create(player, item, date, 100m, 10m, PriceState.HIGH);
+        var result = DailyPrice.Create(player.Id, item.Id, date, price, 10m, PriceState.HIGH);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -667,9 +591,10 @@ public class DailyPriceTests
         var itemResult = Item.Create("TestItem", "A test item", 100m, 0.5m);
         var item = itemResult.Data!;
         var date = new DateOnly(2024, 1, 15);
+        var price = Money.From(100m);
 
         // Act
-        var dailyPriceResult = player.AddDailyPrice(item, date, 150m, 10m, PriceState.HIGH);
+        var dailyPriceResult = player.AddDailyPrice(item.Id, date, price, 10m, PriceState.HIGH);
 
         // Assert
         dailyPriceResult.IsSuccess.Should().BeTrue();

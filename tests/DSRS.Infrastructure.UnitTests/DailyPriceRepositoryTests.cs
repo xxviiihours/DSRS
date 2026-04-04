@@ -1,6 +1,7 @@
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.ValueObjects;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Repositories;
 using DSRS.SharedKernel.Enums;
@@ -35,7 +36,7 @@ public class DailyPriceRepositoryTests
         context.Items.Add(item);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 105m, 12m, PriceState.HIGH).Data!;
+        var dailyPrice = DailyPrice.Create(player.Id, item.Id, DateOnly.FromDateTime(DateTime.Now), Money.From(105m), 12m, PriceState.HIGH).Data!;
         var repository = new DailyPriceRepository(context);
 
         // Act
@@ -47,7 +48,7 @@ public class DailyPriceRepositoryTests
 
         Assert.NotNull(savedPrice);
         Assert.Equal(item.Id, savedPrice!.ItemId);
-        Assert.Equal(105m, savedPrice.Price);
+        Assert.Equal(105m, savedPrice.Price.Value);
         Assert.Equal(PriceState.HIGH, savedPrice.State);
     }
 
@@ -64,7 +65,7 @@ public class DailyPriceRepositoryTests
             context.Items.Add(item);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-            var dailyPrice = DailyPrice.Create(player, item, DateOnly.FromDateTime(DateTime.Now), 520m, 20m, PriceState.HIGH).Data!;
+            var dailyPrice = DailyPrice.Create(player.Id, item.Id, DateOnly.FromDateTime(DateTime.Now), Money.From(520m), 20m, PriceState.HIGH).Data!;
             var repository = new DailyPriceRepository(context);
             await repository.CreateAsync(dailyPrice);
             await context.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -74,9 +75,9 @@ public class DailyPriceRepositoryTests
         await using (var context = new AppDbContext(options, _mockDateTime.Object))
         {
             var savedPrice = await context.Set<DailyPrice>()
-                .FirstOrDefaultAsync(dp => dp.Price == 520m, cancellationToken: TestContext.Current.CancellationToken);
+                .FirstOrDefaultAsync(dp => dp.Price.Value == 520m, cancellationToken: TestContext.Current.CancellationToken);
             Assert.NotNull(savedPrice);
-            Assert.Equal(520m, savedPrice!.Price);
+            Assert.Equal(520m, savedPrice!.Price.Value);
         }
     }
 
@@ -91,7 +92,7 @@ public class DailyPriceRepositoryTests
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var date = new DateOnly(2026, 2, 13);
-        var dailyPrice = DailyPrice.Create(player, item, date, 78m, 20m, PriceState.LOW).Data!;
+        var dailyPrice = DailyPrice.Create(player.Id, item.Id, date, Money.From(78m), 20m, PriceState.LOW).Data!;
         var repository = new DailyPriceRepository(context);
 
         // Act
@@ -103,7 +104,7 @@ public class DailyPriceRepositoryTests
 
         Assert.NotNull(savedPrice);
         Assert.Equal(date, savedPrice!.Date);
-        Assert.Equal(78m, savedPrice.Price);
+        Assert.Equal(78m, savedPrice.Price.Value);
         Assert.Equal(PriceState.LOW, savedPrice.State);
     }
 
@@ -121,8 +122,8 @@ public class DailyPriceRepositoryTests
         var date = DateOnly.FromDateTime(DateTime.Now);
         var dailyPrices = new List<DailyPrice>
         {
-            DailyPrice.Create(player, item1, date, 155m, 10m, PriceState.HIGH).Data!,
-            DailyPrice.Create(player, item2, date, 48m,25m, PriceState.LOW).Data!
+            DailyPrice.Create(player.Id, item1.Id, date, Money.From(155m), 10m, PriceState.HIGH).Data!,
+            DailyPrice.Create(player.Id, item2.Id, date, Money.From(48m),25m, PriceState.LOW).Data!
         };
         var repository = new DailyPriceRepository(context);
 
@@ -135,8 +136,8 @@ public class DailyPriceRepositoryTests
             .Where(dp => dp.ItemId == item1.Id || dp.ItemId == item2.Id)
             .ToListAsync(cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(2, savedPrices.Count);
-        Assert.Contains(savedPrices, dp => dp.ItemId == item1.Id && dp.Price == 155m);
-        Assert.Contains(savedPrices, dp => dp.ItemId == item2.Id && dp.Price == 48m);
+        Assert.Contains(savedPrices, dp => dp.ItemId == item1.Id && dp.Price.Value == 155m);
+        Assert.Contains(savedPrices, dp => dp.ItemId == item2.Id && dp.Price.Value == 48m);
     }
 
     [Fact]
@@ -156,8 +157,8 @@ public class DailyPriceRepositoryTests
             var date = DateOnly.FromDateTime(DateTime.Now);
             var dailyPrices = new List<DailyPrice>
             {
-                DailyPrice.Create(player, item1, date, 1050m,20m, PriceState.HIGH).Data!,
-                DailyPrice.Create(player, item2, date, 820m,30m, PriceState.HIGH).Data!
+                DailyPrice.Create(player.Id, item1.Id, date, Money.From(1050m),20m, PriceState.HIGH).Data!,
+                DailyPrice.Create(player.Id, item2.Id, date, Money.From(820m),30m, PriceState.HIGH).Data!
             };
             var repository = new DailyPriceRepository(context);
             await repository.CreateAllAsync(dailyPrices);
@@ -206,8 +207,8 @@ public class DailyPriceRepositoryTests
         var date = new DateOnly(2026, 2, 13);
         var dailyPrices = new List<DailyPrice>
         {
-            DailyPrice.Create(player, item1, date.AddDays(-1), 1210m,10m, PriceState.HIGH).Data!,
-            DailyPrice.Create(player, item2, date, 890m,-10m, PriceState.LOW).Data!
+            DailyPrice.Create(player.Id, item1.Id, date.AddDays(-1), Money.From(1210m),10m, PriceState.HIGH).Data!,
+            DailyPrice.Create(player.Id, item2.Id, date, Money.From(890m),-10m, PriceState.LOW).Data!
         };
         var repository = new DailyPriceRepository(context);
 
@@ -224,12 +225,12 @@ public class DailyPriceRepositoryTests
 
         var price1 = savedPrices.First(dp => dp.ItemId == item1.Id);
         Assert.Equal(date.AddDays(-1), price1.Date);
-        Assert.Equal(1210m, price1.Price);
+        Assert.Equal(1210m, price1.Price.Value);
         Assert.Equal(PriceState.HIGH, price1.State);
 
         var price2 = savedPrices.First(dp => dp.ItemId == item2.Id);
         Assert.Equal(date, price2.Date);
-        Assert.Equal(890m, price2.Price);
+        Assert.Equal(890m, price2.Price.Value);
         Assert.Equal(PriceState.LOW, price2.State);
     }
 }

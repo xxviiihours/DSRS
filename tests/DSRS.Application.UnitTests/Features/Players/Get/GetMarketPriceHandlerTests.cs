@@ -2,6 +2,7 @@ using DSRS.Application.Contracts;
 using DSRS.Application.Features.Market.GetMarketPrices;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Interfaces;
 using FluentAssertions;
@@ -34,17 +35,17 @@ public class GetMarketPriceHandlerTests
     public async Task Handle_WithExistingDailyPrices_ShouldReturnPlayerWithoutGeneratingNewPrices()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
         var item = Item.Create("Test Item", "A test item", 100m, 0.1m).Data!;
         var today = DateOnly.FromDateTime(DateTime.Now);
+        var price = Money.From(100m);
 
-        player.AddDailyPrice(item, today, 100m, 29m, PriceState.HIGH);
+        player.AddDailyPrice(item.Id, today, price, 29m, PriceState.HIGH);
 
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockDateTimeService
@@ -67,13 +68,12 @@ public class GetMarketPriceHandlerTests
     public async Task Handle_RepositoryReturnsPlayer_ShouldReturnSuccessResult()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
         var player = Player.Create("John Doe").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -98,13 +98,12 @@ public class GetMarketPriceHandlerTests
     public async Task Handle_WithValidPlayerId_ShouldCallPlayerRepository()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
         var player = Player.Create("Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -120,7 +119,7 @@ public class GetMarketPriceHandlerTests
 
         // Assert
         _mockPlayerRepository.Verify(
-            r => r.GetByIdWithDailyPrices(playerId),
+            r => r.GetByIdWithDailyPrices(player.Id),
             Times.Once);
     }
 
@@ -128,14 +127,13 @@ public class GetMarketPriceHandlerTests
     public async Task Handle_ShouldPassCorrectPlayerIdToRepository()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
         var player = Player.Create("Player").Data!;
-        Guid capturedPlayerId = Guid.Empty;
+        PlayerId capturedPlayerId = PlayerId.Empty();
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<Guid>()))
-            .Callback<Guid>(id => capturedPlayerId = id)
+            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<PlayerId>()))
+            .Callback<PlayerId>(id => capturedPlayerId = id)
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -146,24 +144,23 @@ public class GetMarketPriceHandlerTests
             .Setup(s => s.DateToday)
             .Returns(today);
 
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
 
         // Act
         await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        capturedPlayerId.Should().Be(playerId);
+        capturedPlayerId.Should().Be(player.Id);
     }
 
     [Fact]
     public async Task Handle_WhenPlayerRepositoryThrowsException_ShouldPropagateException()
     {
         // Arrange
-        var playerId = Guid.NewGuid();
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(PlayerId.New());
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<Guid>()))
+            .Setup(r => r.GetByIdWithDailyPrices(It.IsAny<PlayerId>()))
             .ThrowsAsync(new InvalidOperationException("Repository error"));
 
         // Act & Assert
@@ -177,7 +174,7 @@ public class GetMarketPriceHandlerTests
         // Arrange - When a player has no daily prices (Count == 0), prices should be generated
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item1 = Item.Create("Sword", "A sharp blade", 100m, 0.1m).Data!;
@@ -185,7 +182,7 @@ public class GetMarketPriceHandlerTests
         var items = new List<Item> { item1, item2 };
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -212,13 +209,13 @@ public class GetMarketPriceHandlerTests
         // Arrange - When Count == 0, item repository should be called
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var items = new List<Item>();
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -245,14 +242,14 @@ public class GetMarketPriceHandlerTests
         // Arrange - When player has no daily prices, DateTimeService is used
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item = Item.Create("Test Item", "A test item", 100m, 0.1m).Data!;
         var items = new List<Item> { item };
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -279,11 +276,11 @@ public class GetMarketPriceHandlerTests
         // Arrange - Even with no items, the repository should be called when Count == 0
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -311,10 +308,10 @@ public class GetMarketPriceHandlerTests
         // the exception should be propagated
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -336,13 +333,13 @@ public class GetMarketPriceHandlerTests
         // Arrange - Player with large balance but no daily prices should generate prices
         var playerId = Guid.NewGuid();
         var player = Player.Create("Test Player").Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         var item = Item.Create("Expensive Item", "A costly item", 500m, 0.15m).Data!;
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository
@@ -371,14 +368,15 @@ public class GetMarketPriceHandlerTests
         var player = Player.Create("Test Player").Data!;
         var item = Item.Create("Test Item", "A test item", 100m, 0.1m).Data!;
         var today = DateOnly.FromDateTime(DateTime.Now);
+        var price = Money.From(100m);
 
         // Add an existing daily price so Count > 0
-        player.AddDailyPrice(item, today, 100m, 10m, PriceState.HIGH);
+        player.AddDailyPrice(item.Id, today, price, 10m, PriceState.HIGH);
 
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockDateTimeService
@@ -404,11 +402,11 @@ public class GetMarketPriceHandlerTests
         var playerName = "Test Player";
         var playerBalance = 1000m;
         var player = Player.Create(playerName).Data!;
-        var command = new GetMarketPricesCommand(playerId);
+        var command = new GetMarketPricesCommand(player.Id);
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         _mockPlayerRepository
-            .Setup(r => r.GetByIdWithDailyPrices(playerId))
+            .Setup(r => r.GetByIdWithDailyPrices(player.Id))
             .ReturnsAsync(player);
 
         _mockItemRepository

@@ -1,4 +1,5 @@
 using DSRS.Domain.Aggregates.Items;
+using DSRS.Domain.ValueObjects;
 using DSRS.Infrastructure.Persistence;
 using DSRS.Infrastructure.Persistence.Repositories;
 using DSRS.SharedKernel.Interfaces;
@@ -201,7 +202,7 @@ public class ItemRepositoryTests
         }
 
         Assert.NotNull(savedItem);
-        Assert.NotEqual(Guid.Empty, savedItem!.Id);
+        Assert.NotEqual(Guid.Empty, savedItem!.Id.Value);
     }
 
     [Fact]
