@@ -1,10 +1,8 @@
 using DSRS.Application.Contracts;
 using DSRS.Application.Features.Dashboard;
-using DSRS.Domain.Aggregates.Players;
-using DSRS.Infrastructure.Persistence;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace DSRS.Infrastructure.Persistence.Queries;
 
@@ -13,7 +11,7 @@ public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : I
     private readonly AppDbContext _context = context;
     private readonly IDateTime _dateTimeService = dateTimeService;
 
-    public async Task<List<BalancePerformanceDto>> GetBalancePerformanceData(Guid PlayerId)
+    public async Task<List<BalancePerformanceDto>> GetBalancePerformanceData(PlayerId PlayerId)
     {
         var fromDate = _dateTimeService.UtcNow.Date.AddDays(-30);
 
@@ -40,15 +38,15 @@ public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : I
             .Select(x => new BalancePerformanceDto
             {
                 Day = x.Day,
-                Balance = x.EndBalance,
-                Profit = x.EndBalance - x.StartBalance
+                Balance = x.EndBalance.Value,
+                Profit = x.EndBalance.Value - x.StartBalance.Value
             })
             .ToListAsync();
 
         return performance;
     }
 
-    public async Task<List<DashboardDto>> GetDailyPricesPerItem(Guid ItemId, Guid PlayerId)
+    public async Task<List<DashboardDto>> GetDailyPricesPerItem(ItemId ItemId, PlayerId PlayerId)
     {
         var result = await _context.DailyPrices
             .Where(p => p.ItemId == ItemId && p.PlayerId == PlayerId)
@@ -57,7 +55,7 @@ public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : I
             .Select(p => new DashboardDto
             {
                 BasePrice = p.Item.BasePrice,
-                PreviousPrice = p.Price,
+                PreviousPrice = p.Price.Value,
                 Percentage = p.Percentage,
                 State = p.State,
                 Date = p.Date
@@ -66,7 +64,7 @@ public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : I
         return result;
     }
 
-    public async Task<List<TradeActivityDto>> GetRecentTradeActivities(Guid PlayerId)
+    public async Task<List<TradeActivityDto>> GetRecentTradeActivities(PlayerId PlayerId)
     {
         var result = await _context.DistributionRecords
             .Where(p => p.PlayerId == PlayerId)
@@ -76,14 +74,14 @@ public class DashboardQuery(AppDbContext context, IDateTime dateTimeService) : I
                 ItemName = p.ItemName,
                 TransactionDate = p.CreatedAt,
                 Type = p.Type,
-                PriceTotal = p.PriceTotal
+                PriceTotal = p.PriceTotal.Value
             })
             .ToListAsync();
 
         return result;
     }
 
-    public async Task<List<TradeActivityDto>> GetTotalTrades(Guid PlayerId)
+    public async Task<List<TradeActivityDto>> GetTotalTrades(PlayerId PlayerId)
     {
         var weeksAgo = _dateTimeService.UtcNow.Date.AddDays(-6);
         var result = await _context.DistributionRecords

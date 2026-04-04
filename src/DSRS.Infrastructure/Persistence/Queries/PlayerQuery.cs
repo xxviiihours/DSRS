@@ -2,6 +2,7 @@
 using DSRS.Application.Features.Items;
 using DSRS.Application.Features.Market;
 using DSRS.Application.Features.Players;
+using DSRS.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace DSRS.Infrastructure.Persistence.Queries;
@@ -20,7 +21,7 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
             .Where(p => string.IsNullOrEmpty(query) || p.Name.Contains(query))
             .Select(p => new PlayerDto
             {
-                Id = p.Id,
+                Id = p.Id.Value,
                 Name = p.Name,
             })
             .Take(100)
@@ -29,14 +30,14 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
         return players;
     }
 
-    public async Task<PlayerDto> GetPlayerByIdAsync(Guid playerId)
+    public async Task<PlayerDto> GetPlayerByIdAsync(PlayerId playerId)
     {
         var player = await _context.Players
             .AsNoTracking()
             .Where(p => p.Id == playerId)
             .Select(p => new PlayerDto
             {
-                Id = p.Id,
+                Id = p.Id.Value,
                 Name = p.Name,
                 Balance = p.Balance.Value,
                 PurchaseLimit = p.PurchaseLimit,
@@ -45,10 +46,10 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
                     {
-                        Id = i.Id,
-                        ItemId = i.ItemId,
+                        Id = i.Id.Value,
+                        ItemId = i.ItemId.Value,
                         Quantity = i.Quantity,
-                        PurchasePrice = i.PurchasePrice,
+                        PurchasePrice = i.PurchasePrice.Value,
                         Item = new ItemDto
                         {
                             Name = i.Item.Name,
@@ -70,17 +71,17 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
             .Where(p => p.Name == name)
             .Select(p => new PlayerDto
             {
-                Id = p.Id,
+                Id = p.Id.Value,
                 Name = p.Name,
                 Balance = p.Balance.Value,
                 PurchaseLimit = p.PurchaseLimit,
                 InventoryItems = p.InventoryItems
                     .Select(i => new InventoryDto
                     {
-                        Id = i.Id,
-                        ItemId = i.ItemId,
+                        Id = i.Id.Value,
+                        ItemId = i.ItemId.Value,
                         Quantity = i.Quantity,
-                        PurchasePrice = i.PurchasePrice,
+                        PurchasePrice = i.PurchasePrice.Value,
                         Item = new ItemDto
                         {
                             Name = i.Item.Name,
@@ -103,7 +104,7 @@ public class PlayerQuery(AppDbContext context, ICurrentUserService currentUserSe
             .Where(p => string.IsNullOrEmpty(query) || p.Name.Contains(query))
             .Select(p => new PlayerDto
             {
-                Id = p.Id,
+                Id = p.Id.Value,
                 Name = p.Name,
             })
             .Take(100)

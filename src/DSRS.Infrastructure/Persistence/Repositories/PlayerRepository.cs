@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ public class PlayerRepository(AppDbContext context,
         await Task.CompletedTask;
     }
 
-    public async Task<Player> FindGuestById(Guid id)
+    public async Task<Player> FindGuestById(PlayerId id)
     {
         var result = await _context.Players
             .FirstOrDefaultAsync(p => p.Id == id && p.IsGuest);
@@ -43,13 +44,13 @@ public class PlayerRepository(AppDbContext context,
         return guestPlayers;
     }
 
-    public async Task<Player> GetById(Guid Id)
+    public async Task<Player> GetById(PlayerId Id)
     {
         var result = await _context.Players.FindAsync(Id);
         return result!;
     }
 
-    public async Task<Player> GetByIdWithDailyPrices(Guid id)
+    public async Task<Player> GetByIdWithDailyPrices(PlayerId id)
     {
         var player = await _context.Players
             .Where(p => p.Id == id)
@@ -63,7 +64,7 @@ public class PlayerRepository(AppDbContext context,
         return player!;
     }
 
-    public async Task<Player> GetByIdWithInventories(Guid id)
+    public async Task<Player> GetByIdWithInventories(PlayerId id)
     {
         var player = await _context.Players
             .Where(p => p.Id == id)

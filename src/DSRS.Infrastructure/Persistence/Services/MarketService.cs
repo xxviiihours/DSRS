@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Contracts;
 using DSRS.Domain.Services;
+using DSRS.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -36,8 +37,12 @@ public class MarketService(
 
                 var generatedPrice = MarketPricingService.Generate(item);
 
-                player.AddDailyPrice(item, today,
-                    generatedPrice.Price, generatedPrice.Percentage, generatedPrice.State);
+                player.AddDailyPrice(
+                    item.Id, 
+                    today,
+                    Money.From(generatedPrice.Price), 
+                    generatedPrice.Percentage, 
+                    generatedPrice.State);
 
                 generatedCount++;
             }
