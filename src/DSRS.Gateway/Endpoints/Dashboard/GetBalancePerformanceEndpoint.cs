@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Features.Dashboard;
 using DSRS.Application.Features.Dashboard.GetBalancePerformance;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -39,7 +40,8 @@ public class GetBalancePerformanceEndpoint(IMediator mediator) : Endpoint<GetBal
 
     public override async Task<IResult> ExecuteAsync(GetBalancePerformanceRequest req, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetBalancePerformanceCommand(Guid.Parse(req.Id)), ct);
+        var id = PlayerId.From(Guid.Parse(req.Id));
+        var result = await _mediator.Send(new GetBalancePerformanceCommand(id), ct);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

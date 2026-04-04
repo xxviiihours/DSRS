@@ -1,4 +1,5 @@
 using DSRS.Application.Features.Socials.SendRequest;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -41,10 +42,12 @@ public class SendFriendRequestEndpoint(IMediator mediator) : Endpoint<SendFriend
     public override async Task<IResult> ExecuteAsync(SendFriendRequest req, CancellationToken ct)
     {
         var result = await _mediator.Send(
-            new SendFriendRequestCommand(Guid.Parse(req.RequesterId), Guid.Parse(req.AddresseeId)), ct);
+            new SendFriendRequestCommand(
+                PlayerId.From(Guid.Parse(req.RequesterId)), 
+                PlayerId.From(Guid.Parse(req.AddresseeId))), ct);
 
         return result.ToHttpResult(
-            mapResponse => new SendFriendResponse(result.Data!.Id),
+            mapResponse => new SendFriendResponse(result.Data!.Id.Value),
             locationBuilder => SendFriendRequest.Route,
             successStatusCode: StatusCodes.Status201Created
         );

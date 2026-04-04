@@ -1,4 +1,5 @@
 using DSRS.Application.Features.Players.GetPlayerById;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -38,8 +39,12 @@ public class GetPlayerByIdEndpoint(IMediator mediator) : Endpoint<GetPlayerByIdR
 
     public override async Task<IResult> ExecuteAsync(GetPlayerByIdRequest request, CancellationToken cancellationToken)
     {
+        var id = !string.IsNullOrEmpty(request.Id) ? 
+            PlayerId.From(Guid.Parse(request.Id)) :
+            PlayerId.Empty();
+
         // Simulate fetching player data by name (replace with actual data retrieval logic)
-        var result = await _mediator.Send(new GetPlayerByIdCommand(Guid.Parse(request.Id)), cancellationToken);
+        var result = await _mediator.Send(new GetPlayerByIdCommand(id), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

@@ -1,4 +1,5 @@
 using DSRS.Application.Features.Market.GetMarketPrices;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
@@ -42,8 +43,9 @@ public class GetMarketPricesEndpoint(IMediator mediator) :
 
     public override async Task<IResult> ExecuteAsync(GetMarketPricesRequest request, CancellationToken cancellationToken)
     {
+        var id = PlayerId.From(Guid.Parse(request.PlayerId));
         var result = await _mediator.Send(
-            new GetMarketPricesCommand(Guid.Parse(request.PlayerId)), cancellationToken);
+            new GetMarketPricesCommand(id), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Features.Dashboard;
 using DSRS.Application.Features.Dashboard.GetTotalTrades;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -39,7 +40,8 @@ public class GetTotalTradesEndpoint(IMediator mediator) : Endpoint<GetTotalTrade
 
     public override async Task<IResult> ExecuteAsync(GetTotalTradesRequest req, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetTotalTradesCommand(Guid.Parse(req.Id)), ct);
+        var id = PlayerId.From(Guid.Parse(req.Id));
+        var result = await _mediator.Send(new GetTotalTradesCommand(id), ct);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

@@ -1,9 +1,11 @@
 ﻿using DSRS.Application.Features.Accounts.Upgrade;
 using DSRS.Application.Features.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
 using Mediator;
+using System.Security.Cryptography;
 
 namespace DSRS.Gateway.Endpoints.Accounts;
 
@@ -38,9 +40,10 @@ public class UpgradeAccountEndpoint(IMediator mediator) : Endpoint<UpgradeAccoun
 
     public override async Task<IResult> ExecuteAsync(UpgradeAccountRequest request, CancellationToken ct)
     {
+        var id = PlayerId.From(Guid.Parse(request.Id));
         var result = await _mediator.Send(
             new UpgradeAccountCommand(
-                Guid.Parse(request.Id), 
+                id, 
                 request.Name, 
                 request.Email, 
                 request.Password), ct);

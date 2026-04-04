@@ -1,5 +1,6 @@
 ﻿using DSRS.Application.Features.Dashboard;
 using DSRS.Application.Features.Dashboard.GetTradeActivities;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using Mediator;
@@ -39,8 +40,10 @@ public class GetTradeActivitiesEndpoint(IMediator mediator) : Endpoint<GetTradeA
 
     public override async Task<IResult> ExecuteAsync(GetTradeActivitiesRequest request, CancellationToken cancellationToken)
     {
+        var id = PlayerId.From(Guid.Parse(request.Id));
+
         var result = await _mediator.Send(
-            new GetTradeActivitiesCommand(Guid.Parse(request.Id)), cancellationToken);
+            new GetTradeActivitiesCommand(id), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

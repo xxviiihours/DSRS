@@ -1,5 +1,6 @@
 using DSRS.Application.Features.Dashboard;
 using DSRS.Application.Features.Dashboard.GetDailyPricesPerItem;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
@@ -40,8 +41,12 @@ public class GetDailyPricesPerItemEndpoint(IMediator mediator) : Endpoint<GetDai
     }
     public override async Task<IResult> ExecuteAsync(GetDailyPricesPerItemRequest request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetDailyPricesPerItemCommand(
-                Guid.Parse(request.ItemId), Guid.Parse(request.PlayerId)), cancellationToken);
+        var itemId = ItemId.From(Guid.Parse(request.ItemId));
+        var playerId = PlayerId.From(Guid.Parse(request.PlayerId));
+
+        var result = await _mediator.Send(
+            new GetDailyPricesPerItemCommand(
+                itemId, playerId), cancellationToken);
 
         return result.ToHttpResult(
             mapResponse => mapResponse,

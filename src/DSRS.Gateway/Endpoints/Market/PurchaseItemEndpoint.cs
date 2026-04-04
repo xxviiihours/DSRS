@@ -1,4 +1,5 @@
 using DSRS.Application.Features.Market.PurchaseItem;
+using DSRS.Domain.ValueObjects;
 using DSRS.Gateway.Common.Extensions;
 using FastEndpoints;
 using FluentValidation;
@@ -39,8 +40,10 @@ public sealed class PurchaseItemEndpoint(IMediator mediator) : Endpoint<BuyItemR
 
     public override async Task<IResult> ExecuteAsync(BuyItemRequest req, CancellationToken ct)
     {
+        var playerId = PlayerId.From(Guid.Parse(req.PlayerId));
+        var itemId = ItemId.From(Guid.Parse(req.ItemId));
         var result = await _mediator.Send(
-            new PurchaseItemCommand(Guid.Parse(req.PlayerId), Guid.Parse(req.ItemId), req.Quantity), ct);
+            new PurchaseItemCommand(playerId, itemId, req.Quantity), ct);
 
         return result.ToHttpResult(
              mapResponse => new BuyItemResponse(mapResponse.Id.ToString()),
