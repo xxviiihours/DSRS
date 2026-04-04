@@ -1,4 +1,5 @@
-﻿using DSRS.Infrastructure.Identity.Models;
+﻿using DSRS.Infrastructure.Extensions;
+using DSRS.Infrastructure.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -11,6 +12,11 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
+        builder.Property(x => x.PlayerId)
+            .HasPlayerIdConversion()
+            .ValueGeneratedNever()
+            .IsRequired();
+
         builder.HasOne(x => x.Player)
             .WithOne()
             .HasForeignKey<ApplicationUser>(x => x.PlayerId);

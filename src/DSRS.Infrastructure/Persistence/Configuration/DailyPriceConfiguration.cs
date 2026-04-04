@@ -1,5 +1,6 @@
 ﻿using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,8 +11,20 @@ public class DailyPriceConfiguration : IEntityTypeConfiguration<DailyPrice>
     public void Configure(EntityTypeBuilder<DailyPrice> builder)
     {
         builder.HasKey(dp => dp.Id);
+        builder.Property(dp => dp.Id)
+            .HasDailyPriceIdConversion()
+            .ValueGeneratedNever();
+
+        builder.Property(dp => dp.PlayerId)
+            .HasPlayerIdConversion()
+            .IsRequired();
+
+        builder.Property(dp => dp.ItemId)
+            .HasItemIdConversion()
+            .IsRequired();
+
         builder.Property(dp => dp.Price)
-            .HasColumnType("decimal(18,2)")
+            .HasMoneyConversion()
             .IsRequired();
 
         builder.Property(dp => dp.State)
