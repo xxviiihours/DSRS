@@ -12,7 +12,7 @@ public class GetTradeActivitiesHandler(IDashboardQuery dashboardQuery) :
     public async ValueTask<Result<List<TradeActivityDto>>> Handle(
         GetTradeActivitiesCommand command, CancellationToken cancellationToken)
     {
-        var result = await _dashboardQuery.GetRecentTradeActivities(command.playerId);
+        var result = await _dashboardQuery.GetRecentTradeActivities(command.PlayerId);
         
         return Result<List<TradeActivityDto>>.Success(result);
     }

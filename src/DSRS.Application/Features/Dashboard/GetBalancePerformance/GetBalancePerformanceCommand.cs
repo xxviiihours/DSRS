@@ -1,11 +1,9 @@
-﻿using DSRS.SharedKernel.Primitives;
+﻿using DSRS.Domain.ValueObjects;
+using DSRS.SharedKernel.Primitives;
 using Mediator;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DSRS.Application.Features.Dashboard.GetBalancePerformance;
 
-public record GetBalancePerformanceCommand(Guid PlayerId) : ICommand<Result<List<BalancePerformanceDto>>>
+public record GetBalancePerformanceCommand(PlayerId PlayerId) : ICommand<Result<List<BalancePerformanceDto>>>
 {
 }

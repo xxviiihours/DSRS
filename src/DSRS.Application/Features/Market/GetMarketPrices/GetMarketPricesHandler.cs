@@ -2,6 +2,7 @@ using DSRS.Application.Contracts;
 using DSRS.Application.Features.Players;
 using DSRS.Domain.Aggregates.Players;
 using DSRS.Domain.Services;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Interfaces;
 using DSRS.SharedKernel.Mappings;
 using DSRS.SharedKernel.Primitives;
@@ -30,8 +31,12 @@ public class GetMarketPricesHandler(IPlayerRepository playerRepository, IItemRep
             {
                 var generatedPrice = MarketPricingService.Generate(item);
 
-                playerResult.AddDailyPrice(item, _dateTimeService.DateToday,
-                    generatedPrice.Price, generatedPrice.Percentage, generatedPrice.State);
+                playerResult.AddDailyPrice(
+                    item.Id, 
+                    _dateTimeService.DateToday,
+                    Money.From(generatedPrice.Price), 
+                    generatedPrice.Percentage, 
+                    generatedPrice.State);
             }
 
             await _unitOfWork.CommitAsync(cancellationToken);

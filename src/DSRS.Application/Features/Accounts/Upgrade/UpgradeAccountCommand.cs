@@ -1,15 +1,12 @@
 ﻿using DSRS.Application.Features.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Primitives;
 using Mediator;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
 
 namespace DSRS.Application.Features.Accounts.Upgrade;
 
 public record UpgradeAccountCommand(
-    Guid Id, 
+    PlayerId Id, 
     string Name, 
     string Email, 
     string Password) : ICommand<Result<PlayerDto>>

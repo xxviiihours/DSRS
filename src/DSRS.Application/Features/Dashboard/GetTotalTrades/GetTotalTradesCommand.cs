@@ -1,8 +1,9 @@
-﻿using DSRS.SharedKernel.Primitives;
+﻿using DSRS.Domain.ValueObjects;
+using DSRS.SharedKernel.Primitives;
 using Mediator;
 
 namespace DSRS.Application.Features.Dashboard.GetTotalTrades;
 
-public record GetTotalTradesCommand(Guid PlayerId) : ICommand<Result<List<TradeActivityDto>>>
+public record GetTotalTradesCommand(PlayerId PlayerId) : ICommand<Result<List<TradeActivityDto>>>
 {
 }
