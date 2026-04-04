@@ -32,7 +32,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
         var claims = new List<Claim>
     {
-        new(AppClaimTypes.NameIdentifier, user.PlayerId.ToString()),
+        new(AppClaimTypes.NameIdentifier, user.PlayerId.Value.ToString()),
         new(AppClaimTypes.Name, player.Name),
         new(AppClaimTypes.IsGuest, player.IsGuest.ToString())
     };
@@ -57,7 +57,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
     {
         var authClaims = new List<Claim>
         {
-            new(AppClaimTypes.NameIdentifier, player.Id.ToString()),
+            new(AppClaimTypes.NameIdentifier, player.Id.Value.ToString()),
             new(AppClaimTypes.Name, player.Name),
             new(AppClaimTypes.IsGuest, player.IsGuest.ToString())
         };
@@ -79,7 +79,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
         if (user == null)
             throw new UnauthorizedException("Invalid username or password.");
 
-        return user.PlayerId;
+        return user.PlayerId.Value;
     }
 
     public async Task RegisterAccount(Player player, string email, string password)
