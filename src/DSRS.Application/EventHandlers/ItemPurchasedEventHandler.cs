@@ -21,20 +21,20 @@ public class ItemPurchasedEventHandler(
         try
         {
             _logger.LogInformation("Creating distribution record for player {PlayerId} purchasing item {ItemId}",
-                notification.Event.PlayerId, notification.Event.ItemId);
+                notification.Event.PlayerId, notification.Event.dailyPriceId);
 
             var record = DistributionRecord.Create(
-                notification.Event.ItemId,
                 notification.Event.PlayerId,
+                notification.Event.dailyPriceId,
                 notification.Event.ItemName,
-                notification.Event.TotalCost.Value,
+                notification.Event.TotalCost,
                 DistributionType.BUY).Data!;
 
             await _distributionHistoryRepository.CreateAsync(record);
 
             var balanceSnapshot = PlayerBalanceSnapshot.Create(
                 notification.Event.PlayerId,
-                notification.Event.Balance.Value).Data!;
+                notification.Event.Balance).Data!;
 
             await _playerSnapshotRepository.SaveBalance(balanceSnapshot);
 
