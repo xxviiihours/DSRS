@@ -8,6 +8,9 @@ namespace DSRS.Domain.ValueObjects;
 public partial class Money
 {
     public bool CanAfford(decimal amount) => Value >= amount;
+    public bool IsZero() => Value == 0;
+    public bool IsNegative() => Value < 0;
+
     private static Validation Validate(decimal amount)
     {
         if(amount < 0)
