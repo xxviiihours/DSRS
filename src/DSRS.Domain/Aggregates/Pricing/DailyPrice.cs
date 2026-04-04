@@ -1,59 +1,59 @@
 ﻿using DSRS.Domain.Aggregates.Items;
-using DSRS.Domain.Aggregates.Players;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Pricing;
 
-public sealed class DailyPrice : AggregateRoot<Guid>
+public sealed class DailyPrice : AggregateRoot<DailyPriceId>
 {
     public DateOnly Date { get; }
-    public decimal Price { get; }
+    public Money Price { get; }
     public decimal Percentage { get; set; }
     public PriceState State { get; }
-    public Guid ItemId { get; }
+    public ItemId ItemId { get; }
     public Item Item { get; private set; } = null!;
-    public Guid PlayerId { get; }
+    public PlayerId PlayerId { get; }
 
+    //private DailyPrice() { }
     internal DailyPrice(
-        Guid playerId,
-        Item item,
+        PlayerId playerId,
+        ItemId itemId,
         DateOnly date,
-        decimal price,
+        Money price,
         decimal percentage,
         PriceState state)
     {
+        Id = DailyPriceId.New();
         PlayerId = playerId;
-        ItemId = item.Id;
+        ItemId = itemId;
         Date = date;
         Price = price;
         Percentage = percentage;
         State = state;
-        Item = item ?? throw new ArgumentNullException(nameof(item));
     }
-    private DailyPrice() { }
     public static Result<DailyPrice> Create(
-        Player player,
-        Item item,
+        PlayerId playerId,
+        ItemId itemId,
         DateOnly date,
-        decimal price,
+        Money price,
         decimal percentage,
         PriceState state)
     {
-        if (player == null)
+        if (playerId.IsEmpty())
             return Result<DailyPrice>.Failure(
-                new Error("DailyPrice.Player.Null", "Player cannot be null"));
-        if (item == null)
+                new Error("DailyPrice.Player.Empty", "Player cannot be empty"));
+        if (itemId.IsEmpty())
             return Result<DailyPrice>.Failure(
-                new Error("DailyPrice.Item.Null", "Item cannot be null"));
+                new Error("DailyPrice.Item.Empty", "Item cannot be empty"));
 
         // domain event could be raised here, e.g., DailyPriceGenerated
 
         return Result<DailyPrice>.Success(
             new DailyPrice(
-                player.Id,
-                item,
+                playerId,
+                itemId,
                 date,
                 price,
                 percentage,

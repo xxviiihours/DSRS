@@ -1,28 +1,30 @@
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Common;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Inventories;
 
-public class Inventory : AggregateRoot<Guid>, IAuditableEntity
+public class Inventory : AggregateRoot<InventoryId>, IAuditableEntity
 {
 
-    public Guid PlayerId { get; }
-    public Guid ItemId { get; }
+    public PlayerId PlayerId { get; }
+    public ItemId ItemId { get; }
     public Item Item { get; } = null!;
     public int Quantity { get; private set; }
-    public decimal PurchasePrice { get; }
+    public Money PurchasePrice { get; }
     public DateTime CreatedAt { get; private set; }
     public DateTime LastModified { get; private set; }
 
-    private Inventory() { }
+    //private Inventory() { }
     internal Inventory(
-        Guid playerId,
-        Guid itemId,
+        PlayerId playerId,
+        ItemId itemId,
         int quantity,
-        decimal purchasePrice)
+        Money purchasePrice)
     {
+        Id = InventoryId.New();
         PlayerId = playerId;
         ItemId = itemId;
         Quantity = quantity;
@@ -30,10 +32,10 @@ public class Inventory : AggregateRoot<Guid>, IAuditableEntity
     }
 
     public static Result<Inventory> Create(
-        Guid playerId,
-        Guid itemId,
+        PlayerId playerId,
+        ItemId itemId,
         int quantity,
-        decimal purchasePrice)
+        Money purchasePrice)
     {
         if (playerId == Guid.Empty)
             return Result<Inventory>.Failure(

@@ -1,10 +1,10 @@
-﻿using DSRS.SharedKernel.Abstractions;
-using DSRS.SharedKernel.Enums;
+﻿using DSRS.Domain.ValueObjects;
+using DSRS.SharedKernel.Abstractions;
 using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Items;
 
-public sealed class Item : AggregateRoot<Guid>
+public sealed class Item : AggregateRoot<ItemId>
 {
     public string Name { get; } = string.Empty;
     public string Description { get; }
@@ -13,6 +13,7 @@ public sealed class Item : AggregateRoot<Guid>
 
     private Item(string name, string description, decimal basePrice, decimal volatility)
     {
+        Id = ItemId.New();
         Name = name;
         Description = description;
         BasePrice = basePrice;

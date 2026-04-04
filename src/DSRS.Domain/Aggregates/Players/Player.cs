@@ -2,7 +2,6 @@
 using DSRS.Domain.Aggregates.Inventories;
 using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Pricing;
-using DSRS.Domain.Common;
 using DSRS.Domain.Events;
 using DSRS.Domain.Services;
 using DSRS.Domain.ValueObjects;
@@ -12,7 +11,7 @@ using DSRS.SharedKernel.Primitives;
 
 namespace DSRS.Domain.Aggregates.Players;
 
-public sealed class Player : AggregateRoot<Guid>
+public sealed class Player : AggregateRoot<PlayerId>
 {
     public string Name { get; private set; } = string.Empty;
     public Money Balance { get; private set; }
@@ -26,8 +25,9 @@ public sealed class Player : AggregateRoot<Guid>
     private readonly List<Inventory> _inventoryItems = [];
     public IReadOnlyCollection<Inventory> InventoryItems => _inventoryItems.AsReadOnly();
 
-    private Player(string name, bool isGuest = false)
+    private Player( string name, bool isGuest = false)
     {
+        Id = PlayerId.New();
         Name = name;
         //Balance = Money.Set(1000).Data!;
         Balance = Money.From(1000);
@@ -90,17 +90,22 @@ public sealed class Player : AggregateRoot<Guid>
         return Result.Success();
     }
     #region Daily Price
-    public Result<DailyPrice> AddDailyPrice(Item item, DateOnly date,
-         decimal price, decimal percentage, PriceState state)
+    public Result<DailyPrice> AddDailyPrice(ItemId itemId, DateOnly date,
+         Money price, decimal percentage, PriceState state)
     {
-        if (price <= 0)
-            return Result<DailyPrice>.Failure(new Error("DailyPrice.Price.Invalid", "Price must be greater than zero"));
+        if(itemId.IsEmpty())
+            return Result<DailyPrice>.Failure(
+                new Error("DailyPrice.Item.Empty", "Item ID cannot be empty."));
 
-        if (_dailyPrices.Any(p => p.ItemId == item.Id && p.Date == date))
+        if (price.IsNegative() || price.IsZero())
+            return Result<DailyPrice>.Failure(
+                new Error("DailyPrice.Price.Invalid", "Price must be greater than zero"));
+
+        if (_dailyPrices.Any(p => p.ItemId == itemId && p.Date == date))
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Exists", "Daily price already exists"));
 
-        var dailyPrice = DailyPrice.Create(this, item, date, price, percentage, state);
+        var dailyPrice = DailyPrice.Create(Id, itemId, date, price, percentage, state);
 
         if (!dailyPrice.IsSuccess)
             return Result<DailyPrice>.Failure(dailyPrice.Error!);
@@ -113,7 +118,7 @@ public sealed class Player : AggregateRoot<Guid>
     private bool HasDailyPrice(Guid itemId, DateOnly date)
         => _dailyPrices.Any(p => p.ItemId == itemId && p.Date == date);
 
-    private DailyPrice? GetDailyPrice(Guid itemId)
+    private DailyPrice? GetDailyPrice(ItemId itemId)
         => _dailyPrices.SingleOrDefault(p => p.ItemId == itemId);
 
     public void ClearDailyPrices()
@@ -122,7 +127,7 @@ public sealed class Player : AggregateRoot<Guid>
 
     #region Buy
 
-    public Result<InventoryResult> BuyItem(Guid itemId, int quantity)
+    public Result<InventoryResult> BuyItem(ItemId itemId, int quantity)
     {
         if (quantity <= 0)
             return Result<InventoryResult>.Failure(
@@ -155,8 +160,8 @@ public sealed class Player : AggregateRoot<Guid>
         //var cost = Money.From(totalCost);
         RaiseDomainEvent(
             new ItemPurchasedEvent(
+                Id,
                 dailyPrice.Id,
-                result.Data!.Inventory.PlayerId,
                 dailyPrice.Item.Name,
                 Balance,
                 Balance));
@@ -167,7 +172,7 @@ public sealed class Player : AggregateRoot<Guid>
 
     #region Selling    
 
-    public Result<Inventory> SellItem(Guid itemId, int quantity)
+    public Result<Inventory> SellItem(ItemId itemId, int quantity)
     {
         if (quantity <= 0)
             return Result<Inventory>.Failure(
@@ -188,8 +193,8 @@ public sealed class Player : AggregateRoot<Guid>
 
         RaiseDomainEvent(
            new ItemSoldEvent(
-               itemId,
                Id,
+               dailyPrice.Id,
                dailyPrice.Item.Name,
                Balance, 
                Balance));
@@ -199,11 +204,11 @@ public sealed class Player : AggregateRoot<Guid>
     #endregion
 
     #region Inventory
-    private Inventory? GetInventory(Guid itemId)
+    private Inventory? GetInventory(ItemId itemId)
         => _inventoryItems.SingleOrDefault(i => i.ItemId == itemId);
 
     public record InventoryResult(Inventory Inventory, bool IsNew);
-    public Result<InventoryResult> AddToInventory(Guid itemId, int quantity, decimal purchasePrice)
+    public Result<InventoryResult> AddToInventory(ItemId itemId, int quantity, Money purchasePrice)
     {
         var existingItem = GetInventory(itemId);
 
@@ -223,7 +228,7 @@ public sealed class Player : AggregateRoot<Guid>
         return Result<InventoryResult>.Success(
                new InventoryResult(existingItem, false));
     }
-    public Result<Inventory> RemoveFromInventory(Guid itemId, int quantity)
+    public Result<Inventory> RemoveFromInventory(ItemId itemId, int quantity)
     {
         var inventory = GetInventory(itemId);
 

@@ -1,5 +1,6 @@
 ﻿using DSRS.Domain.Aggregates.Items;
 using DSRS.Domain.Aggregates.Pricing;
+using DSRS.Domain.ValueObjects;
 using DSRS.SharedKernel.Enums;
 using DSRS.SharedKernel.Primitives;
 
@@ -22,20 +23,20 @@ public class PlayerPriceList
 
     #region Daily Price
     public Result<DailyPrice> AddDailyPrice(
-        Item item, 
+        ItemId itemId, 
         DateOnly date,
-        decimal price, 
+        Money price, 
         decimal percentage, 
         PriceState state)
     {
-        if (price <= 0)
+        if (price.IsZero() || price.IsNegative())
             return Result<DailyPrice>.Failure(new Error("DailyPrice.Price.Invalid", "Price must be greater than zero"));
 
-        if (_dailyPrices.Any(p => p.ItemId == item.Id && p.Date == date))
+        if (_dailyPrices.Any(p => p.ItemId == itemId && p.Date == date))
             return Result<DailyPrice>.Failure(
                 new Error("DailyPrice.Exists", "Daily price already exists"));
 
-        var dailyPrice = DailyPrice.Create(null!, item, date, price, percentage, state);
+        var dailyPrice = DailyPrice.Create(null!, itemId, date, price, percentage, state);
 
         if (!dailyPrice.IsSuccess)
             return Result<DailyPrice>.Failure(dailyPrice.Error!);
